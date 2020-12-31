@@ -1,13 +1,18 @@
 from rest_framework.views import APIView  # pip install django-rest-framework
+from rest_framework import authentication, permissions
 from django.http import JsonResponse, HttpResponseBadRequest
 from drf_spectacular.openapi import AutoSchema
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
+from common_auth.authentication import TokenAuthentication
 from .v1.kiinteistotunnus import API as APIv1
 from .v2.kiinteistotunnus import API as APIv2
 
 
 class API(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
     allowed_methods = [
         'get', 'post'  # , 'put', 'delete'
     ]
