@@ -10,12 +10,20 @@ class Token(models.Model):
     """
     key = models.CharField(_("Key"), max_length=40, primary_key=True)
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, related_name='wasted_auth_token',
-        on_delete=models.CASCADE, verbose_name=_("User")
+        settings.AUTH_USER_MODEL,
+        related_name='wasted_auth_token',
+        on_delete=models.CASCADE,
+        verbose_name=_("User")
     )
     created = models.DateTimeField(_("Created"), auto_now_add=True)
-    access_facta = models.BooleanField(_("Facta"), null=False)
-    access_geoserver = models.BooleanField(_("GeoServer"), null=False)
+    access_facta = models.ForeignKey('common_auth.ExtAuthCred',
+                                     related_name='access_facta_creds',
+                                     verbose_name=_("Facta"),
+                                     null=True, on_delete=models.PROTECT)
+    access_geoserver = models.ForeignKey('common_auth.ExtAuthCred',
+                                         related_name='access_geoserver_creds',
+                                         verbose_name=_("GeoServer"),
+                                         null=True, on_delete=models.PROTECT)
     access_kaavapino = models.BooleanField(_("Kaavapino"), null=False)
 
     class Meta:

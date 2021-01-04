@@ -5,6 +5,7 @@ Location example: project/app/management/commands/loaddata.py
 from django.core.management.base import BaseCommand, CommandError
 from rest_framework.authtoken.management.commands import drf_create_token
 from common_auth.models.token_auth import Token
+from common_auth.models.ext_auth_cred import ExtAuthCred
 import argparse
 
 
@@ -23,13 +24,19 @@ class Command(drf_create_token.Command):
 
     def create_api_user_token(self, username, reset_token, access_facta, access_geoserver, access_kaavapino):
         user = drf_create_token.UserModel._default_manager.get_by_natural_key(username)
+        facta_creds = None
+        geoserver_creds = None
+        if access_facta:
+            facta_creds = ExtAuthCred.objects.get(pk=access_facta)
+        if access_geoserver:
+            geoserver_creds = ExtAuthCred.objects.get(pk=access_geoserver)
 
         if reset_token:
             Token.objects.filter(user=user).delete()
 
         token = Token.objects.get_or_create(user=user,
-                                            access_facta=access_facta,
-                                            access_geoserver=access_geoserver,
+                                            access_facta=facta_creds,
+                                            access_geoserver=geoserver_creds,
                                             access_kaavapino=access_kaavapino
                                             )
         return token[0]
@@ -49,14 +56,12 @@ class Command(drf_create_token.Command):
             def __call__(self, parser, ns, values, option):
                 setattr(ns, self.dest, option[2:4] != 'no')
 
-        parser.add_argument('--access-facta', '--no-access-facta',
-                            dest='access_facta',
-                            action=NegateAction, nargs=0,
-                            help='Has access to: Facta DB')
-        parser.add_argument('--access-geoserver', '--no-access-geoserver',
+        parser.add_argument('--access-facta',
+                            dest='access_facta', metavar='EXT-CRED-ID', type=int,
+                            help='Has access to: Facta DB with external credential')
+        parser.add_argument('--access-geoserver', metavar='EXT-CRED-ID', type=int,
                             dest='access_geoserver',
-                            action=NegateAction, nargs=0,
-                            help='Has access to: GeoServer')
+                            help='Has access to: GeoServer with external credential')
         parser.add_argument('--access-kaavapino', '--no-access-kaavapino',
                             dest='access_kaavapino',
                             action=NegateAction, nargs=0,
