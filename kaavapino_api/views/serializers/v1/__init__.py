@@ -1,0 +1,1 @@
+from .kiinteistov1serializer import KiinteistoV1Serializer

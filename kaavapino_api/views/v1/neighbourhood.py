@@ -32,13 +32,11 @@ class API(APIView):
             log.error("%s not found!" % id)
             return HttpResponseNotFound()
 
-        rkaa = hki_geoserver.Rakennuskieltoalue_asemakaava(username=geoserver_creds.username,
-                                                          password=geoserver_creds.credential)
-        rkaa_data = rkaa.get(kt_data['geom'])
-        if not rkaa_data:
+        t = hki_geoserver.Tontti(username=geoserver_creds.username,
+                                   password=geoserver_creds.credential)
+        neighbours = t.list_of_neighbours(kt_data['geom'], neigh_to_skip=[id])
+        if not neighbours:
             log.warning("%s not found by geom!" % id)
-            return JsonResponse({})
+            return JsonResponse([])
 
-        del rkaa_data['geom']
-
-        return JsonResponse(rkaa_data)
+        return JsonResponse(neighbours, safe=False)

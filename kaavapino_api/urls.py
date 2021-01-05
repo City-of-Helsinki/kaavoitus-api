@@ -2,14 +2,6 @@ from django.urls import path, re_path
 from rest_framework.versioning import URLPathVersioning
 from kaavapino_api import views
 
-"""
-from rest_framework import routers
-router = routers.SimpleRouter()
-router.register(r'tontti', tontti.API)
-#router.register(r'accounts', AccountViewSet)
-urlpatterns = router.urls
-"""
-
 urlpatterns = [
     # path('tontti', tontti.API.as_view(), name='tontti'),
     path('heartbeat',
@@ -44,5 +36,10 @@ urlpatterns = [
         r'^v(?P<version>(1))/tontti/(?P<id>[^/]*)',
         views.tontti.API.as_view(),
         name='tontti'
+    ),
+    re_path(
+        r'^v(?P<version>(1))/neighbourhood/(?P<id>[^/]*)',
+        views.neighbourhood.API.as_view(),
+        name='neighbourhood'
     ),
 ]

@@ -1,10 +1,16 @@
 from rest_framework.views import APIView  # pip install django-rest-framework
+from rest_framework import authentication, permissions
 from django.http import JsonResponse, HttpResponseBadRequest
 from drf_spectacular.openapi import AutoSchema
 from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.types import OpenApiTypes
 
 
 class API(APIView):
+    # No auth nor permissions required for this. Will remove lock-icon in Swagger.
+    authentication_classes = []
+    permission_classes = []
+    # Not versioned.
     versioning_class = None
     allowed_methods = [
         'get'
@@ -13,14 +19,18 @@ class API(APIView):
     serializer_class = None
 
     @extend_schema(
+        responses={
+            200: OpenApiTypes.OBJECT,
+            500: OpenApiTypes.OBJECT,
+        },
         # override default docstring extraction
         description='Simple service is alive test',
         # provide Authentication class that deviates from the views default
         auth=None,
         # change the auto-generated operation name
-        # operation_id=None,
+        operation_id=None,
         # or even completely override what AutoSchema would generate. Provide raw Open API spec as Dict.
-        # operation=None,
+        operation=None,
         # attach request/response examples to the operation.
 
     )
@@ -30,4 +40,4 @@ class API(APIView):
         else:
             retval = {'status': 'ok.'}
 
-        return JsonResponse(retval, content_type="application/json")
+        return JsonResponse(retval)

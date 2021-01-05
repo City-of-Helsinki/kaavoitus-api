@@ -5,7 +5,7 @@ from drf_spectacular.openapi import AutoSchema
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from common_auth.authentication import TokenAuthentication
-from .v1.rakennuskieltoalue_asemakaava import API as APIv1
+from .v1.neighbourhood import API as APIv1
 
 
 class API(APIView):

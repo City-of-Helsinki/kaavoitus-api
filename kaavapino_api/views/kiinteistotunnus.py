@@ -7,11 +7,13 @@ from drf_spectacular.types import OpenApiTypes
 from common_auth.authentication import TokenAuthentication
 from .v1.kiinteistotunnus import API as APIv1
 from .v2.kiinteistotunnus import API as APIv2
+from .serializers.v1 import KiinteistoV1Serializer
 
 
 class API(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
+    #serializer_class = KiinteistoSerializer
 
     allowed_methods = [
         'get', 'post'  # , 'put', 'delete'
@@ -21,7 +23,11 @@ class API(APIView):
     )
 
     @extend_schema(
-        responses={200: OpenApiTypes.OBJECT},
+        responses={
+            200: KiinteistoV1Serializer,
+            401: OpenApiTypes.STR,
+            500: OpenApiTypes.STR,
+        },
         parameters=[
             OpenApiParameter(
                 name='id',
@@ -35,18 +41,18 @@ class API(APIView):
                 name='alue',
                 type=str,
                 location=OpenApiParameter.QUERY,
-                description='Filter by alue',
+                description='(test-version only) Filter by alue',
 
             ),
         ],
         # override default docstring extraction
         description='Hae kiinteistö kiinteistötunnuksella',
         # provide Authentication class that deviates from the views default
-        auth=None,
+        #auth=None,
         # change the auto-generated operation name
-        operation_id=None,
+        #operation_id=None,
         # or even completely override what AutoSchema would generate. Provide raw Open API spec as Dict.
-        operation=None,
+        #operation=None,
         # attach request/response examples to the operation.
 
     )
