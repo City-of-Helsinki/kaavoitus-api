@@ -6,7 +6,7 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 import logging
 import lxml.etree as etree
-from kaavapino_api import hki_geoserver
+from geoserver_api import hki_geoserver
 
 log = logging.getLogger(__name__)
 

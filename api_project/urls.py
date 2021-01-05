@@ -16,12 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
-from kaavapino_api import urls
+from geoserver_api import urls as geoserver_urls
+from kaavapino_api import urls as kaavapino_urls
+from facta_api import urls as facta_urls
 
 urlpatterns = [
 #    path('', DefaultSpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui-default'),
     path('admin/', admin.site.urls),
-    path('api/kaavapino/', include((urls.urlpatterns, 'kaavapino'))),
+    path('api/facta/', include((facta_urls.urlpatterns, 'facta'))),
+    path('api/geoserver/', include((geoserver_urls.urlpatterns, 'geoserver'))),
+    path('api/kaavapino/', include((kaavapino_urls.urlpatterns, 'kaavapino'))),
     # OpenAPI 3 documentation with Swagger UI:
     re_path(
         r'^schema/v(?P<version>(\d+))/',

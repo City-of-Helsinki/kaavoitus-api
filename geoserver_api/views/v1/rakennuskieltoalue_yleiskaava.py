@@ -6,7 +6,7 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 import logging
 import lxml.etree as etree
-from kaavapino_api import hki_geoserver
+from geoserver_api import hki_geoserver
 
 log = logging.getLogger(__name__)
 
@@ -32,13 +32,13 @@ class API(APIView):
             log.error("%s not found!" % id)
             return HttpResponseNotFound()
 
-        rkaa = hki_geoserver.Rakennuskieltoalue_asemakaava(username=geoserver_creds.username,
-                                                          password=geoserver_creds.credential)
-        rkaa_data = rkaa.get(kt_data['geom'])
-        if not rkaa_data:
+        rkay = hki_geoserver.Rakennuskieltoalue_yleiskaava(username=geoserver_creds.username,
+                                                           password=geoserver_creds.credential)
+        rkay_data = rkay.get(kt_data['geom'])
+        if not rkay_data:
             log.warning("%s not found by geom!" % id)
             return JsonResponse({})
 
-        del rkaa_data['geom']
+        del rkay_data['geom']
 
-        return JsonResponse(rkaa_data)
+        return JsonResponse(rkay_data)

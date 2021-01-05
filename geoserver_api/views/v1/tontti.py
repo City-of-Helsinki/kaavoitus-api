@@ -6,14 +6,12 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 import logging
 import lxml.etree as etree
-from kaavapino_api.hki_geoserver.kiinteistotunnus import Kiinteistotunnus
-from kaavapino_api.views.serializers.v1 import KiinteistoV1Serializer
+from geoserver_api import hki_geoserver
 
 log = logging.getLogger(__name__)
 
 
 class API(APIView):
-    serializer_class = KiinteistoV1Serializer
 
     def get(self, request, id=None):
         if not id:
@@ -27,27 +25,16 @@ class API(APIView):
 
         # Confirmed access to GeoServer.
         # Go get the data!
-        kt = Kiinteistotunnus(username=geoserver_creds.username, password=geoserver_creds.credential)
-        kt_data = kt.get(id)
-        if not kt_data:
+        t = hki_geoserver.Tontti(username=geoserver_creds.username,
+                                  password=geoserver_creds.credential)
+        t_data = t.get(id)
+        if not t_data:
             log.error("%s not found!" % id)
             return HttpResponseNotFound()
 
-        log.info("Kiinteistötunnus: %s" % (kt_data['kiinteisto']))
-        # Convert part of XML-tree from objects to str to be returned as JSON.
-        geom_str = etree.tostring(kt_data['geom'].element,
+        geom_str = etree.tostring(t_data['geom'].element,
                                   encoding='ascii', method='xml',
                                   xml_declaration=False).decode('ascii')
-        kt_data['geom'] = geom_str
+        t_data['geom'] = geom_str
 
-        # Go validate the returned data.
-        # It needs to be verifiable by serializer rules. Those are published in Swagger.
-        serializer = self.serializer_class(data=kt_data)
-        if not serializer.is_valid():
-            return HttpResponseServerError("Invalid data received from WFS!")
-
-        return JsonResponse(serializer.validated_data)
-
-    @extend_schema(responses={200: OpenApiTypes.OBJECT})
-    def post(self, request):
-        pass
+        return JsonResponse(t_data)

@@ -4,22 +4,51 @@ info:
   version: 1.0.0
   description: GeoServer API
 paths:
-  /api/kaavapino/heartbeat:
+  /api/facta/heartbeat:
     get:
-      operationId: kaavapino_heartbeat_retrieve
+      operationId: facta_heartbeat_retrieve
       description: Simple service is alive test
       tags:
-      - kaavapino
-      security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
+      - facta
       responses:
         '200':
-          description: No response body
-  /api/kaavapino/v1/asemakaava_voimassa/{id}:
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/geoserver/heartbeat:
     get:
-      operationId: kaavapino_v1_asemakaava_voimassa_retrieve
+      operationId: geoserver_heartbeat_retrieve
+      description: Simple service is alive test
+      tags:
+      - geoserver
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/geoserver/v1/asemakaava_voimassa/{id}:
+    get:
+      operationId: geoserver_v1_asemakaava_voimassa_retrieve
       description: ''
       parameters:
       - in: path
@@ -29,11 +58,9 @@ paths:
         description: Kiinteistötunnus to get data for
         required: true
       tags:
-      - kaavapino
+      - geoserver
       security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -42,16 +69,16 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/kaavapino/v1/kiinteistotunnus/{id}:
+  /api/geoserver/v1/kiinteistotunnus/{id}:
     get:
-      operationId: kaavapino_v1_kiinteistotunnus_retrieve
+      operationId: geoserver_v1_kiinteistotunnus_retrieve
       description: Hae kiinteistö kiinteistötunnuksella
       parameters:
       - in: query
         name: alue
         schema:
           type: string
-        description: Filter by alue
+        description: (test-version only) Filter by alue
       - in: path
         name: id
         schema:
@@ -59,21 +86,75 @@ paths:
         description: Kiinteistötunnus to get data for
         required: true
       tags:
-      - kaavapino
+      - geoserver
       security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
+      - tokenAuth: []
       responses:
         '200':
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/KiinteistoV1'
+              examples:
+                ExampleResponse:
+                  value:
+                    datanomistaja: Helsinki/Kami
+                    id: 156
+                    kiinteisto: 91-3-9903-101
+                    kiinteistotunnus: 09100399030101
+                    kunta: 091
+                    luontipvm: '2013-12-09'
+                    muokkauspvm: '2014-06-10'
+                    paivitetty_tietopalveluun: '2021-01-04'
+                    rekisterointipvm: '1980-05-30'
+                    ryhma: '9903'
+                    sijaintialue: '003'
+                    yksikko: '0101'
+                    gml_id: Kiinteisto_alue.156.geom.1
+                    geom: <gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2"
+                      srsName="urn:ogc:def:crs:EPSG::3879"><gml:exterior><gml:LinearRing><gml:posList>6672759.0098
+                      2.54969922149E7 6672701.3892 2.54969952458E7 6672711.2563 2.54971894828E7
+                      6672768.3387 2.54971866207E7 6672759.0098 2.54969922149E7</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>
+                  summary: Detailed description of fields returned as response
+                  description: "\n            Example 09100399030101 is part of Espa,\
+                    \ esplanade and urban park in downtown Helsinki.\n           \
+                    \ Group 9903 indicates a public space, a park.\n            \n\
+                    \            Fields:\n            * datanomistaja: Owner of this\
+                    \ data in City of Helsinki\n            * id: Database unique\
+                    \ id\n            * gml_id: Database unique id in GML (ISO 19136:2007)\n\
+                    \            * kiinteistotunnus: zero padded 14 digit (3-3-4-4)\
+                    \ representation of field 'kiinteisto'\n            * kiinteisto:\
+                    \ dash-separated value of kunta-sijaintialue-ryhma-yksikko\n \
+                    \           * kunta: Number from list https://tilastokeskus.fi/fi/luokitukset/kunta/\n\
+                    \            * sijaintialue: region\n            * ryhma: group\
+                    \ in region or if public space, following type codes are used:\n\
+                    \              * 9901 Streets\n              * 9902 Marketplaces\
+                    \ and squares\n              * 9903 Parks\n              * 9904\
+                    \ Sports\n              * 9905 Recreational areas\n          \
+                    \    * 9906 Traffic\n              * 9907 Danger\n           \
+                    \   * 9908 Special and preserved areas\n              * 9909 Water\n\
+                    \            * yksikko: unit in group\n            * luontipvm:\
+                    \ Database data creation date\n            * muokkauspvm\": Database\
+                    \ data modification date\n            * paivitetty_tietopalveluun\"\
+                    : Database read date\n            * \"rekisterointipvm\": Data\
+                    \ creation date (earliest 1st Jan 1800)\n            * geom: String,\
+                    \ GML representation of the geographical area for this data\n\
+                    \            "
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
           description: ''
     post:
-      operationId: kaavapino_v1_kiinteistotunnus_create
+      operationId: geoserver_v1_kiinteistotunnus_create
       description: ''
       parameters:
       - in: path
@@ -83,11 +164,9 @@ paths:
         description: Kiinteistötunnus to get data for
         required: true
       tags:
-      - kaavapino
+      - geoserver
       security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -96,9 +175,9 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/kaavapino/v1/maarekisterikiinteisto/{id}:
+  /api/geoserver/v1/maarekisterikiinteisto/{id}:
     get:
-      operationId: kaavapino_v1_maarekisterikiinteisto_retrieve
+      operationId: geoserver_v1_maarekisterikiinteisto_retrieve
       description: ''
       parameters:
       - in: path
@@ -108,11 +187,9 @@ paths:
         description: Kiinteistötunnus to get data for
         required: true
       tags:
-      - kaavapino
+      - geoserver
       security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -121,9 +198,9 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/kaavapino/v1/rakennuskieltoalue_asemakaava/{id}:
+  /api/geoserver/v1/neighbourhood/{id}:
     get:
-      operationId: kaavapino_v1_rakennuskieltoalue_asemakaava_retrieve
+      operationId: geoserver_v1_neighbourhood_retrieve
       description: ''
       parameters:
       - in: path
@@ -133,11 +210,9 @@ paths:
         description: Kiinteistötunnus to get data for
         required: true
       tags:
-      - kaavapino
+      - geoserver
       security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -146,9 +221,9 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/kaavapino/v1/rakennuskieltoalue_yleiskaava/{id}:
+  /api/geoserver/v1/rakennuskieltoalue_asemakaava/{id}:
     get:
-      operationId: kaavapino_v1_rakennuskieltoalue_yleiskaava_retrieve
+      operationId: geoserver_v1_rakennuskieltoalue_asemakaava_retrieve
       description: ''
       parameters:
       - in: path
@@ -158,11 +233,9 @@ paths:
         description: Kiinteistötunnus to get data for
         required: true
       tags:
-      - kaavapino
+      - geoserver
       security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -171,9 +244,9 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/kaavapino/v1/tontti/{id}:
+  /api/geoserver/v1/rakennuskieltoalue_yleiskaava/{id}:
     get:
-      operationId: kaavapino_v1_tontti_retrieve
+      operationId: geoserver_v1_rakennuskieltoalue_yleiskaava_retrieve
       description: ''
       parameters:
       - in: path
@@ -183,13 +256,55 @@ paths:
         description: Kiinteistötunnus to get data for
         required: true
       tags:
-      - kaavapino
+      - geoserver
       security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
+      - tokenAuth: []
       responses:
         '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/geoserver/v1/tontti/{id}:
+    get:
+      operationId: geoserver_v1_tontti_retrieve
+      description: ''
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: Kiinteistötunnus to get data for
+        required: true
+      tags:
+      - geoserver
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/kaavapino/heartbeat:
+    get:
+      operationId: kaavapino_heartbeat_retrieve
+      description: Simple service is alive test
+      tags:
+      - kaavapino
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+        '500':
           content:
             application/json:
               schema:
@@ -316,8 +431,7 @@ paths:
       tags:
       - schema
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -340,11 +454,71 @@ paths:
                 additionalProperties: {}
           description: ''
 components:
+  schemas:
+    KiinteistoV1:
+      type: object
+      properties:
+        datanomistaja:
+          type: string
+          maxLength: 40
+        id:
+          type: integer
+        kiinteisto:
+          type: string
+          maxLength: 24
+        kiinteistotunnus:
+          type: string
+          maxLength: 20
+        kunta:
+          type: string
+          maxLength: 3
+          minLength: 3
+        luontipvm:
+          type: string
+          format: date
+        muokkauspvm:
+          type: string
+          format: date
+        paivitetty_tietopalveluun:
+          type: string
+          format: date
+        rekisterointipvm:
+          type: string
+          format: date
+        ryhma:
+          type: string
+          maxLength: 4
+          minLength: 4
+        sijaintialue:
+          type: string
+          maxLength: 3
+          minLength: 3
+        yksikko:
+          type: string
+          maxLength: 4
+          minLength: 4
+        gml_id:
+          type: string
+          maxLength: 80
+        geom:
+          type: string
+      required:
+      - datanomistaja
+      - geom
+      - id
+      - kiinteisto
+      - kiinteistotunnus
+      - kunta
+      - luontipvm
+      - muokkauspvm
+      - paivitetty_tietopalveluun
+      - rekisterointipvm
+      - ryhma
+      - sijaintialue
+      - yksikko
   securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
-    cookieAuth:
+    tokenAuth:
       type: apiKey
-      in: cookie
-      name: Session
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"

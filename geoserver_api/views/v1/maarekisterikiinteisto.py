@@ -1,9 +1,12 @@
 from rest_framework.views import APIView  # pip install django-rest-framework
 from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest, \
-    HttpResponseNotFound, HttpResponseForbidden
+    HttpResponseNotFound, HttpResponseForbidden, HttpResponseServerError
+from drf_spectacular.openapi import AutoSchema
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.types import OpenApiTypes
 import logging
 import lxml.etree as etree
-from kaavapino_api import hki_geoserver
+from geoserver_api import hki_geoserver
 
 log = logging.getLogger(__name__)
 
@@ -22,16 +25,16 @@ class API(APIView):
 
         # Confirmed access to GeoServer.
         # Go get the data!
-        t = hki_geoserver.Tontti(username=geoserver_creds.username,
-                                  password=geoserver_creds.credential)
-        t_data = t.get(id)
-        if not t_data:
+        mr = hki_geoserver.Maarekisterikiinteisto(username=geoserver_creds.username,
+                                            password=geoserver_creds.credential)
+        mr_data = mr.get(id)
+        if not mr_data:
             log.error("%s not found!" % id)
             return HttpResponseNotFound()
 
-        geom_str = etree.tostring(t_data['geom'].element,
+        geom_str = etree.tostring(mr_data['geom'].element,
                                   encoding='ascii', method='xml',
                                   xml_declaration=False).decode('ascii')
-        t_data['geom'] = geom_str
+        mr_data['geom'] = geom_str
 
-        return JsonResponse(t_data)
+        return JsonResponse(mr_data)
