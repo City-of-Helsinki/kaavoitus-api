@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  title: Helsingin Kaupunki - Kaavapino - GeoServer API
+  title: Helsingin Kaupunki - Kaavapino - API
   version: 1.0.0
-  description: GeoServer API
+  description: Kaavapino API for planning data
 paths:
   /api/facta/heartbeat:
     get:
@@ -152,28 +152,6 @@ paths:
             application/json:
               schema:
                 type: string
-          description: ''
-    post:
-      operationId: geoserver_v1_kiinteistotunnus_create
-      description: ''
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-        description: Kiinteistötunnus to get data for
-        required: true
-      tags:
-      - geoserver
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
           description: ''
   /api/geoserver/v1/maarekisterikiinteisto/{id}:
     get:

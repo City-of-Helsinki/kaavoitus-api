@@ -171,16 +171,6 @@ SPECTACULAR_SETTINGS = {
     'SWAGGER_UI_FAVICON_HREF': '//unpkg.com/swagger-ui-dist@3.35.1/favicon-32x32.png',
 
     # Append OpenAPI objects to path and components in addition to the generated objects
-    """
-    'APPEND_PATHS': {
-        '/api/kaavapino/kiinteistotunnus': {
-            'get': {
-                'description': 'Kiinteistön tiedot kiinteistötunnuksella',
-                'operationId': 'getKiinteistoById',
-            }
-        }
-    },
-    """
     'APPEND_PATHS': {},
     'APPEND_COMPONENTS': {},
 
@@ -220,8 +210,8 @@ SPECTACULAR_SETTINGS = {
 
     # General schema metadata. Refer to spec for valid inputs
     # https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#openapi-object
-    'TITLE': 'Helsingin Kaupunki - Kaavapino - GeoServer API',
-    'DESCRIPTION': 'GeoServer API',
+    'TITLE': 'Helsingin Kaupunki - Kaavapino - API',
+    'DESCRIPTION': 'Kaavapino API for planning data',
     'TOS': None,
     # Optional: MAY contain "name", "url", "email"
     'CONTACT': {},

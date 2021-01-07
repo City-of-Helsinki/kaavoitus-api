@@ -16,7 +16,7 @@ class API(APIView):
     #serializer_class = KiinteistoSerializer
 
     allowed_methods = [
-        'get', 'post'  # , 'put', 'delete'
+        'get', #'post'  # , 'put', 'delete'
     ]
     schema = AutoSchema(
 
