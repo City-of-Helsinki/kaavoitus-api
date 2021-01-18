@@ -11,21 +11,50 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import os
+import environ
 from pathlib import Path
+import logging
+
+logger = logging.getLogger(__name__)
+
+CONFIG_FILE_NAME = "config_dev.env"
+
+
+root = environ.Path(__file__) - 1  # one level back in hierarchy
+env = environ.Env(
+    DEBUG=(bool, False),
+    LANGUAGES=(list, ["fi", "sv", "en"]),
+    SECRET_KEY=(str, None),
+    ALLOWED_HOSTS=(list, []),
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Django environ has a nasty habit of complanining at level
+# WARN about env file not being preset. Here we pre-empt it.
+env_file_path = os.path.join(BASE_DIR, CONFIG_FILE_NAME)
+if os.path.exists(env_file_path):
+    # Logging configuration is not available at this point
+    print(f"Reading config from {env_file_path}")
+    environ.Env.read_env(env_file_path)
+
+DEBUG = env("DEBUG")
+ALLOWED_HOSTS = env("ALLOWED_HOSTS")
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ')f21grbs-6r@_ugh4t(c8)(wowb49#%j@&za%k&=0cq%=jrn*^'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+# If a secret key was not supplied elsewhere, generate a random one and log
+# a warning (note that logging is not configured yet). This means that any
+# functionality expecting SECRET_KEY to stay same will break upon restart.
+# Should not be a problem for development.
+if "SECRET_KEY" not in locals():
+    logger.warning("SECRET_KEY was not defined in configuration. Generating an ephemeral key.")
+    import random
+    system_random = random.SystemRandom()
+    SECRET_KEY = ''.join([system_random.choice('abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)')
+                          for i in range(64)])
 
 # Application definition
 
