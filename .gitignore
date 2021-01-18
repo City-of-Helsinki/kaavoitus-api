@@ -1,3 +1,5 @@
+*.swp
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -134,5 +136,6 @@ dmypy.json
 .idea/*.iws
 .idea/workspace.xml
 .idea/tasks.xml
+.idea/codeStyles/
 # Credentials
 Waste-Google-service-account-credentials.json
