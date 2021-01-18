@@ -8,7 +8,7 @@ urlpatterns = [
          views.heartbeat.API.as_view(),
          name='heartbeat'),
     re_path(
-        r'^v(?P<version>(1))/asemakaava_voimassa/(?P<id>[^/]*)',
+        r'^v(?P<version>(1))/asemakaava/(?P<id>[^/]*)',
         views.asemakaava_voimassa.API.as_view(),
         name='asemakaava-voimassa'
     ),
@@ -23,12 +23,12 @@ urlpatterns = [
         name='maarekisterikiinteisto'
     ),
     re_path(
-        r'^v(?P<version>(1))/rakennuskieltoalue_asemakaava/(?P<id>[^/]*)',
+        r'^v(?P<version>(1))/rakennuskieltoalue/asemakaava/(?P<id>[^/]*)',
         views.rakennuskieltoalue_asemakaava.API.as_view(),
         name='rakennuskieltoalue_asemakaava'
     ),
     re_path(
-        r'^v(?P<version>(1))/rakennuskieltoalue_yleiskaava/(?P<id>[^/]*)',
+        r'^v(?P<version>(1))/rakennuskieltoalue/yleiskaava/(?P<id>[^/]*)',
         views.rakennuskieltoalue_yleiskaava.API.as_view(),
         name='rakennuskieltoalue_yleiskaava'
     ),
