@@ -11,4 +11,14 @@ urlpatterns = [
         views.project.API.as_view(),
         name='project'
     ),
+    re_path(
+        r'^v(?P<version>(1))/project/changes',
+        views.project_change.API.as_view(),
+        name='changes'
+    ),
+    re_path(
+        r'^v(?P<version>(1))/project/(?P<pinonro>[^/]*)/trigger-change',
+        views.project_trigger_change.API.as_view(),
+        name='changes'
+    ),
 ]
