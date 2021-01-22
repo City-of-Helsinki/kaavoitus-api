@@ -13,9 +13,9 @@ log = logging.getLogger(__name__)
 
 class API(APIView):
 
-    def get(self, request, kiinteistotunnus=None):
-        if not kiinteistotunnus:
-            return HttpResponseBadRequest("Need kiinteistotunnus!")
+    def get(self, request, kaavatunnus=None):
+        if not kaavatunnus:
+            return HttpResponseBadRequest("Need kaavatunnus!")
 
         if not request.auth:
             return HttpResponse(status=401)
@@ -25,16 +25,19 @@ class API(APIView):
 
         # Confirmed access to GeoServer.
         # Go get the data!
-        mr = hki_geoserver.Maarekisterikiinteisto(username=geoserver_creds.username,
+        ak = hki_geoserver.Asemakaava(username=geoserver_creds.username,
                                             password=geoserver_creds.credential)
-        mr_data = mr.get(kiinteistotunnus)
-        if not mr_data:
-            log.error("%s not found!" % kiinteistotunnus)
+        ak_data = ak.get(kaavatunnus)
+        if not ak_data:
+            log.error("%s not found!" % kaavatunnus)
             return HttpResponseNotFound()
 
-        geom_str = etree.tostring(mr_data['geom'].element,
+        log.debug("Kaavatunnus: %s" % (ak_data['kaavatunnus']))
+        # Convert part of XML-tree from objects to str to be returned as JSON.
+        geom_str = etree.tostring(ak_data['geom'].element,
                                   encoding='ascii', method='xml',
                                   xml_declaration=False).decode('ascii')
-        mr_data['geom'] = geom_str
+        ak_data['geom'] = geom_str
 
-        return JsonResponse(mr_data)
+        return JsonResponse(ak_data)
+

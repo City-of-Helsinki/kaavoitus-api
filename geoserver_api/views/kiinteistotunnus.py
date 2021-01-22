@@ -30,7 +30,7 @@ class API(APIView):
         },
         parameters=[
             OpenApiParameter(
-                name='id',
+                name='kiinteistotunnus',
                 type=str,
                 location=OpenApiParameter.PATH,
                 description='Kiinteistötunnus to get data for',
@@ -79,7 +79,7 @@ class API(APIView):
         parameters=[
             # POST (create) doesn't even have this parameter, but it needs to be documented?
             OpenApiParameter(
-                name='id',
+                name='kiinteistotunnus',
                 type=str,
                 location=OpenApiParameter.PATH,
                 description='Kiinteistötunnus to get data for',

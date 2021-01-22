@@ -15,9 +15,9 @@ log = logging.getLogger(__name__)
 class API(APIView):
     serializer_class = KiinteistoV1Serializer
 
-    def get(self, request, id=None):
-        if not id:
-            return HttpResponseBadRequest("Need id!")
+    def get(self, request, kiinteistotunnus=None):
+        if not kiinteistotunnus:
+            return HttpResponseBadRequest("Need kiinteistotunnus!")
 
         if not request.auth:
             return HttpResponse(status=401)
@@ -28,9 +28,9 @@ class API(APIView):
         # Confirmed access to GeoServer.
         # Go get the data!
         kt = Kiinteistotunnus(username=geoserver_creds.username, password=geoserver_creds.credential)
-        kt_data = kt.get(id)
+        kt_data = kt.get(kiinteistotunnus)
         if not kt_data:
-            log.error("%s not found!" % id)
+            log.error("%s not found!" % kiinteistotunnus)
             return HttpResponseNotFound()
 
         log.info("Kiinteistötunnus: %s" % (kt_data['kiinteisto']))

@@ -25,16 +25,20 @@ class API(APIView):
 
         # Confirmed access to GeoServer.
         # Go get the data!
-        mr = hki_geoserver.Maarekisterikiinteisto(username=geoserver_creds.username,
+        kt = hki_geoserver.Kiinteistotunnus(username=geoserver_creds.username,
                                             password=geoserver_creds.credential)
-        mr_data = mr.get(kiinteistotunnus)
-        if not mr_data:
+        kt_data = kt.get(kiinteistotunnus)
+        if not kt_data:
             log.error("%s not found!" % kiinteistotunnus)
             return HttpResponseNotFound()
 
-        geom_str = etree.tostring(mr_data['geom'].element,
-                                  encoding='ascii', method='xml',
-                                  xml_declaration=False).decode('ascii')
-        mr_data['geom'] = geom_str
+        ya = hki_geoserver.Ymparistoalue(username=geoserver_creds.username,
+                                                password=geoserver_creds.credential)
+        ya_data = ya.get(kt_data['geom'])
+        if not ya_data:
+            log.warning("%s not found by geom!" % kiinteistotunnus)
+            return JsonResponse({})
 
-        return JsonResponse(mr_data)
+        del ya_data['geom']
+
+        return JsonResponse(ya_data)

@@ -23,7 +23,7 @@ class API(APIView):
                 name='id',
                 type=str,
                 location=OpenApiParameter.PATH,
-                description='Kiinteistötunnus to get data for',
+                description='Experimental query for neighbours, kiinteistötunnus to get data for',
 
             ),
         ],

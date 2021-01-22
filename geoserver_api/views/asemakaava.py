@@ -5,7 +5,7 @@ from drf_spectacular.openapi import AutoSchema
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from common_auth.authentication import TokenAuthentication
-from .v1.tontti import API as APIv1
+from .v1.asemakaava import API as APIv1
 
 
 class API(APIView):
@@ -20,10 +20,10 @@ class API(APIView):
         responses={200: OpenApiTypes.OBJECT},
         parameters=[
             OpenApiParameter(
-                name='kiinteistotunnus',
+                name='kaavatunnus',
                 type=str,
                 location=OpenApiParameter.PATH,
-                description='Kiinteistötunnus to get data for',
+                description='Kaavanumero to get data for',
 
             ),
         ],

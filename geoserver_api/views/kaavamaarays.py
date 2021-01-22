@@ -5,7 +5,7 @@ from drf_spectacular.openapi import AutoSchema
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from common_auth.authentication import TokenAuthentication
-from .v1.tontti import API as APIv1
+from .v1.kaavamaarays import API as APIv1
 
 
 class API(APIView):

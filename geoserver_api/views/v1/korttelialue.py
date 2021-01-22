@@ -6,16 +6,16 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 import logging
 import lxml.etree as etree
-from geoserver_api import hki_geoserver
+from geoserver_api.hki_geoserver.korttelialue import Korttelialue
 
 log = logging.getLogger(__name__)
 
 
 class API(APIView):
 
-    def get(self, request, kiinteistotunnus=None):
-        if not kiinteistotunnus:
-            return HttpResponseBadRequest("Need kiinteistotunnus!")
+    def get(self, request, korttelinnumero=None):
+        if not korttelinnumero:
+            return HttpResponseBadRequest("Need korttelinnumero!")
 
         if not request.auth:
             return HttpResponse(status=401)
@@ -25,16 +25,17 @@ class API(APIView):
 
         # Confirmed access to GeoServer.
         # Go get the data!
-        mr = hki_geoserver.Maarekisterikiinteisto(username=geoserver_creds.username,
-                                            password=geoserver_creds.credential)
-        mr_data = mr.get(kiinteistotunnus)
-        if not mr_data:
-            log.error("%s not found!" % kiinteistotunnus)
+        ka = Korttelialue(username=geoserver_creds.username, password=geoserver_creds.credential)
+        ka_data = ka.get(korttelinnumero)
+        if not ka_data:
+            log.error("%s not found!" % korttelinnumero)
             return HttpResponseNotFound()
 
-        geom_str = etree.tostring(mr_data['geom'].element,
+        log.debug("Korttelinnumero: %s" % (ka_data['korttelinnumero']))
+        # Convert part of XML-tree from objects to str to be returned as JSON.
+        geom_str = etree.tostring(ka_data['geom'].element,
                                   encoding='ascii', method='xml',
                                   xml_declaration=False).decode('ascii')
-        mr_data['geom'] = geom_str
+        ka_data['geom'] = geom_str
 
-        return JsonResponse(mr_data)
+        return JsonResponse(ka_data)

@@ -101,6 +101,7 @@ class GeoServer_Reader:
         )
 
         ts = None
+        srs = None
         returned = 0
         kdata_out = []
         kdata = None
@@ -131,7 +132,9 @@ class GeoServer_Reader:
                     elif tag == 'Polygon':
                         kdata[GeoServer_Reader.GML_ID] = elem.get('{http://www.opengis.net/gml/3.2}id')
                         new_elem = copy.copy(elem)
-                        new_elem.attrib['srsName'] = srs
+                        # Note: Most Polygons don't have srsName, some do.
+                        if 'srsName' not in new_elem.attrib:
+                            new_elem.attrib['srsName'] = srs
                         del new_elem.attrib['{http://www.opengis.net/gml/3.2}id']
                         gml_location = location.GmlObject(new_elem)
                         kdata[GeoServer_Reader.GML_GEOM] = gml_location
