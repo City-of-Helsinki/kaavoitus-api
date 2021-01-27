@@ -2,7 +2,8 @@ from .heartbeat import API
 from .asemakaava import API
 from .asemakaava_voimassa import API
 from .kaavamaarays import API
-from .kiinteistotunnus import API
+from .kiinteisto import API
+from .kiinteisto_all import API
 from .maarekisterikiinteisto import API
 from .rakennuskieltoalue_asemakaava import API
 from .rakennuskieltoalue_yleiskaava import API

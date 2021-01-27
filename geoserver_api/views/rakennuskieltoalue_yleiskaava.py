@@ -6,6 +6,7 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from common_auth.authentication import TokenAuthentication
 from .v1.rakennuskieltoalue_yleiskaava import API as APIv1
+from .serializers.v1.rakennuskieltov1serializer import RakennuskieltoV1Serializer
 
 
 class API(APIView):
@@ -17,7 +18,11 @@ class API(APIView):
     ]
 
     @extend_schema(
-        responses={200: OpenApiTypes.OBJECT},
+        responses={
+            200: RakennuskieltoV1Serializer,
+            401: OpenApiTypes.STR,
+            500: OpenApiTypes.STR,
+        },
         parameters=[
             OpenApiParameter(
                 name='kiinteistotunnus',

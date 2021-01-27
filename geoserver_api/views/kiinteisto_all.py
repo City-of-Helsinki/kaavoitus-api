@@ -5,21 +5,24 @@ from drf_spectacular.openapi import AutoSchema
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from common_auth.authentication import TokenAuthentication
-from .v1.rakennuskieltoalue_asemakaava import API as APIv1
-from .serializers.v1.rakennuskieltov1serializer import RakennuskieltoV1Serializer
+from .v1.kiinteisto_all import API as APIv1
+from .serializers.v1 import KiinteistoAllV1Serializer
 
 
 class API(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
-    schema = AutoSchema()
+
     allowed_methods = [
-        'get',  # 'post', 'put', 'delete'
+        'get',
     ]
+    schema = AutoSchema(
+
+    )
 
     @extend_schema(
         responses={
-            200: RakennuskieltoV1Serializer,
+            200: KiinteistoAllV1Serializer,
             401: OpenApiTypes.STR,
             500: OpenApiTypes.STR,
         },
@@ -28,10 +31,20 @@ class API(APIView):
                 name='kiinteistotunnus',
                 type=str,
                 location=OpenApiParameter.PATH,
-                description='Kiinteistötunnus to get data for',
+                description='Kiinteistötunnus to get all Kaavapino data for',
 
             ),
         ],
+        # override default docstring extraction
+        description='Hae kiinteistön Kaavapino data kiinteistötunnuksella',
+        # provide Authentication class that deviates from the views default
+        #auth=None,
+        # change the auto-generated operation name
+        #operation_id=None,
+        # or even completely override what AutoSchema would generate. Provide raw Open API spec as Dict.
+        #operation=None,
+        # attach request/response examples to the operation.
+
     )
     def get(self, request, *args, **kwargs):
         if not request.version:

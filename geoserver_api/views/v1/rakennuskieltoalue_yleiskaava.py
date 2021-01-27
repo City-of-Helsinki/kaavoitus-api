@@ -7,11 +7,14 @@ from drf_spectacular.types import OpenApiTypes
 import logging
 import lxml.etree as etree
 from geoserver_api import hki_geoserver
+from ..serializers.v1.rakennuskieltov1serializer import RakennuskieltoV1Serializer
+
 
 log = logging.getLogger(__name__)
 
 
 class API(APIView):
+    serializer_class = RakennuskieltoV1Serializer
 
     def get(self, request, kiinteistotunnus=None):
         if not kiinteistotunnus:
@@ -40,5 +43,12 @@ class API(APIView):
             return JsonResponse({})
 
         del rkay_data['geom']
+
+        # Go validate the returned data.
+        # It needs to be verifiable by serializer rules. Those are published in Swagger.
+        serializer = self.serializer_class(data=rkay_data)
+        if not serializer.is_valid():
+            log.error("Invalid WMF-data: %s" % serializer.errors)
+            return HttpResponseServerError("Invalid data received from WFS!")
 
         return JsonResponse(rkay_data)

@@ -5,7 +5,7 @@ from drf_spectacular.openapi import AutoSchema
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from common_auth.authentication import TokenAuthentication
-from .v1.kiinteistotunnus import API as APIv1
+from .v1.kiinteisto import API as APIv1
 from .v2.kiinteistotunnus import API as APIv2
 from .serializers.v1 import KiinteistoV1Serializer
 
