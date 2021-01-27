@@ -14,11 +14,15 @@ setup(
     author='Helsingin Kaupunki',
     author_email='',
     description='Kaavoitus API',
-    requires=[
+    install_requires=[
         'django',
         'django-environ',
         'djangorestframework',
+        'django-extensions',
+        'drf_spectacular',
         'owslib',
+        'lxml',
+        'pydov',
         'cx_Oracle',
     ]
 )
