@@ -10,6 +10,7 @@ class ExtAuthCred(models.Model):
     cred_owner = models.CharField(_("CredOwner"), max_length=20)
     username = models.CharField(_("Username"), max_length=40)
     credential = models.CharField(_("Credential"), max_length=80)
+    host_spec = models.CharField(_("HostSpec"), max_length=250, blank=True)
 
     class Meta:
         # Work around for a bug in Django:

@@ -19,5 +19,6 @@ setup(
         'django-environ',
         'djangorestframework',
         'owslib',
+        'cx_Oracle',
     ]
 )

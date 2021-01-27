@@ -1,0 +1,1 @@
+from .kiinteiston_omistajat import KiinteistonOmistajat

@@ -1,0 +1,1 @@
+from .kiinteistonomistajatv1serializser import KiinteistonOmistajatV1Serializer
