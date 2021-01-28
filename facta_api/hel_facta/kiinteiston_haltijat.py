@@ -5,8 +5,8 @@ from .abstract import Facta
 log = logging.getLogger(__name__)
 
 
-class KiinteistonOmistajat(Facta):
-    table_name = "MV_KIINTEISTON_OMISTAJAT"
+class KiinteistonHaltijat(Facta):
+    table_name = "MV_KIINTEISTON_HALTIJAT"
 
     def get_by_kiinteistotunnus(self, kiinteistotunnus):
         # Note:
@@ -16,10 +16,17 @@ select
     KG_KKIINT,
     KG_KHALLYKS,
     KIINTEISTOTUNNUS,
-    MAARAALATUNNUS,
+    HALLINTAYKSIKKO,
     C_KUNTA, C_SIJAINTI, C_RYHMA, C_YKSIKKO,
     C_HALLKIRJ,
     C_HALLTUNN,
+    C_VUOLOPVM,
+    C_VSOPNRO,
+    C_ALKIRPVM,
+    C_VUOALPVM,
+    C_VSIIRPVM,
+    C_VUOKRAMK,
+    C_MYYHINTA,
     C_SUKUNIMI,
     C_ETUNIMET,
     C_LAHIOSOITE,
@@ -29,28 +36,18 @@ select
     C_LYTUNN,
     C_KOTIKUNT,
     C_ONKO_KUOLLUT,
-    C_LAINHPVM,
-    C_PYKALA,
-    C_SAANTPVM,
-    C_OSUUS,
-    I_JARJNRO,
     C_YHTTIED1,
-    C_RATKAISU,
-    C_RATKAISUPVM,
     POSTITMP_FIN,
     POSTITMP_SWE,
     C_ONKO_ASIAMIES,
-    C_SAANTOSELITYS,
-    C_SAALAATU,
-    C_ASIANUMERO,
-    C_ASIANLAATU,
+    C_VUOKRATUNN,
     C_SIJKUNTA,
     C_ONKO_ULKOMAINEN_OSOITE,
     C_ULKOMAINEN_OSOITE1,
     C_ULKOMAINEN_OSOITE2,
     C_ULKOMAINEN_OSOITE_MAA
 FROM
-    MV_KIINTEISTON_OMISTAJAT
+    MV_KIINTEISTON_HALTIJAT
 WHERE
     KIINTEISTOTUNNUS = :kiinteistotunnus
 """

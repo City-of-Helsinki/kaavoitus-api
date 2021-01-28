@@ -6,7 +6,7 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 import logging
 import lxml.etree as etree
-from ..serializers.v1 import KiinteistonOmistajatV1Serializer, KiinteistonOmistajaV1Serializer, KiinteistoAddressV1Serializer
+from ..serializers.v1 import KiinteistonHaltijatV1Serializer
 from facta_api import hel_facta
 from .kiinteisto import KiinteistoAPI
 
@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 
 
 class API(KiinteistoAPI):
-    serializer_class = KiinteistonOmistajatV1Serializer
+    serializer_class = KiinteistonHaltijatV1Serializer
 
     def get(self, request, kiinteistotunnus=None):
         if not kiinteistotunnus:
@@ -31,47 +31,34 @@ class API(KiinteistoAPI):
 
         # Confirmed access to Facta Oracle SQL.
         # Go get the data!
-        f_ko = hel_facta.KiinteistonOmistajat(facta_creds.username,
+        f_kh = hel_facta.KiinteistonHaltijat(facta_creds.username,
                                               facta_creds.credential,
                                               facta_creds.host_spec)
-        rows = f_ko.get_by_kiinteistotunnus(ktunnus_to_use)
+        rows = f_kh.get_by_kiinteistotunnus(ktunnus_to_use)
         if not rows:
             return HttpResponseNotFound()
 
         # Process result:
-        owner_rows = []
+        occupant_rows = []
         for row in rows:
             if False:
                 for i in range(len(row)):
                     log.debug("%d: %s" % (i, str(row[i])))
                 log.debug("Laji: %s" % row[14])
 
-            # KiinteistonOmistajaV1Serializer.OWNER_TYPES
-            if row[14] == '10': # C_LAJI
-                # Helsinki
-                owner_type = 'H'
-            elif row[14] in ['8', '11']: # C_LAJI
-                # Govt. of Finland
-                owner_type = 'F'
-            else:
-                # Private
-                owner_type = 'P'
-
-            owner = {
+            occupant = {
                 'kiinteistotunnus': row[2], # KIINTEISTOTUNNUS
-                'address': self._extract_omistaja_address(row),
-                'owner_home_municipality': row[17], # C_KOTIKUNT
-                'land_owner_type': owner_type
+                'address': self._extract_haltija_address(row),
             }
-            owner_rows.append(owner)
-        ko_data = {
+            occupant_rows.append(occupant)
+        kh_data = {
             'kiinteistotunnus': ktunnus_to_use,
-            'omistajat': owner_rows
+            'haltijat': occupant_rows
         }
 
         # Go validate the returned data.
         # It needs to be verifiable by serializer rules. Those are published in Swagger.
-        serializer = self.serializer_class(data=ko_data)
+        serializer = self.serializer_class(data=kh_data)
         if not serializer.is_valid():
             log.error("Errors: %s" % str(serializer.errors))
 
