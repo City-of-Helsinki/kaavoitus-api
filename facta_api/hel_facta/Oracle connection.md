@@ -39,6 +39,16 @@ Command:
 C:\Program Files (x86)\Ora32\client_1\BIN\sqlplus.exe KP-user@FACTA
 ```
 
+## Facta DB mocking
+For development running a mocked Oracle SQL can be done.
+
+Environment setting file `config_dev.env` can be used to enable this behaviour.
+
+Example, don't try to connect to Oracle SQL, use pre-loaded data from directory `mock-data/`:
+```
+FACTA_DB_MOCK_DATA_DIR='mock-data/'
+```
+
 ## Table schema
 
 SQL to query for table schema:

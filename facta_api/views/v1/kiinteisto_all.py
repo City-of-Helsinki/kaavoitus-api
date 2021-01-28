@@ -6,6 +6,7 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 import logging
 import lxml.etree as etree
+from django.conf import settings
 from ..serializers.v1 import KiinteistonDataV1Serializer
 from facta_api import hel_facta
 from .kiinteisto import KiinteistoAPI
@@ -30,10 +31,15 @@ class API(KiinteistoAPI):
             return HttpResponseForbidden("No access!")
 
         # Confirmed access to Facta Oracle SQL.
+        # Mocking?
+        mock_dir = settings.FACTA_DB_MOCK_DATA_DIR
         # Go get the data!
-        f_ko = hel_facta.KiinteistonOmistajat(facta_creds.username,
-                                              facta_creds.credential,
-                                              facta_creds.host_spec)
+        if mock_dir:
+            f_ko = hel_facta.KiinteistonOmistajat(mock_data_dir=mock_dir)
+        else:
+            f_ko = hel_facta.KiinteistonOmistajat(user=facta_creds.username,
+                                                  password=facta_creds.credential,
+                                                  host=facta_creds.host_spec)
         rows = f_ko.get_by_kiinteistotunnus(ktunnus_to_use)
         if not rows:
             return HttpResponseNotFound()
@@ -58,13 +64,16 @@ class API(KiinteistoAPI):
                     'kiinteistotunnus': row[2], # KIINTEISTOTUNNUS
                     'address': self._extract_omistaja_address(row),
                     'owner_home_municipality': row[17], # C_KOTIKUNT
-                    'land_owner_type': owner_type
+                    'property_owner_type': owner_type
                 }
                 owner_rows.append(owner)
 
-        f_kh = hel_facta.KiinteistonHaltijat(facta_creds.username,
-                                              facta_creds.credential,
-                                              facta_creds.host_spec)
+        if mock_dir:
+            f_kh = hel_facta.KiinteistonHaltijat(mock_data_dir=mock_dir)
+        else:
+            f_kh = hel_facta.KiinteistonHaltijat(user=facta_creds.username,
+                                                  password=facta_creds.credential,
+                                                  host=facta_creds.host_spec)
         rows = f_kh.get_by_kiinteistotunnus(ktunnus_to_use)
 
         # Process result:

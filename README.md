@@ -8,6 +8,27 @@ between three planning applications:
 * GeoServer
   * https://kartta.hel.fi/avoindata/
 
+## Logging
+By default, logging will be done to console on level 'WARNING'.
+
+Environment setting file `config_dev.env` can be used to change this.
+
+Example, set log level to debug:
+```
+LOG_LEVEL=DEBUG
+```
+
+## Facta DB mocking
+For development running a mocked Oracle SQL can be done.
+
+Environment setting file `config_dev.env` can be used to enable this behaviour.
+
+Example, don't try to connect to Oracle SQL, use pre-loaded data from directory `mock-data/`:
+```
+FACTA_DB_MOCK_DATA_DIR='mock-data/'
+```
+
+
 ## Authentication
 Only API-key is supported.
 

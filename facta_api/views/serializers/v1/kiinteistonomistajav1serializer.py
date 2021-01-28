@@ -19,4 +19,4 @@ class KiinteistonOmistajaV1Serializer(serializers.Serializer):
     address = KiinteistoAddressV1Serializer()
     owner_home_municipality = serializers.CharField(max_length=3)
 
-    land_owner_type = serializers.ChoiceField(choices=[(type, desc) for type, desc in OWNER_TYPES.items()])
+    property_owner_type = serializers.ChoiceField(choices=[(type, desc) for type, desc in OWNER_TYPES.items()])

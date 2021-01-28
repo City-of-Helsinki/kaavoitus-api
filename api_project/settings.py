@@ -26,6 +26,8 @@ env = environ.Env(
     LANGUAGES=(list, ["fi", "sv", "en"]),
     SECRET_KEY=(str, None),
     ALLOWED_HOSTS=(list, []),
+    LOG_LEVEL=(str, 'WARNING'),
+    FACTA_DB_MOCK_DATA_DIR=(str, None),
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -263,3 +265,19 @@ SPECTACULAR_SETTINGS = {
     'OAUTH2_REFRESH_URL': None,
     'OAUTH2_SCOPES': None,
 }
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': env("LOG_LEVEL"),
+    },
+}
+
+FACTA_DB_MOCK_DATA_DIR = env("FACTA_DB_MOCK_DATA_DIR")
