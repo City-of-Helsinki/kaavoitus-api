@@ -114,7 +114,8 @@ class GeoServer_Reader:
                     returned = int(elem.get('numberReturned'))
                     if limit_results_to and returned > limit_results_to:
                         log.error("Argh! Too much data.")
-                        raise ValueError("Too much data. Faulty filter!")
+                        raise ValueError("Too much data. Faulty filter! Expecting less than %d, but got %d." %
+                                         (limit_results_to, returned))
                 elif elem.tag == '{http://www.opengis.net/wfs/2.0}member':
                     kdata = {field: None for field in fields}
                     srs = None
