@@ -34,6 +34,16 @@ FACTA  =
 Docs for `TNSNAMES.ORA` are at: https://docs.oracle.com/cd/B28359_01/network.111/b28317/tnsnames.htm
 
 ## Test connection
+### With Python
+```bash
+$ python -c 'import cx_Oracle; cx_Oracle.clientversion()' ; echo $?
+```
+Must output: `0`
+
+
+### With Oracle SQLplus
+Note: Need to have SQLplus installed. It is not part of libraries.
+
 Command:
 ```
 C:\Program Files (x86)\Ora32\client_1\BIN\sqlplus.exe KP-user@FACTA

@@ -24,5 +24,6 @@ setup(
         'lxml',
         'pydov',
         'cx_Oracle',
+        'gunicorn',
     ],
 )
