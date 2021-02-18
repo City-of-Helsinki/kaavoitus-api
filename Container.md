@@ -25,5 +25,5 @@ podman run -it -p 8000:8000 --env ALLOWED_HOSTS=localhost kaavoitus-api
 
 Copy DB into running container:
 ```bash
-podman cp db.sqlite3 -container-hash-here-:/kaavoitus-api/
+podman cp db.sqlite3 -container-hash-here-:/kaavoitus-api/db/
 ```

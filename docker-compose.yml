@@ -6,7 +6,7 @@ services:
     image: kaavoitus-api
     volumes:
       - ./mock-data:/kaavoitus-api/mock-data
-      - ./django-db/db.sqlite3:/kaavoitus-api/db.sqlite3:rw,consistent
+      - ./django-db/db.sqlite3:/kaavoitus-api/db/db.sqlite3:rw,consistent
     environment:
       - DEBUG=0
       - ALLOWED_HOSTS=localhost

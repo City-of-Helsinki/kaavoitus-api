@@ -45,7 +45,7 @@ spec:
         volumeMounts:
         - mountPath: "/kaavoitus-api/mock-data"
           name: mock-data
-        - mountPath: "/kaavoitus-api/db.sqlite3"
+        - mountPath: "/kaavoitus-api/db"
           name: db
         ports:
         - containerPort: 8000
