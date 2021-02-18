@@ -5,13 +5,13 @@ between three planning applications:
 
 * Kaavapino
 
-  * https://github.com/City-of-Helsinki/kaavapino/
-  * https://github.com/City-of-Helsinki/kaavapino-ui/
+  - https://github.com/City-of-Helsinki/kaavapino/
+  - https://github.com/City-of-Helsinki/kaavapino-ui/
 
 * Facta
 * GeoServer
 
-  * https://kartta.hel.fi/avoindata/
+  - https://kartta.hel.fi/avoindata/
 
 ## Logging
 
