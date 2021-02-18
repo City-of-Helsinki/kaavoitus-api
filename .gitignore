@@ -140,3 +140,5 @@ dmypy.json
 .idea/codeStyles/
 # Credentials
 Waste-Google-service-account-credentials.json
+
+mock-data

@@ -42,7 +42,7 @@ if os.path.exists(env_file_path):
     environ.Env.read_env(env_file_path)
 
 DEBUG = env("DEBUG")
-ALLOWED_HOSTS = env("ALLOWED_HOSTS")
+ALLOWED_HOSTS = env("ALLOWED_HOSTS").split(",")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
