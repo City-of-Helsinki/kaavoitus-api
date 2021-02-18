@@ -142,3 +142,5 @@ dmypy.json
 Waste-Google-service-account-credentials.json
 
 mock-data
+django-db
+
