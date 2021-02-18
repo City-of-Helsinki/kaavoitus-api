@@ -36,12 +36,17 @@ spec:
         - name: mock-data
           persistentVolumeClaim:
             claimName: mock-data
+        - name: db
+          persistentVolumeClaim:
+            claimName: db
       containers:
       - name: kaavoitus-api
         image: ${CICD_REGISTRY}/kaavoitus-api:${CICD_EXECUTION_SEQUENCE}-${CICD_GIT_COMMIT}
         volumeMounts:
         - mountPath: "/kaavoitus-api/mock-data"
           name: mock-data
+        - mountPath: "/kaavoitus-api/db.sqlite3"
+          name: db
         ports:
         - containerPort: 8000
         env:
