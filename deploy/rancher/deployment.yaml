@@ -37,12 +37,13 @@ spec:
           persistentVolumeClaim:
             claimName: mock-data
       containers:
-      - name: api
-        image: ${CICD_REGISTRY}/api:${CICD_EXECUTION_SEQUENCE}-${CICD_GIT_COMMIT}
+      - name: kaavoitus-api
+        image: ${CICD_REGISTRY}/kaavoitus-api:${CICD_EXECUTION_SEQUENCE}-${CICD_GIT_COMMIT}
         volumeMounts:
         - mountPath: "/kaavoitus-api/mock-data"
           name: mock-data
         ports:
         - containerPort: 8000
         env:
-          FACTA_DB_MOCK_DATA_DIR: mock-data/
+        - name: FACTA_DB_MOCK_DATA_DIR
+          value: mock-data/
