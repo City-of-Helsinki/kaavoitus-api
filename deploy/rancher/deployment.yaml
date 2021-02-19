@@ -30,6 +30,9 @@ spec:
       labels:
         app: kaavoitus-api
     spec:
+      securityContext:
+        runAsUser: app-user
+        fsGroup: 1000
       imagePullSecrets:
       - name: pipeline-docker-registry
       volumes:
@@ -54,3 +57,6 @@ spec:
           value: mock-data/
         - name: ALLOWED_HOSTS
           value: localhost,api
+        securityContext:
+          allowPrivilegeEscalation: false
+
