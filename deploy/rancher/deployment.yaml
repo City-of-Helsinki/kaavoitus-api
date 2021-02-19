@@ -31,7 +31,7 @@ spec:
         app: kaavoitus-api
     spec:
       securityContext:
-        runAsUser: app-user
+        runAsUser: 991
         fsGroup: 1000
       imagePullSecrets:
       - name: pipeline-docker-registry
