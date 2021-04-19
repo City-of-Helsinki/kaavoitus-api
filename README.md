@@ -94,8 +94,6 @@ Syntax:
 
 ```bash
 $ ./manage.py drf_create_token
-Reading config from C:\Users\jturkia\OneDrive - Capgemini\Documents\Cap\Helsinki\Kaavapino\API-git\config_dev.env
-SECRET_KEY was not defined in configuration. Generating an ephemeral key.
 usage: manage.py drf_create_token [-h] [-r] [--access-facta EXT-CRED-ID] [--access-geoserver EXT-CRED-ID] [--access-kaavapino] [--version] [-v {0,1,2,3}]
                                   [--settings SETTINGS] [--pythonpath PYTHONPATH] [--traceback] [--no-color] [--force-color] [--skip-checks]
                                   username

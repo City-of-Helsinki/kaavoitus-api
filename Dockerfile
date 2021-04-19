@@ -22,6 +22,11 @@ RUN pip install -e .
 # Download and unpack Oracle libraries
 RUN cd /tmp ; wget https://download.oracle.com/otn_software/linux/instantclient/211000/instantclient-basiclite-linux.x64-21.1.0.0.0.zip ; mkdir /oracle ; cd /oracle ; unzip /tmp/instantclient-basiclite-linux.x64-21.1.0.0.0.zip
 
+# WFS fix into Python owslib:
+COPY Deployment/owslib/owslib.patch /tmp/
+RUN patch -d /opt/app-root/lib64/python3.8/site-packages/ -p0 < /tmp/owslib.patch
+
+
 
 FROM registry.access.redhat.com/ubi8/python-38 AS build-image
 
