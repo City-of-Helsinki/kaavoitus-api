@@ -13,9 +13,9 @@ log = logging.getLogger(__name__)
 
 class API(APIView):
 
-    def get(self, request, id=None):
-        if not id:
-            return HttpResponseBadRequest("Need id!")
+    def get(self, request, kiinteistotunnus=None):
+        if not kiinteistotunnus:
+            return HttpResponseBadRequest("Need kiinteistotunnus!")
 
         if not request.auth:
             return HttpResponse(status=401)
@@ -27,16 +27,16 @@ class API(APIView):
         # Go get the data!
         kt = hki_geoserver.Kiinteistotunnus(username=geoserver_creds.username,
                                             password=geoserver_creds.credential)
-        kt_data = kt.get(id)
+        kt_data = kt.get(kiinteistotunnus)
         if not kt_data:
-            log.error("%s not found!" % id)
+            log.error("%s not found!" % kiinteistotunnus)
             return HttpResponseNotFound()
 
         t = hki_geoserver.Tontti(username=geoserver_creds.username,
                                    password=geoserver_creds.credential)
-        neighbours = t.list_of_neighbours(kt_data['geom'], neigh_to_skip=[id])
+        neighbours = t.list_of_neighbours(kt_data['geom'], neigh_to_skip=[kiinteistotunnus])
         if not neighbours:
-            log.warning("%s not found by geom!" % id)
+            log.warning("%s not found by geom!" % kiinteistotunnus)
             return JsonResponse([])
 
         return JsonResponse(neighbours, safe=False)

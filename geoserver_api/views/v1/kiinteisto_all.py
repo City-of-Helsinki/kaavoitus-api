@@ -59,9 +59,10 @@ class API(APIView):
                                                 password=geoserver_creds.credential)
         asemakaavan_numero = None
         asemakaava_voimassa = None
-        if akv:
-            asemakaavan_numero = akv['kaavatunnus']
-            asemakaava_voimassa = akv['vahvistamispvm']
+        akv_data = akv.get(kt_data['geom'])
+        if akv_data:
+            asemakaavan_numero = akv_data['kaavatunnus']
+            asemakaava_voimassa = akv_data['vahvistamispvm']
 
         # 4) Rakennuskiellot
         rakennuskiellot = []
@@ -79,7 +80,7 @@ class API(APIView):
         rkaa = hki_geoserver.Rakennuskieltoalue_asemakaava(username=geoserver_creds.username,
                                                            password=geoserver_creds.credential)
         rkaa_data = rkaa.get(kt_data['geom'])
-        if not rkaa_data:
+        if rkaa_data:
             del rkaa_data['geom']
             rk_serializer = RakennuskieltoV1Serializer(data=rkaa_data)
             if not rk_serializer.is_valid():
@@ -89,11 +90,11 @@ class API(APIView):
 
         # Return the data
         ret_data = {
-            kiinteistotunnus: kt_data[''],
-            rekisterilaji: rekisterilaji,
-            asemakaavan_numero: asemakaavan_numero,
-            asemakaava_voimassa: asemakaava_voimassa,
-            rakennuskiellot: rakennuskiellot
+            'kiinteistotunnus': kt_data['kiinteistotunnus'],
+            'rekisterilaji': rekisterilaji,
+            'asemakaavan_numero': asemakaavan_numero,
+            'asemakaava_voimassa': asemakaava_voimassa,
+            'rakennuskiellot': rakennuskiellot
         }
 
         # Go validate the returned data.

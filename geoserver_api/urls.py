@@ -68,7 +68,7 @@ urlpatterns = [
         name='tontti'
     ),
     re_path(
-        r'^v(?P<version>(1))/neighbourhood/(?P<id>[^/]*)',
+        r'^v(?P<version>(1))/neighbourhood/(?P<kiinteistotunnus>[^/]*)',
         views.neighbourhood.API.as_view(),
         name='neighbourhood'
     ),

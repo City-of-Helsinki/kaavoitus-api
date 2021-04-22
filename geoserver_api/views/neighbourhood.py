@@ -20,7 +20,7 @@ class API(APIView):
         responses={200: OpenApiTypes.OBJECT},
         parameters=[
             OpenApiParameter(
-                name='id',
+                name='kiinteistotunnus',
                 type=str,
                 location=OpenApiParameter.PATH,
                 description='Experimental query for neighbours, kiinteistötunnus to get data for',
