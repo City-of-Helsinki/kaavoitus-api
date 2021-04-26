@@ -38,6 +38,7 @@ class Tontti(GeoServer_Reader):
                              'rekisterointipvm': 'date',
                              'ryhma': 'string',
                              'sijaintialue': 'string',
+                             'tehokkuusluku': 'string',
                              'yksikko': 'string'},
               'required': ['id']}
 
@@ -63,3 +64,16 @@ class Tontti(GeoServer_Reader):
         out = [tontti['kiinteistotunnus'] for tontti in data if tontti['kiinteistotunnus'] not in neigh_to_skip]
 
         return out
+
+    def get_by_geom(self, gml_polygon):
+        if not isinstance(gml_polygon, location.GmlObject):
+            raise ValueError("Need GmlObject as input!")
+
+        fields_to_retrieve = self._schema_to_fieldlist()
+        num_returned, data = self.query(fields_to_retrieve,
+                                        filter=gml_polygon,
+                                        limit_results_to=1000,
+                                        return_single_result=False,
+                                        )
+
+        return data

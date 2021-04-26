@@ -47,3 +47,11 @@ class Asemakaava(GeoServer_Reader):
                                         )
 
         return data
+
+    def get_by_hankenumero(self, hankenumero):
+        fields_to_retrieve = self._schema_to_fieldlist()
+        num_returned, data = self.query(fields_to_retrieve,
+                                        filter={'hankenumero': hankenumero}
+                                        )
+
+        return data

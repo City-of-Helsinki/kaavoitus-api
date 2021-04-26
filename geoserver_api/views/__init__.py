@@ -12,3 +12,5 @@ from .korttelialue import API
 from .rakennusala import API
 from .ymparistoalue import API
 from .neighbourhood import API
+from .suunnittelualue import API
+from .kiinteistot import API

@@ -72,4 +72,14 @@ urlpatterns = [
         views.neighbourhood.API.as_view(),
         name='neighbourhood'
     ),
+    re_path(
+        r'^v(?P<version>(1))/suunnittelualue/(?P<hankenumero>[^/]*)',
+        views.suunnittelualue.API.as_view(),
+        name='suunnittelualue'
+    ),
+    re_path(
+        r'^v(?P<version>(1))/kiinteistot/(?P<hankenumero>[^/]*)',
+        views.kiinteistot.API.as_view(),
+        name='kiinteistot'
+    ),
 ]
