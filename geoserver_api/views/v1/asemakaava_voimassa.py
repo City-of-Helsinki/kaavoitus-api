@@ -39,6 +39,11 @@ class API(APIView):
             log.warning("%s not found by geom!" % kiinteistotunnus)
             return JsonResponse({})
 
-        del akv_data['geom']
+        #del akv_data['geom']
+        # Convert part of XML-tree from objects to str to be returned as JSON.
+        geom_str = etree.tostring(akv_data['geom'].element,
+                                  encoding='ascii', method='xml',
+                                  xml_declaration=False).decode('ascii')
+        akv_data['geom'] = geom_str
 
         return JsonResponse(akv_data)

@@ -70,7 +70,13 @@ class API(APIView):
                                                                password=geoserver_creds.credential)
         rkay_data = rkay.get(kt_data['geom'])
         if rkay_data:
-            del rkay_data['geom']
+            #del rkay_data['geom']
+            # Convert part of XML-tree from objects to str to be returned as JSON.
+            geom_str = etree.tostring(rkay_data['geom'].element,
+                                    encoding='ascii', method='xml',
+                                    xml_declaration=False).decode('ascii')
+            rkay_data['geom'] = geom_str
+
             rk_serializer = RakennuskieltoV1Serializer(data=rkay_data)
             if not rk_serializer.is_valid():
                 log.error("Invalid WMF-data: %s" % serializer.errors)
@@ -81,7 +87,13 @@ class API(APIView):
                                                            password=geoserver_creds.credential)
         rkaa_data = rkaa.get(kt_data['geom'])
         if rkaa_data:
-            del rkaa_data['geom']
+            #del rkaa_data['geom']
+            # Convert part of XML-tree from objects to str to be returned as JSON.
+            geom_str = etree.tostring(rkaa_data['geom'].element,
+                                    encoding='ascii', method='xml',
+                                    xml_declaration=False).decode('ascii')
+            rkaa_data['geom'] = geom_str
+
             rk_serializer = RakennuskieltoV1Serializer(data=rkaa_data)
             if not rk_serializer.is_valid():
                 log.error("Invalid WMF-data: %s" % serializer.errors)

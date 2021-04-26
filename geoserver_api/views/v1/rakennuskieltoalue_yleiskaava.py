@@ -42,7 +42,12 @@ class API(APIView):
             log.warning("%s not found by geom!" % kiinteistotunnus)
             return JsonResponse({})
 
-        del rkay_data['geom']
+        #del rkay_data['geom']
+        # Convert part of XML-tree from objects to str to be returned as JSON.
+        geom_str = etree.tostring(rkay_data['geom'].element,
+                                  encoding='ascii', method='xml',
+                                  xml_declaration=False).decode('ascii')
+        rkay_data['geom'] = geom_str
 
         # Go validate the returned data.
         # It needs to be verifiable by serializer rules. Those are published in Swagger.

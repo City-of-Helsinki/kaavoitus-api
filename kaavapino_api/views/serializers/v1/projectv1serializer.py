@@ -9,7 +9,7 @@ from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
             'Example response',
             summary='Detailed description of fields returned as response',
             description="""
-            Example 09100399030101 is 
+            Example 09100399030101 is
             """,
             value={
                 "datanomistaja": "Helsinki/Kami"
@@ -39,7 +39,7 @@ class ProjectV1Serializer(serializers.Serializer):
     Ehdotus_toimitettu_kaupunginhallitukselle = serializers.DateField(required=False)
     Valtuusto_hyvaksynyt = serializers.DateField(required=False)
     Kaavaehdotuksen_nahtavillaolo_alkaa = serializers.DateField(required=False)
-    Kaavaehdotuksen_nahtavillaolo_paattuu = serializers.DateField(required=False)
+    Kaavaehdotuksen_nahtavillaolo_paattyy = serializers.DateField(required=False)
     Kaavaehdotus_lautakunnassa = serializers.DateField(required=False)
     Tarkistettu_ehdotus_lautakunnassa = serializers.DateField(required=False)
     Kaava_tullut_voimaan = serializers.DateField(required=False)

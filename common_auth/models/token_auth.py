@@ -24,7 +24,10 @@ class Token(models.Model):
                                          related_name='access_geoserver_creds',
                                          verbose_name=_("GeoServer"),
                                          null=True, on_delete=models.PROTECT)
-    access_kaavapino = models.BooleanField(_("Kaavapino"), null=False)
+    access_kaavapino = models.ForeignKey('common_auth.ExtAuthCred',
+                                         related_name='access_kaavapino_creds',
+                                         verbose_name=_("Kaavapino"),
+                                         null=True, on_delete=models.PROTECT)
 
     class Meta:
         # Work around for a bug in Django:

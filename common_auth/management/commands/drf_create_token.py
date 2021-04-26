@@ -26,10 +26,13 @@ class Command(drf_create_token.Command):
         user = drf_create_token.UserModel._default_manager.get_by_natural_key(username)
         facta_creds = None
         geoserver_creds = None
+        kaavapino_creds = None
         if access_facta:
             facta_creds = ExtAuthCred.objects.get(pk=access_facta)
         if access_geoserver:
             geoserver_creds = ExtAuthCred.objects.get(pk=access_geoserver)
+        if access_kaavapino:
+            kaavapino_creds = ExtAuthCred.objects.get(pk=access_kaavapino)
 
         if reset_token:
             Token.objects.filter(user=user).delete()
@@ -37,7 +40,7 @@ class Command(drf_create_token.Command):
         token = Token.objects.get_or_create(user=user,
                                             access_facta=facta_creds,
                                             access_geoserver=geoserver_creds,
-                                            access_kaavapino=access_kaavapino
+                                            access_kaavapino=kaavapino_creds
                                             )
         return token[0]
 
@@ -62,10 +65,9 @@ class Command(drf_create_token.Command):
         parser.add_argument('--access-geoserver', metavar='EXT-CRED-ID', type=int,
                             dest='access_geoserver',
                             help='Has access to: GeoServer with external credential')
-        parser.add_argument('--access-kaavapino', '--no-access-kaavapino',
+        parser.add_argument('--access-kaavapino', metavar='EXT-CRED-ID', type=int,
                             dest='access_kaavapino',
-                            action=NegateAction, nargs=0,
-                            help='Has access to: Kaavapino DB')
+                            help='Has access to: Kaavapino with external credential')
 
     def handle(self, *args, **options):
         username = options['username']
