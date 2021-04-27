@@ -47,9 +47,17 @@ It is possible to allow or deny access to any of the three sources.
 
 ## Add external credential
 
-TBD: Improve `manage.py drf_ext_credentials` tool for managing external creds.
+Syntax:
 
-For development, SQLite will be used:
+  `drf_ext_credentials --add [system] [owner] [username] [credential] [host_spec (optional)]`
+
+  `drf_ext_credentials --reset [system] [owner] [username] [credential] [host_spec (optional)]`
+
+```bash
+$ ./manage.py drf_ext_credentials --add Kaavapino Kaavapino Kaavapino test
+```
+
+Alternative for development, SQLite will be used:
 
 ```bash
 $ sqlite3 db.sqlite3
@@ -86,6 +94,7 @@ $ ./manage.py drf_ext_credentials
  --- -------------------- --------------------
   1: GeoServer            Kaavapino
   2: Facta                Kaavapino
+  3: Kaavapino            Kaavapino
 ```
 
 ## Add API-key
@@ -94,7 +103,7 @@ Syntax:
 
 ```bash
 $ ./manage.py drf_create_token
-usage: manage.py drf_create_token [-h] [-r] [--access-facta EXT-CRED-ID] [--access-geoserver EXT-CRED-ID] [--access-kaavapino] [--version] [-v {0,1,2,3}]
+usage: manage.py drf_create_token [-h] [-r] [--access-facta EXT-CRED-ID] [--access-geoserver EXT-CRED-ID] [--access-kaavapino EXT-CRED-ID] [--version] [-v {0,1,2,3}]
                                   [--settings SETTINGS] [--pythonpath PYTHONPATH] [--traceback] [--no-color] [--force-color] [--skip-checks]
                                   username
 
@@ -106,17 +115,17 @@ Note 2 options for external systems:
 
 * `--access-facta EXT-CRED-ID` If access to Facta DB is allowed via this API, specify which credential to use for access
 * `--access-geoserver EXT-CRED-ID` If access to GeoServer is allowed via this API, specify which credential to use for access
-* `--access-kaavapino` If access to Kaavapino is allowed via this API or not
+* `--access-kaavapino EXT-CRED-ID` If access to Kaavapino is allowed via this API, specify which credential to use for access
 
 ### Example:
 
 Add API-key to user _kaavapino_ with access to all systems.
-Use pre-stored external credential with ID 1 for Facta and ID 2 for GeoServer:
+Use pre-stored external credential with ID 1 for Facta, ID 2 for GeoServer and ID 3 for Kaavapino:
 
 ```bash
 $ ./manage.py drf_create_token \
   --access-facta 1 \
   --access-geoserver 2 \
-  --access-kaavapino \
+  --access-kaavapino 3 \
   kaavapino
 ```
