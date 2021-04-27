@@ -25,6 +25,108 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
+  /api/facta/v1/kiinteisto/{kiinteistotunnus}/all:
+    get:
+      operationId: facta_v1_kiinteisto_all_retrieve
+      description: Hae kiinteistö kiinteistötunnuksella
+      parameters:
+      - in: path
+        name: kiinteistotunnus
+        schema:
+          type: string
+        description: Kiinteistötunnus to get data for
+        required: true
+      tags:
+      - facta
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KiinteistonDataV1'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+  /api/facta/v1/kiinteisto/haltijat/{kiinteistotunnus}:
+    get:
+      operationId: facta_v1_kiinteisto_haltijat_retrieve
+      description: Hae kiinteistön haltijat kiinteistötunnuksella
+      parameters:
+      - in: path
+        name: kiinteistotunnus
+        schema:
+          type: string
+        description: Kiinteistötunnus to get data for
+        required: true
+      tags:
+      - facta
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KiinteistonHaltijatV1'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+  /api/facta/v1/kiinteisto/omistajat/{kiinteistotunnus}:
+    get:
+      operationId: facta_v1_kiinteisto_omistajat_retrieve
+      description: Hae kiinteistö kiinteistötunnuksella
+      parameters:
+      - in: path
+        name: kiinteistotunnus
+        schema:
+          type: string
+        description: Kiinteistötunnus to get data for
+        required: true
+      tags:
+      - facta
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KiinteistonOmistajatV1'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
   /api/geoserver/heartbeat:
     get:
       operationId: geoserver_heartbeat_retrieve
@@ -46,13 +148,36 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/geoserver/v1/asemakaava_voimassa/{id}:
+  /api/geoserver/v1/asemakaava/{kaavatunnus}:
     get:
-      operationId: geoserver_v1_asemakaava_voimassa_retrieve
+      operationId: geoserver_v1_asemakaava_retrieve
       description: ''
       parameters:
       - in: path
-        name: id
+        name: kaavatunnus
+        schema:
+          type: string
+        description: Kaavanumero to get data for
+        required: true
+      tags:
+      - geoserver
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/geoserver/v1/asemakaava/{kiinteistotunnus}/kaavamaarays:
+    get:
+      operationId: geoserver_v1_asemakaava_kaavamaarays_retrieve
+      description: ''
+      parameters:
+      - in: path
+        name: kiinteistotunnus
         schema:
           type: string
         description: Kiinteistötunnus to get data for
@@ -69,9 +194,32 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/geoserver/v1/kiinteistotunnus/{id}:
+  /api/geoserver/v1/asemakaava/{kiinteistotunnus}/voimassa:
     get:
-      operationId: geoserver_v1_kiinteistotunnus_retrieve
+      operationId: geoserver_v1_asemakaava_voimassa_retrieve
+      description: ''
+      parameters:
+      - in: path
+        name: kiinteistotunnus
+        schema:
+          type: string
+        description: Kiinteistötunnus to get data for
+        required: true
+      tags:
+      - geoserver
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/geoserver/v1/kiinteisto/{kiinteistotunnus}:
+    get:
+      operationId: geoserver_v1_kiinteisto_retrieve
       description: Hae kiinteistö kiinteistötunnuksella
       parameters:
       - in: query
@@ -80,7 +228,7 @@ paths:
           type: string
         description: (test-version only) Filter by alue
       - in: path
-        name: id
+        name: kiinteistotunnus
         schema:
           type: string
         description: Kiinteistötunnus to get data for
@@ -153,13 +301,112 @@ paths:
               schema:
                 type: string
           description: ''
-  /api/geoserver/v1/maarekisterikiinteisto/{id}:
+  /api/geoserver/v1/kiinteisto/{kiinteistotunnus}/all:
+    get:
+      operationId: geoserver_v1_kiinteisto_all_retrieve
+      description: Hae kiinteistön Kaavapino data kiinteistötunnuksella
+      parameters:
+      - in: path
+        name: kiinteistotunnus
+        schema:
+          type: string
+        description: Kiinteistötunnus to get all Kaavapino data for
+        required: true
+      tags:
+      - geoserver
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KiinteistoAllV1'
+              examples:
+                ExampleResponse:
+                  value:
+                    datanomistaja: Helsinki/Kami
+                    id: 156
+                  summary: Detailed description of fields returned as response
+                  description: "\n            Example\n            "
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+  /api/geoserver/v1/kiinteistot/{hankenumero}:
+    get:
+      operationId: geoserver_v1_kiinteistot_retrieve
+      description: ''
+      parameters:
+      - in: path
+        name: hankenumero
+        schema:
+          type: string
+        description: Hankenumero to get data for
+        required: true
+      tags:
+      - geoserver
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/geoserver/v1/korttelialue/{korttelinnumero}:
+    get:
+      operationId: geoserver_v1_korttelialue_retrieve
+      description: Hae kortteli korttelinnumerolla
+      parameters:
+      - in: path
+        name: korttelinnumero
+        schema:
+          type: string
+        description: Korttelinnumero to get data for
+        required: true
+      tags:
+      - geoserver
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+  /api/geoserver/v1/maarekisterikiinteisto/{kiinteistotunnus}:
     get:
       operationId: geoserver_v1_maarekisterikiinteisto_retrieve
       description: ''
       parameters:
       - in: path
-        name: id
+        name: kiinteistotunnus
         schema:
           type: string
         description: Kiinteistötunnus to get data for
@@ -176,13 +423,37 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/geoserver/v1/neighbourhood/{id}:
+  /api/geoserver/v1/neighbourhood/{kiinteistotunnus}:
     get:
       operationId: geoserver_v1_neighbourhood_retrieve
       description: ''
       parameters:
       - in: path
-        name: id
+        name: kiinteistotunnus
+        schema:
+          type: string
+        description: Experimental query for neighbours, kiinteistötunnus to get data
+          for
+        required: true
+      tags:
+      - geoserver
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/geoserver/v1/rakennusala/{kiinteistotunnus}:
+    get:
+      operationId: geoserver_v1_rakennusala_retrieve
+      description: ''
+      parameters:
+      - in: path
+        name: kiinteistotunnus
         schema:
           type: string
         description: Kiinteistötunnus to get data for
@@ -199,13 +470,13 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/geoserver/v1/rakennuskieltoalue_asemakaava/{id}:
+  /api/geoserver/v1/rakennuskieltoalue/asemakaava/{kiinteistotunnus}:
     get:
       operationId: geoserver_v1_rakennuskieltoalue_asemakaava_retrieve
       description: ''
       parameters:
       - in: path
-        name: id
+        name: kiinteistotunnus
         schema:
           type: string
         description: Kiinteistötunnus to get data for
@@ -219,16 +490,96 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/RakennuskieltoV1'
+              examples:
+                ExampleResponse:
+                  summary: Detailed description of fields returned as response
+                  description: "\n            Example:\n            Fields:\n    \
+                    \        * Tyyppi: \"RK asemakaavan laatimiseksi\" tai \"RK yleiskaavan\
+                    \ laatimiseksi\"\n            "
           description: ''
-  /api/geoserver/v1/rakennuskieltoalue_yleiskaava/{id}:
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+  /api/geoserver/v1/rakennuskieltoalue/yleiskaava/{kiinteistotunnus}:
     get:
       operationId: geoserver_v1_rakennuskieltoalue_yleiskaava_retrieve
       description: ''
       parameters:
       - in: path
-        name: id
+        name: kiinteistotunnus
+        schema:
+          type: string
+        description: Kiinteistötunnus to get data for
+        required: true
+      tags:
+      - geoserver
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RakennuskieltoV1'
+              examples:
+                ExampleResponse:
+                  summary: Detailed description of fields returned as response
+                  description: "\n            Example:\n            Fields:\n    \
+                    \        * Tyyppi: \"RK asemakaavan laatimiseksi\" tai \"RK yleiskaavan\
+                    \ laatimiseksi\"\n            "
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+  /api/geoserver/v1/suunnittelualue/{hankenumero}:
+    get:
+      operationId: geoserver_v1_suunnittelualue_retrieve
+      description: ''
+      parameters:
+      - in: path
+        name: hankenumero
+        schema:
+          type: string
+        description: Hankenumero to get data for
+        required: true
+      tags:
+      - geoserver
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/geoserver/v1/tontti/{kiinteistotunnus}:
+    get:
+      operationId: geoserver_v1_tontti_retrieve
+      description: ''
+      parameters:
+      - in: path
+        name: kiinteistotunnus
         schema:
           type: string
         description: Kiinteistötunnus to get data for
@@ -245,13 +596,13 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/geoserver/v1/tontti/{id}:
+  /api/geoserver/v1/ymparistoalue/{kiinteistotunnus}:
     get:
-      operationId: geoserver_v1_tontti_retrieve
+      operationId: geoserver_v1_ymparistoalue_retrieve
       description: ''
       parameters:
       - in: path
-        name: id
+        name: kiinteistotunnus
         schema:
           type: string
         description: Kiinteistötunnus to get data for
@@ -288,6 +639,115 @@ paths:
               schema:
                 type: object
                 additionalProperties: {}
+          description: ''
+  /api/kaavapino/v1/project/{pinonro}:
+    get:
+      operationId: kaavapino_v1_project_retrieve
+      description: Projektin tiedot
+      parameters:
+      - in: path
+        name: pinonro
+        schema:
+          type: string
+        description: Pinonumero to get data for
+        required: true
+      tags:
+      - kaavapino
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectV1'
+              examples:
+                ExampleResponse:
+                  value:
+                    datanomistaja: Helsinki/Kami
+                  summary: Detailed description of fields returned as response
+                  description: "\n            Example 09100399030101 is\n        \
+                    \    "
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+  /api/kaavapino/v1/project/{pinonro}/trigger-change:
+    patch:
+      operationId: kaavapino_v1_project_trigger_change_partial_update
+      description: Trigger a project to update
+      parameters:
+      - in: path
+        name: pinonro
+        schema:
+          type: string
+        description: Pinonumero to get data for
+        required: true
+      tags:
+      - kaavapino
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+  /api/kaavapino/v1/project/changes:
+    get:
+      operationId: kaavapino_v1_project_changes_retrieve
+      description: Get list of changed projects (after given timestamp)
+      parameters:
+      - in: query
+        name: timestamp
+        schema:
+          type: string
+        description: Filter by timestamp. Query for changes made after given timestamp.
+      tags:
+      - kaavapino
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectChangesV1'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
           description: ''
   /schema/v1/:
     get:
@@ -433,6 +893,66 @@ paths:
           description: ''
 components:
   schemas:
+    KiinteistoAddressV1:
+      type: object
+      properties:
+        first_names:
+          type: string
+          nullable: true
+          maxLength: 110
+        last_name:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+          nullable: true
+          maxLength: 271
+        address2:
+          type: string
+          nullable: true
+          maxLength: 100
+        zip_code:
+          type: string
+          maxLength: 5
+        city_fin:
+          type: string
+          maxLength: 402
+        city_swe:
+          type: string
+          maxLength: 402
+      required:
+      - address
+      - address2
+      - city_fin
+      - city_swe
+      - first_names
+      - last_name
+      - zip_code
+    KiinteistoAllV1:
+      type: object
+      properties:
+        kiinteistotunnus:
+          type: string
+          maxLength: 20
+        rekisterilaji:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/RekisterilajiEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        asemakaavan_numero:
+          type: string
+          maxLength: 20
+        asemakaava_voimassa:
+          type: string
+          format: date
+        rakennuskiellot:
+          type: array
+          items:
+            $ref: '#/components/schemas/RakennuskieltoV1'
+      required:
+      - kiinteistotunnus
+      - rakennuskiellot
+      - rekisterilaji
     KiinteistoV1:
       type: object
       properties:
@@ -494,6 +1014,279 @@ components:
       - ryhma
       - sijaintialue
       - yksikko
+    KiinteistonDataV1:
+      type: object
+      properties:
+        kiinteistotunnus:
+          type: string
+          maxLength: 17
+        omistajat:
+          type: array
+          items:
+            $ref: '#/components/schemas/KiinteistonOmistajaV1'
+        haltijat:
+          type: array
+          items:
+            $ref: '#/components/schemas/KiinteistonHaltijaV1'
+        naapurit:
+          type: array
+          items:
+            $ref: '#/components/schemas/NaapuritV1'
+      required:
+      - haltijat
+      - kiinteistotunnus
+      - naapurit
+      - omistajat
+    KiinteistonHaltijaV1:
+      type: object
+      properties:
+        kiinteistotunnus:
+          type: string
+          maxLength: 17
+        address:
+          $ref: '#/components/schemas/KiinteistoAddressV1'
+      required:
+      - address
+      - kiinteistotunnus
+    KiinteistonHaltijatV1:
+      type: object
+      properties:
+        kiinteistotunnus:
+          type: string
+          maxLength: 17
+        haltijat:
+          type: array
+          items:
+            $ref: '#/components/schemas/KiinteistonHaltijaV1'
+      required:
+      - haltijat
+      - kiinteistotunnus
+    KiinteistonOmistajaV1:
+      type: object
+      properties:
+        kiinteistotunnus:
+          type: string
+          maxLength: 17
+        address:
+          $ref: '#/components/schemas/KiinteistoAddressV1'
+        owner_home_municipality:
+          type: string
+          maxLength: 3
+        property_owner_type:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/PropertyOwnerTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - address
+      - property_owner_type
+    KiinteistonOmistajatV1:
+      type: object
+      properties:
+        kiinteistotunnus:
+          type: string
+          maxLength: 17
+        omistajat:
+          type: array
+          items:
+            $ref: '#/components/schemas/KiinteistonOmistajaV1'
+      required:
+      - kiinteistotunnus
+      - omistajat
+    NaapuritV1:
+      type: object
+      properties:
+        kiinteistotunnus:
+          type: string
+          maxLength: 17
+        omistajat:
+          type: array
+          items:
+            $ref: '#/components/schemas/KiinteistonOmistajaV1'
+        haltijat:
+          type: array
+          items:
+            $ref: '#/components/schemas/KiinteistonHaltijaV1'
+      required:
+      - haltijat
+      - kiinteistotunnus
+      - omistajat
+    NullEnum:
+      enum:
+      - null
+    ProjectChangeV1:
+      type: object
+      properties:
+        Identifier:
+          type: string
+          maxLength: 255
+        Changed:
+          type: string
+          format: date
+      required:
+      - Changed
+      - Identifier
+    ProjectChangesV1:
+      type: object
+      properties:
+        Changes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectChangeV1'
+          readOnly: true
+      required:
+      - Changes
+    ProjectV1:
+      type: object
+      properties:
+        Muistutusten_lkm:
+          type: integer
+        Valitusten_lkm_HAO:
+          type: integer
+        Valitusten_lkm_KHO:
+          type: integer
+        Projektin_nimi:
+          type: string
+          maxLength: 255
+        Diaarinumero:
+          type: string
+        Hankenumero:
+          type: string
+        Vastuuhenkilo:
+          type: string
+        Suunnitteluavustaja:
+          type: string
+        Kaavan_hyvaksyja:
+          type: string
+        Kaavanumero:
+          type: string
+        Kaavan_nimi_FIN:
+          type: string
+        Kaavan_nimi_SWE:
+          type: string
+        Ehdotus_hyvaksytty_lautakunnassa:
+          type: string
+          format: date
+        Tarkistettu_ehdotus_hyvaksytty_lautakunnassa:
+          type: string
+          format: date
+        Kylk_hyvaksynta:
+          type: string
+          format: date
+        Ehdotus_toimitettu_kaupunginhallitukselle:
+          type: string
+          format: date
+        Valtuusto_hyvaksynyt:
+          type: string
+          format: date
+        Kaavaehdotuksen_nahtavillaolo_alkaa:
+          type: string
+          format: date
+        Kaavaehdotuksen_nahtavillaolo_paattyy:
+          type: string
+          format: date
+        Kaavaehdotus_lautakunnassa:
+          type: string
+          format: date
+        Tarkistettu_ehdotus_lautakunnassa:
+          type: string
+          format: date
+        Kaava_tullut_voimaan:
+          type: string
+          format: date
+        Kaava_tullut_osittain_voimaan:
+          type: string
+          format: date
+        Kaava_kumottu:
+          type: string
+          format: date
+        Kaava_rauennut:
+          type: string
+          format: date
+      required:
+      - Diaarinumero
+      - Hankenumero
+      - Kaavan_hyvaksyja
+      - Kaavan_nimi_FIN
+      - Kaavan_nimi_SWE
+      - Kaavanumero
+      - Projektin_nimi
+      - Suunnitteluavustaja
+      - Vastuuhenkilo
+    PropertyOwnerTypeEnum:
+      enum:
+      - H
+      - F
+      - P
+      type: string
+    RakennuskieltoV1:
+      type: object
+      properties:
+        datanomistaja:
+          type: string
+          maxLength: 40
+        antaja_selite:
+          type: string
+        antaja_tunnus:
+          type: string
+        id:
+          type: string
+        kunta:
+          type: string
+          maxLength: 3
+          minLength: 3
+        laatu_selite:
+          type: string
+        laatu_tunnus:
+          type: string
+        luontipvm:
+          type: string
+          format: date
+        muokkauspvm:
+          type: string
+          format: date
+        paatospvm:
+          type: string
+          format: date
+        paattymispvm:
+          type: string
+          format: date
+        paivitetty_tietopalveluun:
+          type: string
+          format: date
+        rakennuskieltotunnus:
+          type: string
+        tyyppi:
+          type: string
+        voimaantulopvm:
+          type: string
+          format: date
+        gml_id:
+          type: string
+          maxLength: 80
+        geom:
+          type: string
+      required:
+      - antaja_selite
+      - antaja_tunnus
+      - datanomistaja
+      - id
+      - kunta
+      - laatu_selite
+      - laatu_tunnus
+      - luontipvm
+      - muokkauspvm
+      - paatospvm
+      - paattymispvm
+      - paivitetty_tietopalveluun
+      - rakennuskieltotunnus
+      - tyyppi
+      - voimaantulopvm
+    RekisterilajiEnum:
+      enum:
+      - T
+      - M
+      type: string
   securitySchemes:
     tokenAuth:
       type: apiKey

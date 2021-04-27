@@ -134,11 +134,11 @@ class API(APIView):
         maara = 0
         ala = 0.0
         for ra in ra_data:
-            if ra['kaavamerkinta'] is 's' or \
-               ra['kaavamerkinta'] is 'sr' or \
-               ra['kaavamerkinta'] is 'sr-1' or \
-               ra['kaavamerkinta'] is 'sr-2' or \
-               ra['kaavamerkinta'] is 'sr-3':
+            if ra['kaavamerkinta'] == 's' or \
+               ra['kaavamerkinta'] == 'sr' or \
+               ra['kaavamerkinta'] == 'sr-1' or \
+               ra['kaavamerkinta'] == 'sr-2' or \
+               ra['kaavamerkinta'] == 'sr-3':
                 maara += 1
                 if ra['pintaala']:
                     ala += float(ra['pintaala']) # ra['km2']?

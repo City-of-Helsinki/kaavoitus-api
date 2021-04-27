@@ -15,8 +15,8 @@ OWNER_TYPES = {
     ]
 )
 class KiinteistonOmistajaV1Serializer(serializers.Serializer):
-    kiinteistotunnus = serializers.CharField(max_length=17)
+    kiinteistotunnus = serializers.CharField(max_length=17, required=False)
     address = KiinteistoAddressV1Serializer()
-    owner_home_municipality = serializers.CharField(max_length=3)
+    owner_home_municipality = serializers.CharField(max_length=3, required=False)
 
-    property_owner_type = serializers.ChoiceField(choices=[(type, desc) for type, desc in OWNER_TYPES.items()])
+    property_owner_type = serializers.ChoiceField(choices=[(type, desc) for type, desc in OWNER_TYPES.items()], allow_null=True)
