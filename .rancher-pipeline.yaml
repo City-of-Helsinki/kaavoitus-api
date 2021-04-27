@@ -3,8 +3,7 @@ stages:
   steps:
   - runScriptConfig:
       image: python:3.6.6-slim-stretch
-      shellScript: |-
-        echo do what?
+      shellScript: echo do what?
 - name: Publish image
   steps:
   - publishImageConfig:
