@@ -33,11 +33,7 @@ class API(APIView):
             return HttpResponseNotFound()
 
         log.debug("Kaavatunnus: %s" % (ak_data['kaavatunnus']))
-        # Convert part of XML-tree from objects to str to be returned as JSON.
-        geom_str = etree.tostring(ak_data['geom'].element,
-                                  encoding='ascii', method='xml',
-                                  xml_declaration=False).decode('ascii')
-        ak_data['geom'] = geom_str
+        ak_data['geom'] = ak.get_geometry(ak_data)
 
         return JsonResponse(ak_data)
 

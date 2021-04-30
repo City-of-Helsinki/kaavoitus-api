@@ -34,15 +34,11 @@ class API(APIView):
 
         km = hki_geoserver.Kaavamaarays(username=geoserver_creds.username,
                                             password=geoserver_creds.credential)
-        km_data = km.get(kt_data['geom'])
+        km_data = km.get(kt_data)
         if not km_data:
             log.warning("%s not found by geom!" % kiinteistotunnus)
             return JsonResponse({})
 
-        # Convert part of XML-tree from objects to str to be returned as JSON.
-        geom_str = etree.tostring(kt_data['geom'].element,
-                                  encoding='ascii', method='xml',
-                                  xml_declaration=False).decode('ascii')
-        km_data['geom'] = geom_str
+        km_data['geom'] = km.get_geometry(kt_data)
 
         return JsonResponse(km_data)

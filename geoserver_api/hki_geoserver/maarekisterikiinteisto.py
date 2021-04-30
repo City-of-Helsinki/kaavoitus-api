@@ -1,10 +1,10 @@
 import logging
-from .abstract import GeoServer_Reader
+from .abstract import GeoServer_Reader_json
 
 log = logging.getLogger(__name__)
 
 
-class Maarekisterikiinteisto(GeoServer_Reader):
+class Maarekisterikiinteisto(GeoServer_Reader_json):
     use_auth = True
     layername = 'helsinki:Kiinteisto_alue_maarekisterikiinteisto'
     schema = {'geometry': 'GeometryCollection',

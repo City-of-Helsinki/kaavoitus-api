@@ -1,11 +1,11 @@
 import logging
 from pydov.util import location
-from .abstract import GeoServer_Reader
+from .abstract import GeoServer_Reader_json
 
 log = logging.getLogger(__name__)
 
 
-class Asemakaava_voimassa(GeoServer_Reader):
+class Asemakaava_voimassa(GeoServer_Reader_json):
     use_auth = False
     layername = 'avoindata:Kaavahakemisto_alue_kaava_voimassa'
     schema = {'geometry': 'GeometryCollection',
@@ -28,7 +28,8 @@ class Asemakaava_voimassa(GeoServer_Reader):
                              'voimaantulopvm': 'date'},
               'required': ['id']}
 
-    def get(self, gml_polygon):
+    def get(self, data):
+        gml_polygon = self.convert_data(data)
         if not isinstance(gml_polygon, location.GmlObject):
             raise ValueError("Need GmlObject as input!")
 

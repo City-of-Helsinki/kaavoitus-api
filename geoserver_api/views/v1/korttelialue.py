@@ -32,10 +32,6 @@ class API(APIView):
             return HttpResponseNotFound()
 
         log.debug("Korttelinnumero: %s" % (ka_data['korttelinnumero']))
-        # Convert part of XML-tree from objects to str to be returned as JSON.
-        geom_str = etree.tostring(ka_data['geom'].element,
-                                  encoding='ascii', method='xml',
-                                  xml_declaration=False).decode('ascii')
-        ka_data['geom'] = geom_str
+        ka_data['geom'] = ka.get_geometry(ka_data)
 
         return JsonResponse(ka_data)

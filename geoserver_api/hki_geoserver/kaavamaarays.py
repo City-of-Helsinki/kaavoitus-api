@@ -1,11 +1,11 @@
 import logging
 from pydov.util import location
-from .abstract import GeoServer_Reader
+from .abstract import GeoServer_Reader_json
 
 log = logging.getLogger(__name__)
 
 
-class Kaavamaarays(GeoServer_Reader):
+class Kaavamaarays(GeoServer_Reader_json):
     use_auth = False
     layername = 'avoindata:kaavamaarays'
     schema = {'geometry': 'GeometryCollection',
@@ -32,7 +32,8 @@ class Kaavamaarays(GeoServer_Reader):
                              'ymparistoalue_uuid_ymparistoalue': 'string'},
               'required': ['gid', 'kaavamaarays_uuid']}
 
-    def get(self, gml_polygon):
+    def get(self, data):
+        gml_polygon = self.convert_data(data)
         if not isinstance(gml_polygon, location.GmlObject):
             raise ValueError("Need GmlObject as input!")
 
@@ -47,7 +48,8 @@ class Kaavamaarays(GeoServer_Reader):
 
         return data
 
-    def get_by_geom(self, gml_polygon):
+    def get_by_geom(self, data):
+        gml_polygon = self.convert_data(data)
         if not isinstance(gml_polygon, location.GmlObject):
             raise ValueError("Need GmlObject as input!")
 

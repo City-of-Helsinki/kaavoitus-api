@@ -34,11 +34,7 @@ class API(APIView):
             return HttpResponseNotFound()
 
         log.info("Kiinteistötunnus: %s" % (kt_data['kiinteisto']))
-        # Convert part of XML-tree from objects to str to be returned as JSON.
-        geom_str = etree.tostring(kt_data['geom'].element,
-                                  encoding='ascii', method='xml',
-                                  xml_declaration=False).decode('ascii')
-        kt_data['geom'] = geom_str
+        kt_data['geom'] = kt.get_geometry(kt_data)
 
         # Go validate the returned data.
         # It needs to be verifiable by serializer rules. Those are published in Swagger.

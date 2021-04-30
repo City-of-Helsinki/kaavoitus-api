@@ -25,5 +25,8 @@ setup(
         'pydov == 2.0.0',
         'cx_Oracle == 8.1.0',
         'gunicorn == 20.0.4',
+        'numpy == 1.20.0',
+        'geojson == 2.5.0',
+        #'GDAL == 3.2.2',
     ],
 )

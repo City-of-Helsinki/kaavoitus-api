@@ -59,7 +59,7 @@ class API(APIView):
                                                 password=geoserver_creds.credential)
         asemakaavan_numero = None
         asemakaava_voimassa = None
-        akv_data = akv.get(kt_data['geom'])
+        akv_data = akv.get(kt_data)
         if akv_data:
             asemakaavan_numero = akv_data['kaavatunnus']
             asemakaava_voimassa = akv_data['vahvistamispvm']
@@ -68,14 +68,10 @@ class API(APIView):
         rakennuskiellot = []
         rkay = hki_geoserver.Rakennuskieltoalue_yleiskaava(username=geoserver_creds.username,
                                                                password=geoserver_creds.credential)
-        rkay_data = rkay.get(kt_data['geom'])
+        rkay_data = rkay.get(kt_data)
         if rkay_data:
             #del rkay_data['geom']
-            # Convert part of XML-tree from objects to str to be returned as JSON.
-            geom_str = etree.tostring(rkay_data['geom'].element,
-                                    encoding='ascii', method='xml',
-                                    xml_declaration=False).decode('ascii')
-            rkay_data['geom'] = geom_str
+            rkay_data['geom'] = rkay.get_geometry(rkay_data)
 
             rk_serializer = RakennuskieltoV1Serializer(data=rkay_data)
             if not rk_serializer.is_valid():
@@ -85,14 +81,10 @@ class API(APIView):
 
         rkaa = hki_geoserver.Rakennuskieltoalue_asemakaava(username=geoserver_creds.username,
                                                            password=geoserver_creds.credential)
-        rkaa_data = rkaa.get(kt_data['geom'])
+        rkaa_data = rkaa.get(kt_data)
         if rkaa_data:
             #del rkaa_data['geom']
-            # Convert part of XML-tree from objects to str to be returned as JSON.
-            geom_str = etree.tostring(rkaa_data['geom'].element,
-                                    encoding='ascii', method='xml',
-                                    xml_declaration=False).decode('ascii')
-            rkaa_data['geom'] = geom_str
+            rkaa_data['geom'] = rkaa.get_geometry(rkaa_data)
 
             rk_serializer = RakennuskieltoV1Serializer(data=rkaa_data)
             if not rk_serializer.is_valid():

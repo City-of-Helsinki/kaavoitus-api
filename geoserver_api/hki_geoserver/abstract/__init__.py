@@ -1,1 +1,2 @@
 from .geoserver_reader import GeoServer_Reader
+from .geoserver_reader_json import GeoServer_Reader_json

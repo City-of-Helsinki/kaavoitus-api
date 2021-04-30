@@ -34,16 +34,12 @@ class API(APIView):
 
         ra = hki_geoserver.Rakennusala(username=geoserver_creds.username,
                                                 password=geoserver_creds.credential)
-        ra_data = ra.get(kt_data['geom'])
+        ra_data = ra.get(kt_data)
         if not ra_data:
             log.warning("%s not found by geom!" % kiinteistotunnus)
             return JsonResponse({})
 
         #del ra_data['geom']
-        # Convert part of XML-tree from objects to str to be returned as JSON.
-        geom_str = etree.tostring(ra_data['geom'].element,
-                                  encoding='ascii', method='xml',
-                                  xml_declaration=False).decode('ascii')
-        ra_data['geom'] = geom_str
+        ra_data['geom'] = ra.get_geometry(ra_data)
 
         return JsonResponse(ra_data)

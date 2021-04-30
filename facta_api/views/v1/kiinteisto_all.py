@@ -45,7 +45,7 @@ class API(KiinteistoAPI):
             if kt_data:
                 t = hki_geoserver.Tontti(username=geoserver_creds.username,
                                          password=geoserver_creds.credential)
-                neighbours = t.list_of_neighbours(kt_data['geom'], neigh_to_skip=[kiinteistotunnus])
+                neighbours = t.list_of_neighbours(kt_data, neigh_to_skip=[kiinteistotunnus])
 
             if neighbours:
                 for neighbour in neighbours:

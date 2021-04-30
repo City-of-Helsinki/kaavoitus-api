@@ -1,12 +1,12 @@
 from pydov.util import location
 import copy
 import logging
-from .abstract import GeoServer_Reader
+from .abstract import GeoServer_Reader_json
 
 log = logging.getLogger(__name__)
 
 
-class Tontti(GeoServer_Reader):
+class Tontti(GeoServer_Reader_json):
     use_auth = True
     layername = 'helsinki:Kiinteisto_alue_tontti'
     schema = {'geometry': 'GeometryCollection',
@@ -50,7 +50,8 @@ class Tontti(GeoServer_Reader):
 
         return data
 
-    def list_of_neighbours(self, gml_polygon_in, neigh_to_skip=[]):
+    def list_of_neighbours(self, data, neigh_to_skip=[]):
+        gml_polygon_in = self.convert_data(data)
         if not isinstance(gml_polygon_in, location.GmlObject):
             raise ValueError("Need GmlObject as input!")
 
@@ -65,7 +66,8 @@ class Tontti(GeoServer_Reader):
 
         return out
 
-    def get_by_geom(self, gml_polygon):
+    def get_by_geom(self, data):
+        gml_polygon = self.convert_data(data)
         if not isinstance(gml_polygon, location.GmlObject):
             raise ValueError("Need GmlObject as input!")
 

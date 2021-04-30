@@ -37,17 +37,13 @@ class API(APIView):
 
         rkay = hki_geoserver.Rakennuskieltoalue_yleiskaava(username=geoserver_creds.username,
                                                            password=geoserver_creds.credential)
-        rkay_data = rkay.get(kt_data['geom'])
+        rkay_data = rkay.get(kt_data)
         if not rkay_data:
             log.warning("%s not found by geom!" % kiinteistotunnus)
             return JsonResponse({})
 
         #del rkay_data['geom']
-        # Convert part of XML-tree from objects to str to be returned as JSON.
-        geom_str = etree.tostring(rkay_data['geom'].element,
-                                  encoding='ascii', method='xml',
-                                  xml_declaration=False).decode('ascii')
-        rkay_data['geom'] = geom_str
+        rkay_data['geom'] = rkay.get_geometry(rkay_data)
 
         # Go validate the returned data.
         # It needs to be verifiable by serializer rules. Those are published in Swagger.

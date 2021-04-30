@@ -1,11 +1,11 @@
 import logging
 from pydov.util import location
-from .abstract import GeoServer_Reader
+from .abstract import GeoServer_Reader_json
 
 log = logging.getLogger(__name__)
 
 
-class Korttelialue(GeoServer_Reader):
+class Korttelialue(GeoServer_Reader_json):
     use_auth = False
     layername = 'avoindata:korttelialue'
     schema = {'geometry': 'GeometryCollection',
@@ -44,7 +44,8 @@ class Korttelialue(GeoServer_Reader):
 
         return data
 
-    def get_by_geom(self, gml_polygon):
+    def get_by_geom(self, data):
+        gml_polygon = self.convert_data(data)
         if not isinstance(gml_polygon, location.GmlObject):
             raise ValueError("Need GmlObject as input!")
 

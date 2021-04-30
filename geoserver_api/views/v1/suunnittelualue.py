@@ -35,10 +35,7 @@ class API(APIView):
 
         log.debug("Hankenumero: %s" % (ak_data['hankenumero']))
 
-        # Convert part of XML-tree from objects to str to be returned as JSON.
-        suunnittelualueen_rajaus = etree.tostring(ak_data['geom'].element,
-                                  encoding='ascii', method='xml',
-                                  xml_declaration=False).decode('ascii')
+        suunnittelualueen_rajaus = ak.get_geometry(ak_data)
 
         keskimaarainen_tonttitehokkuus = self.get_tehokkuusluku(ak_data)
         maanalaisten_tilojen_pinta_ala_yht = self.get_maanalaisten_tilojen_pinta_ala_yht(ak_data)
@@ -68,28 +65,32 @@ class API(APIView):
     def get_tehokkuusluku(self, ak_data):
         t = hki_geoserver.Tontti(username=self.geoserver_creds.username,
                                   password=self.geoserver_creds.credential)
-        t_data = t.get_by_geom(ak_data['geom'])
-        if not t_data:
-            log.error("%s not found!" % ak_data['hankenumero'])
-            return HttpResponseNotFound()
 
         tehokkuus_yht = 0.0
+        t_data = t.get_by_geom(ak_data)
+        if not t_data:
+            log.error("%s not found!" % ak_data['hankenumero'])
+            return tehokkuus_yht
+
+
         for tontti in t_data:
-            tehokkuusluku = tontti['tehokkuusluku']
-            if tehokkuusluku:
-                tehokkuus_yht +=  tehokkuusluku
+            # log.info(tontti)
+            # key missing from json
+            if tontti.get('tehokkuusluku'):
+                tehokkuus_yht +=  tontti['tehokkuusluku']
 
         return tehokkuus_yht / len(t_data)
 
     def get_maanalaisten_tilojen_pinta_ala_yht(self, ak_data):
         km = hki_geoserver.Kaavamaarays(username=self.geoserver_creds.username,
                                             password=self.geoserver_creds.credential)
-        km_data = km.get_by_geom(ak_data['geom'])
-        if not km_data:
-            log.warning("%s not found by geom!" % ak_data['hankenumero'])
-            return JsonResponse({})
 
         maanalainen = 0.0
+        km_data = km.get_by_geom(ak_data)
+        if not km_data:
+            log.warning("%s not found by geom!" % ak_data['hankenumero'])
+            return maanalainen
+
         for km in km_data:
             if km['maanalainen'] and km['pintaala']:
                 maanalainen += float(km['pintaala'])
@@ -98,21 +99,23 @@ class API(APIView):
 
     def get_aluevarausten_pinta_alat_yht(self, ak_data):
         ka = Korttelialue(username=self.geoserver_creds.username, password=self.geoserver_creds.credential)
-        ka_data = ka.get_by_geom(ak_data['geom'])
-        if not ka_data:
-            log.error("%s not found!" % ak_data['hankenumero'])
-            return HttpResponseNotFound()
 
         pinta_ala = 0.0
+        ka_data = ka.get_by_geom(ak_data)
+        if not ka_data:
+            log.error("%s not found!" % ak_data['hankenumero'])
+            return pinta_ala
+
         for ka in ka_data:
             if ka['pintaala']:
                 pinta_ala += float(ka['pintaala'])
 
         ya = YleinenTaiMuuAlue(username=self.geoserver_creds.username, password=self.geoserver_creds.credential)
-        ya_data = ya.get_by_geom(ak_data['geom'])
+
+        ya_data = ya.get_by_geom(ak_data)
         if not ya_data:
             log.error("%s not found!" % ak_data['hankenumero'])
-            return HttpResponseNotFound()
+            return pinta_ala
 
         for ya in ya_data:
             if ya['pintaala']:
@@ -126,13 +129,14 @@ class API(APIView):
     def get_suojellut_rakennukset(self, ak_data):
         ra = hki_geoserver.Rakennusala(username=self.geoserver_creds.username,
                                                 password=self.geoserver_creds.credential)
-        ra_data = ra.get_by_geom(ak_data['geom'])
-        if not ra_data:
-            log.warning("%s not found by geom!" % ak_data['hankenumero'])
-            return JsonResponse({})
 
         maara = 0
         ala = 0.0
+        ra_data = ra.get_by_geom(ak_data)
+        if not ra_data:
+            log.warning("%s not found by geom!" % ak_data['hankenumero'])
+            return maara, ala
+
         for ra in ra_data:
             if ra['kaavamerkinta'] == 's' or \
                ra['kaavamerkinta'] == 'sr' or \

@@ -1,11 +1,11 @@
 import logging
 from pydov.util import location
-from .abstract import GeoServer_Reader
+from .abstract import GeoServer_Reader_json
 
 log = logging.getLogger(__name__)
 
 
-class Ymparistoalue(GeoServer_Reader):
+class Ymparistoalue(GeoServer_Reader_json):
     use_auth = False
     layername = 'avoindata:ymparistoalue'
     schema = {'geometry': 'GeometryCollection',
@@ -21,7 +21,8 @@ class Ymparistoalue(GeoServer_Reader):
                              'ymparistoalue_uuid': 'string'},
               'required': ['gid', 'ymparistoalue_uuid']}
 
-    def get(self, gml_polygon):
+    def get(self, data):
+        gml_polygon = self.convert_data(data)
         if not isinstance(gml_polygon, location.GmlObject):
             raise ValueError("Need GmlObject as input!")
 

@@ -34,7 +34,7 @@ class API(APIView):
 
         t = hki_geoserver.Tontti(username=geoserver_creds.username,
                                    password=geoserver_creds.credential)
-        neighbours = t.list_of_neighbours(kt_data['geom'], neigh_to_skip=[kiinteistotunnus])
+        neighbours = t.list_of_neighbours(kt_data, neigh_to_skip=[kiinteistotunnus])
         if not neighbours:
             log.warning("%s not found by geom!" % kiinteistotunnus)
             return JsonResponse([])

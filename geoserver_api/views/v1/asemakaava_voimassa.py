@@ -34,16 +34,12 @@ class API(APIView):
 
         akv = hki_geoserver.Asemakaava_voimassa(username=geoserver_creds.username,
                                                 password=geoserver_creds.credential)
-        akv_data = akv.get(kt_data['geom'])
+        akv_data = akv.get(kt_data)
         if not akv_data:
             log.warning("%s not found by geom!" % kiinteistotunnus)
             return JsonResponse({})
 
         #del akv_data['geom']
-        # Convert part of XML-tree from objects to str to be returned as JSON.
-        geom_str = etree.tostring(akv_data['geom'].element,
-                                  encoding='ascii', method='xml',
-                                  xml_declaration=False).decode('ascii')
-        akv_data['geom'] = geom_str
+        akv_data['geom'] = akv.get_geometry(akv_data)
 
         return JsonResponse(akv_data)

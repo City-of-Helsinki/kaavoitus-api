@@ -32,9 +32,6 @@ class API(APIView):
             log.error("%s not found!" % kiinteistotunnus)
             return HttpResponseNotFound()
 
-        geom_str = etree.tostring(t_data['geom'].element,
-                                  encoding='ascii', method='xml',
-                                  xml_declaration=False).decode('ascii')
-        t_data['geom'] = geom_str
+        t_data['geom'] = t.get_geometry(t_data)
 
         return JsonResponse(t_data)

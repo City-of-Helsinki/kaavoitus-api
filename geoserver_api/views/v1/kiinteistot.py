@@ -34,29 +34,23 @@ class API(APIView):
 
         kt = hki_geoserver.Kiinteistotunnus(username=geoserver_creds.username,
                                             password=geoserver_creds.credential)
-        kt_data = kt.get_by_geom(ak_data['geom'])
+
+        kt_data = kt.get_by_geom(ak_data)
         if not kt_data:
             log.error("%s not found!" % hankenumero)
             return HttpResponseNotFound()
 
         kiinteistot = []
         for kiinteisto in kt_data:
-            # Convert part of XML-tree from objects to str to be returned as JSON.
-            geom_str = etree.tostring(kiinteisto['geom'].element,
-                                    encoding='ascii', method='xml',
-                                    xml_declaration=False).decode('ascii')
-            kiinteisto['geom'] = geom_str
+            kiinteisto['geom'] = kt.get_geometry(kiinteisto)
+
             kt_serializer = KiinteistoV1Serializer(data=kiinteisto)
             if not kt_serializer.is_valid():
                 log.error("Invalid WMF-data: %s" % kt_serializer.errors)
                 return HttpResponseServerError("Invalid KT data received from WFS!")
             kiinteistot.append(kiinteisto)
 
-        # Convert part of XML-tree from objects to str to be returned as JSON.
-        geom_str = etree.tostring(ak_data['geom'].element,
-                                  encoding='ascii', method='xml',
-                                  xml_declaration=False).decode('ascii')
-        ak_data['geom'] = geom_str
+        ak_data['geom'] = kt.get_geometry(ak_data)
 
         ret_data = {
             'asemakaava': ak_data,

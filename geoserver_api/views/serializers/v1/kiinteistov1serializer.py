@@ -11,7 +11,7 @@ from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
             description="""
             Example 09100399030101 is part of Espa, esplanade and urban park in downtown Helsinki.
             Group 9903 indicates a public space, a park.
-            
+
             Fields:
             * datanomistaja: Owner of this data in City of Helsinki
             * id: Database unique id
@@ -63,9 +63,10 @@ from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
         ),
     ]
 )
+
 class KiinteistoV1Serializer(serializers.Serializer):
     datanomistaja = serializers.CharField(max_length=40)
-    id = serializers.IntegerField()
+    id = serializers.CharField()
     kiinteisto = serializers.CharField(max_length=24)
     kiinteistotunnus = serializers.CharField(max_length=20)
     kunta = serializers.CharField(min_length=3, max_length=3)
