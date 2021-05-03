@@ -1,11 +1,12 @@
 import logging
 from pydov.util import location
-from .abstract import GeoServer_Reader_json
+from .abstract import GeoServer_Reader
+from django.conf import settings
 
 log = logging.getLogger(__name__)
 
 
-class Asemakaava_voimassa(GeoServer_Reader_json):
+class Asemakaava_voimassa(GeoServer_Reader):
     use_auth = False
     layername = 'avoindata:Kaavahakemisto_alue_kaava_voimassa'
     schema = {'geometry': 'GeometryCollection',

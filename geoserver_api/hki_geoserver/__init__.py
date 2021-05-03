@@ -1,5 +1,4 @@
 from .abstract.geoserver_reader import GeoServer_Reader
-from .abstract.geoserver_reader_json import GeoServer_Reader_json
 from .kiinteistotunnus import Kiinteistotunnus
 from .rakennuskieltoalue_asemakaava import Rakennuskieltoalue_asemakaava
 from .rakennuskieltoalue_yleiskaava import Rakennuskieltoalue_yleiskaava

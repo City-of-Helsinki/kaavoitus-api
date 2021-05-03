@@ -28,6 +28,7 @@ env = environ.Env(
     ALLOWED_HOSTS=(list, []),
     LOG_LEVEL=(str, 'WARNING'),
     FACTA_DB_MOCK_DATA_DIR=(str, None),
+    USE_JSON_READER=(bool, True),
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -281,3 +282,5 @@ LOGGING = {
 }
 
 FACTA_DB_MOCK_DATA_DIR = env("FACTA_DB_MOCK_DATA_DIR")
+
+USE_JSON_READER = env("USE_JSON_READER")

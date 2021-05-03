@@ -1,12 +1,12 @@
 from pydov.util import location
 import copy
 import logging
-from .abstract import GeoServer_Reader_json
+from .abstract import GeoServer_Reader
 
 log = logging.getLogger(__name__)
 
 
-class Tontti(GeoServer_Reader_json):
+class Tontti(GeoServer_Reader):
     use_auth = True
     layername = 'helsinki:Kiinteisto_alue_tontti'
     schema = {'geometry': 'GeometryCollection',

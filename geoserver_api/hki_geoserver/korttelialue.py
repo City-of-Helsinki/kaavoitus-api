@@ -1,11 +1,11 @@
 import logging
 from pydov.util import location
-from .abstract import GeoServer_Reader_json
+from .abstract import GeoServer_Reader
 
 log = logging.getLogger(__name__)
 
 
-class Korttelialue(GeoServer_Reader_json):
+class Korttelialue(GeoServer_Reader):
     use_auth = False
     layername = 'avoindata:korttelialue'
     schema = {'geometry': 'GeometryCollection',

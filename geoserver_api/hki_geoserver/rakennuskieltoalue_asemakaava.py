@@ -1,8 +1,8 @@
 from pydov.util import location
-from .abstract import GeoServer_Reader_json
+from .abstract import GeoServer_Reader
 
 
-class Rakennuskieltoalue_asemakaava(GeoServer_Reader_json):
+class Rakennuskieltoalue_asemakaava(GeoServer_Reader):
     use_auth = False
     layername = 'avoindata:Rakennuskieltoalue_asemakaavan_laatimiseksi'
     schema = {'geometry': 'GeometryCollection',

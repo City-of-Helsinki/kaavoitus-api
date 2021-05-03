@@ -33,7 +33,7 @@ class API(APIView):
             log.error("%s not found!" % hankenumero)
             return HttpResponseNotFound()
 
-        log.debug("Hankenumero: %s" % (ak_data['hankenumero']))
+        log.info("Hankenumero: %s" % (ak_data['hankenumero']))
 
         suunnittelualueen_rajaus = ak.get_geometry(ak_data)
 

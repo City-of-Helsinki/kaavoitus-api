@@ -1,11 +1,11 @@
 import logging
 from pydov.util import location
-from .abstract import GeoServer_Reader_json
+from .abstract import GeoServer_Reader
 
 log = logging.getLogger(__name__)
 
 
-class YleinenTaiMuuAlue(GeoServer_Reader_json):
+class YleinenTaiMuuAlue(GeoServer_Reader):
     use_auth = False
     layername = 'avoindata:yleinen_tai_muu_alue'
     schema = {'geometry': 'GeometryCollection',

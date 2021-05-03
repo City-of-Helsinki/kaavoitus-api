@@ -23,7 +23,7 @@ HELSINKI_GEOSERVER_OPENDATA_URL = 'https://kartta.hel.fi/ws/geoserver/avoindata/
 HELSINKI_GEOSERVER_INTERNAL_URL = 'https://kartta.hel.fi/ws/geoserver/helsinki/wfs'
 
 
-class GeoServer_Reader_json:
+class GeoServer_Reader_xml:
     wfs = None
     geo_url = None
     layername = None
@@ -32,13 +32,14 @@ class GeoServer_Reader_json:
     username = None
     password = None
 
+    ID = 'id'
     GML_ID = 'gml_id'
     GML_GEOM = 'geom'
 
     def __init__(self, username=None, password=None):
-        if not GeoServer_Reader_json.username or username:
+        if not GeoServer_Reader_xml.username or username:
             # Conditional setting of creds
-            GeoServer_Reader_json.set_auth_credentials(username, password)
+            GeoServer_Reader_xml.set_auth_credentials(username, password)
 
     @staticmethod
     def set_logging_level(level=logging.DEBUG):
@@ -47,8 +48,8 @@ class GeoServer_Reader_json:
 
     @staticmethod
     def set_auth_credentials(username, password):
-        GeoServer_Reader_json.username = username
-        GeoServer_Reader_json.password = password
+        GeoServer_Reader_xml.username = username
+        GeoServer_Reader_xml.password = password
 
     def _init_wfs(self):
         url_to_use = None
@@ -79,7 +80,7 @@ class GeoServer_Reader_json:
 
         return layer_schema
 
-    def query(self, fields, filter={}, return_single_result=True, limit_results_to=1000):
+    def query(self, fields, filter={}, return_single_result=True, limit_results_to=10):
         self._init_wfs()
 
         if not isinstance(fields, list):
@@ -102,35 +103,61 @@ class GeoServer_Reader_json:
             filter=filter_fes,
             startindex=0,
             method='post',
-            outputFormat='json'
         )
 
-        raw = json.loads(response.read())
-        # log.info(raw)
-        returned = raw.get('numberReturned')
-        if limit_results_to and returned > limit_results_to:
-            log.error("Argh! Too much data.")
-            raise ValueError("Too much data. Faulty filter! Expecting less than %d, but got %d." %
-                             (limit_results_to, returned))
+        ts = None
+        srs = None
+        returned = 0
         kdata_out = []
         kdata = None
-        for feature in raw.get('features'):
-            kdata = feature.get('properties')
-            kdata['id'] = feature.get('id')
-            kdata['srs'] = raw.get('crs', {}).get('properties', {}).get('name')
-            kdata['geom'] = [
-                {
-                    "type": "Feature",
-                    "geometry": feature.get('geometry'),
-                    "properties": {
-                        "id": feature.get('id'),
-                    }
-                }
-            ]
-            if return_single_result:
-                break
-            kdata_out.append(kdata)
+        context = etree.iterparse(response, events=('start', 'end'))
 
+        for action, elem in context:
+            if action == 'start':
+                if elem.tag == '{http://www.opengis.net/wfs/2.0}FeatureCollection':
+                    ts = xml_date_parse(elem.get('timeStamp'))
+                    returned = int(elem.get('numberReturned'))
+                    if limit_results_to and returned > limit_results_to:
+                        log.error("Argh! Too much data.")
+                        raise ValueError("Too much data. Faulty filter! Expecting less than %d, but got %d." %
+                                         (limit_results_to, returned))
+                elif elem.tag == '{http://www.opengis.net/wfs/2.0}member':
+                    kdata = {field: None for field in fields}
+                    srs = None
+                elif elem.tag.startswith('{https://www.hel.fi/avoindata}') or elem.tag.startswith(
+                        '{https://www.hel.fi/hel}'):
+
+                    namespace, tag = elem.tag.split('}', 2)
+                    if tag in fields:
+                        kdata[tag] = elem.text
+                    elif namespace == '':
+                        pass
+                    else:
+                        id = elem.get('{http://www.opengis.net/gml/3.2}id')
+                        if id:
+                            kdata[GeoServer_Reader_xml.ID] = id
+                elif elem.tag.startswith('{http://www.opengis.net/gml/3.2}'):
+                    namespace, tag = elem.tag.split('}', 2)
+                    if tag == 'MultiSurface':
+                        srs = elem.get('srsName')
+                    elif tag == 'Polygon':
+                        kdata[GeoServer_Reader_xml.GML_ID] = elem.get('{http://www.opengis.net/gml/3.2}id')
+                        new_elem = copy.copy(elem)
+                        # Note: Most Polygons don't have srsName, some do.
+                        if 'srsName' not in new_elem.attrib:
+                            new_elem.attrib['srsName'] = srs
+                        del new_elem.attrib['{http://www.opengis.net/gml/3.2}id']
+                        gml_location = location.GmlObject(new_elem)
+                        kdata[GeoServer_Reader_xml.GML_GEOM] = gml_location
+                    elif tag == 'posList' and False:
+                        kdata[GeoServer_Reader_xml.GML_GEOM] = elem.text
+            elif action == 'end':
+                if elem.tag == '{http://www.opengis.net/wfs/2.0}member':
+                    if not return_single_result:
+                        kdata_out.append(kdata)
+                    log.debug("End of tag %s. Got: %s" % (elem.tag, kdata))
+
+        log.debug("end WFS-request for %s. Got %d pieces of data" % (self.layername, returned))
         if return_single_result:
             return returned, kdata
 
@@ -196,35 +223,20 @@ class GeoServer_Reader_json:
 
         return fields
 
-    def _json_to_gml(self, data):
-        if not data['geom'][0]['geometry']:
-            raise ValueError('Gometry missing!')
-
-        # log.info(data)
-        dump = json.dumps(data['geom'][0]['geometry'])
-        geom = ogr.CreateGeometryFromJson(dump)
-        spatialReference = osr.SpatialReference()
-        # spatialReference.SetWellKnownGeogCS(data['srs'])
-        spatialReference.ImportFromEPSG(3879)
-        spatialReference.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-        geom.AssignSpatialReference(spatialReference) # 'urn:ogc:def:crs:EPSG::3879'
-        gml = geom.ExportToGML(options=['SRSDIMENSION_LOC=GEOMETRY', 'FORMAT=GML32', 'GML3_LONGSRS=YES', 'GMLID=%s' % data['id'], 'NAMESPACE_DECL=YES'])
-        # log.info(gml)
-        return location.GmlObject(gml)
-
     def convert_data(self, data):
-        return self._json_to_gml(data)
+        return data['geom']
 
     def get_geometry(self, data):
-        # create a geometry from coordinates
-        new_geom = copy.deepcopy(data['geom'])
-        dump = json.dumps(new_geom[0]['geometry'])
-        geom = ogr.CreateGeometryFromJson(dump)
+        geom_str = etree.tostring(data['geom'].element,
+                              encoding='ascii', method='xml',
+                              xml_declaration=False).decode('ascii')
+
+        # log.info(data)
+        geom = ogr.CreateGeometryFromGML(geom_str)
 
         # create coordinate transformation
         inSpatialRef = osr.SpatialReference()
         inSpatialRef.ImportFromEPSG(3879)
-        inSpatialRef.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
         outSpatialRef = osr.SpatialReference()
         outSpatialRef.ImportFromEPSG(4326)
@@ -235,7 +247,25 @@ class GeoServer_Reader_json:
         # transform
         geom.Transform(coordTransform)
 
-        new_geom[0]['geometry'] = geom.ExportToJson()
+        # if geom.HasCurveGeometry:
+        #     g1l = geom.GetCurveGeometry()
+        # else:
+        #     g1l = geom.GetLinearGeometry()
+
+        # Use approximate
+        linear_geom = geom.GetLinearGeometry()
+
+        new_geom = [{
+            "type": "Feature",
+            "geometry": linear_geom.ExportToJson(),
+            "properties": {
+                "id": data['id'],
+            }
+        }]
         return json.dumps(new_geom)
 
-        #return json.dumps(data['geom'])
+        #return geom.ExportToGML(options=['SRSDIMENSION_LOC=GEOMETRY', 'FORMAT=GML32', 'GML3_LONGSRS=YES', 'GMLID=%s' % data['id'], 'NAMESPACE_DECL=YES'])
+
+        # return etree.tostring(data['geom'].element,
+        #                       encoding='ascii', method='xml',
+        #                       xml_declaration=False).decode('ascii')
