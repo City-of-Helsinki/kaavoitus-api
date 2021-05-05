@@ -81,8 +81,6 @@ COPY --from=compile-image /usr/lib64 /usr/lib64
 
 ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
-RUN gdalinfo --version
-
 # Copy local code to the container image.
 COPY api_project api_project/
 COPY common_auth common_auth/
@@ -94,7 +92,7 @@ COPY api_project/gunicorn_config.py .
 COPY setup.py .
 
 ENV PROJ_LIB=/usr/local/share/proj
-RUN easy_install GDAL
+RUN easy_install GDAL==$(gdal-config --version)
 
 # Security: Non-root execution of gunicorn
 USER app-user

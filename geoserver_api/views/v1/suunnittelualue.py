@@ -4,7 +4,6 @@ from rest_framework.views import APIView  # pip install django-rest-framework
 from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest, \
     HttpResponseNotFound, HttpResponseForbidden, HttpResponseServerError
 import logging
-import lxml.etree as etree
 from geoserver_api import hki_geoserver
 from ..serializers.v1 import SuunnittelualueV1Serializer
 

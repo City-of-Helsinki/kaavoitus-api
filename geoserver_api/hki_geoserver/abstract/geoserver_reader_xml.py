@@ -12,7 +12,6 @@ import logging
 import lxml.etree as etree
 from lxml.builder import ElementMaker
 from dateutil.parser import parse as xml_date_parse
-from pyproj import CRS, Transformer
 from pydov.util import location
 from osgeo import ogr, osr
 import json
