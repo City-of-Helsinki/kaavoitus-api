@@ -1,5 +1,5 @@
-import secrets
-from django.conf import settings
+# import secrets
+# from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -20,4 +20,4 @@ class ExtAuthCred(models.Model):
         # https://github.com/encode/django-rest-framework/issues/705
         verbose_name = _("ExtAuthCred")
         verbose_name_plural = _("ExtAuthCreds")
-        db_table = 'ext_auth_cred'
+        db_table = "ext_auth_cred"

@@ -7,30 +7,34 @@ log = logging.getLogger(__name__)
 
 class Kaavamaarays(GeoServer_Reader):
     use_auth = False
-    layername = 'avoindata:kaavamaarays'
-    schema = {'geometry': 'GeometryCollection',
-              'geometry_column': 'geom',
-              'properties': {'angle': 'double',
-                             'asemakaava_uuid_asemakaava': 'string',
-                             'gid': 'int',
-                             'kaavamaarays_uuid': 'string',
-                             'leveys': 'string',
-                             'luokka': 'string',
-                             'maanalainen': 'boolean',
-                             'paivitetty_tietopalveluun': 'date',
-                             'pintaala': 'double',
-                             'rakennusala_uuid_rakennusala': 'string',
-                             'sitova': 'boolean',
-                             'symbolityyppi': 'string',
-                             'teksti': 'string',
-                             'tyyppi': 'string',
-                             'x_scale': 'double',
-                             'y_scale': 'double',
-                             'yhtdatanomistaja': 'string',
-                             'yhtluontipvm': 'date',
-                             'yhtmuokkauspvm': 'date',
-                             'ymparistoalue_uuid_ymparistoalue': 'string'},
-              'required': ['gid', 'kaavamaarays_uuid']}
+    layername = "avoindata:kaavamaarays"
+    schema = {
+        "geometry": "GeometryCollection",
+        "geometry_column": "geom",
+        "properties": {
+            "angle": "double",
+            "asemakaava_uuid_asemakaava": "string",
+            "gid": "int",
+            "kaavamaarays_uuid": "string",
+            "leveys": "string",
+            "luokka": "string",
+            "maanalainen": "boolean",
+            "paivitetty_tietopalveluun": "date",
+            "pintaala": "double",
+            "rakennusala_uuid_rakennusala": "string",
+            "sitova": "boolean",
+            "symbolityyppi": "string",
+            "teksti": "string",
+            "tyyppi": "string",
+            "x_scale": "double",
+            "y_scale": "double",
+            "yhtdatanomistaja": "string",
+            "yhtluontipvm": "date",
+            "yhtmuokkauspvm": "date",
+            "ymparistoalue_uuid_ymparistoalue": "string",
+        },
+        "required": ["gid", "kaavamaarays_uuid"],
+    }
 
     def get(self, data):
         gml_polygon = self.convert_data(data)
@@ -41,10 +45,11 @@ class Kaavamaarays(GeoServer_Reader):
         # kaavanumero/hankenumero/pinonumero/kaavavaihe
 
         fields_to_retrieve = self._schema_to_fieldlist()
-        num_returned, data = self.query(fields_to_retrieve,
-                                        filter=gml_polygon,
-                                        limit_results_to=1000,
-                                        )
+        num_returned, data = self.query(
+            fields_to_retrieve,
+            filter=gml_polygon,
+            limit_results_to=1000,
+        )
 
         return data
 
@@ -54,10 +59,11 @@ class Kaavamaarays(GeoServer_Reader):
             raise ValueError("Need GmlObject as input!")
 
         fields_to_retrieve = self._schema_to_fieldlist()
-        num_returned, data = self.query(fields_to_retrieve,
-                                        filter=gml_polygon,
-                                        limit_results_to=10000,
-                                        return_single_result=False,
-                                        )
+        num_returned, data = self.query(
+            fields_to_retrieve,
+            filter=gml_polygon,
+            limit_results_to=10000,
+            return_single_result=False,
+        )
 
         return data

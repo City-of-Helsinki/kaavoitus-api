@@ -1,8 +1,7 @@
 from rest_framework.views import APIView  # pip install django-rest-framework
-from rest_framework import authentication, permissions
-from django.http import JsonResponse, HttpResponseBadRequest
+from django.http import JsonResponse
 from drf_spectacular.openapi import AutoSchema
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import extend_schema
 from drf_spectacular.types import OpenApiTypes
 
 
@@ -12,9 +11,7 @@ class API(APIView):
     permission_classes = []
     # Not versioned.
     versioning_class = None
-    allowed_methods = [
-        'get'
-    ]
+    allowed_methods = ["get"]
     schema = AutoSchema()
     serializer_class = None
 
@@ -24,7 +21,7 @@ class API(APIView):
             500: OpenApiTypes.OBJECT,
         },
         # override default docstring extraction
-        description='Simple service is alive test',
+        description="Simple service is alive test",
         # provide Authentication class that deviates from the views default
         auth=None,
         # change the auto-generated operation name
@@ -32,12 +29,11 @@ class API(APIView):
         # or even completely override what AutoSchema would generate. Provide raw Open API spec as Dict.
         operation=None,
         # attach request/response examples to the operation.
-
     )
     def get(self, request):
         if request.auth:
-            retval = {'status': 'authenticated ok.'}
+            retval = {"status": "authenticated ok."}
         else:
-            retval = {'status': 'ok.'}
+            retval = {"status": "ok."}
 
         return JsonResponse(retval)

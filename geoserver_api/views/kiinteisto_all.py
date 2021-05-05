@@ -1,6 +1,6 @@
 from rest_framework.views import APIView  # pip install django-rest-framework
-from rest_framework import authentication, permissions
-from django.http import JsonResponse, HttpResponseBadRequest
+from rest_framework import permissions
+from django.http import HttpResponseBadRequest
 from drf_spectacular.openapi import AutoSchema
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
@@ -14,11 +14,9 @@ class API(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     allowed_methods = [
-        'get',
+        "get",
     ]
-    schema = AutoSchema(
-
-    )
+    schema = AutoSchema()
 
     @extend_schema(
         responses={
@@ -28,32 +26,30 @@ class API(APIView):
         },
         parameters=[
             OpenApiParameter(
-                name='kiinteistotunnus',
+                name="kiinteistotunnus",
                 type=str,
                 location=OpenApiParameter.PATH,
-                description='Kiinteistötunnus to get all Kaavapino data for',
-
+                description="Kiinteistötunnus to get all Kaavapino data for",
             ),
         ],
         # override default docstring extraction
-        description='Hae kiinteistön Kaavapino data kiinteistötunnuksella',
+        description="Hae kiinteistön Kaavapino data kiinteistötunnuksella",
         # provide Authentication class that deviates from the views default
-        #auth=None,
+        # auth=None,
         # change the auto-generated operation name
-        #operation_id=None,
+        # operation_id=None,
         # or even completely override what AutoSchema would generate. Provide raw Open API spec as Dict.
-        #operation=None,
+        # operation=None,
         # attach request/response examples to the operation.
-
     )
     def get(self, request, *args, **kwargs):
         if not request.version:
             return HttpResponseBadRequest("Need version!")
 
         version = int(request.version)
-        if 'version' in kwargs:
+        if "version" in kwargs:
             # Note: It's pretty sure the value is there, but let's have an if just to be sure.
-            del kwargs['version']
+            del kwargs["version"]
         if version == 1:
             api = APIv1(request=request)
             return api.get(request, *args, **kwargs)

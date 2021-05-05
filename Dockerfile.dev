@@ -32,7 +32,7 @@ COPY facta_api facta_api/
 
 # Install dependencies.
 RUN pip install --upgrade pip ; pip install wheel
-RUN pip install -e .
+RUN pip install -e .[dev]
 
 # Download and unpack Oracle libraries
 RUN cd /tmp ; wget https://download.oracle.com/otn_software/linux/instantclient/211000/instantclient-basiclite-linux.x64-21.1.0.0.0.zip ; mkdir /oracle ; cd /oracle ; unzip /tmp/instantclient-basiclite-linux.x64-21.1.0.0.0.zip

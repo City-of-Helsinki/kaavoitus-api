@@ -6,8 +6,8 @@ from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
     # exclude_fields=('single',),  # schema ignore these fields
     examples=[
         OpenApiExample(
-            'Example response',
-            summary='Detailed description of fields returned as response',
+            "Example response",
+            summary="Detailed description of fields returned as response",
             description="""
     Fields:
         * muistutusten_lukumaara: Muistutusten lukumäärä
@@ -53,9 +53,7 @@ from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
         * kaavaehdotus_uudelleen_nahtavillealkupvm_pieni4: Milloin kaavaehdotuksen nähtävilläolo alkaa (XS, S, M)
         * kaavaehdotus_uudelleen_nahtavillaviimpvm_4: Milloin kaavaehdotuksen nähtävilläolo päättyy
             """,
-            value={
-                "pinonumero": "0000027"
-            },
+            value={"pinonumero": "0000027"},
             request_only=False,  # signal that example only applies to requests
             response_only=True,  # signal that example only applies to responses
         ),
@@ -95,14 +93,26 @@ class ProjectV1Serializer(serializers.Serializer):
     OAS_nahtavillaviimpvm = serializers.DateField(required=False)
     HaO_paatospvm = serializers.DateField(required=False)
     KHO_paatospvm = serializers.DateField(required=False)
-    kaavaehdotus_uudelleen_nahtavillealkupvm_iso2 = serializers.DateField(required=False)
-    kaavaehdotus_uudelleen_nahtavillealkupvm_pieni2 = serializers.DateField(required=False)
+    kaavaehdotus_uudelleen_nahtavillealkupvm_iso2 = serializers.DateField(
+        required=False
+    )
+    kaavaehdotus_uudelleen_nahtavillealkupvm_pieni2 = serializers.DateField(
+        required=False
+    )
     kaavaehdotus_uudelleen_nahtavillaviimpvm_2 = serializers.DateField(required=False)
-    kaavaehdotus_uudelleen_nahtavillealkupvm_iso3 = serializers.DateField(required=False)
-    kaavaehdotus_uudelleen_nahtavillealkupvm_pieni3 = serializers.DateField(required=False)
+    kaavaehdotus_uudelleen_nahtavillealkupvm_iso3 = serializers.DateField(
+        required=False
+    )
+    kaavaehdotus_uudelleen_nahtavillealkupvm_pieni3 = serializers.DateField(
+        required=False
+    )
     kaavaehdotus_uudelleen_nahtavillaviimpvm_3 = serializers.DateField(required=False)
-    kaavaehdotus_uudelleen_nahtavillealkupvm_iso4 = serializers.DateField(required=False)
-    kaavaehdotus_uudelleen_nahtavillealkupvm_pieni4 = serializers.DateField(required=False)
+    kaavaehdotus_uudelleen_nahtavillealkupvm_iso4 = serializers.DateField(
+        required=False
+    )
+    kaavaehdotus_uudelleen_nahtavillealkupvm_pieni4 = serializers.DateField(
+        required=False
+    )
     kaavaehdotus_uudelleen_nahtavillaviimpvm_4 = serializers.DateField(required=False)
     # TBD later
     # HL51_muutettu_huomautukset = serializers.CharField(required=False)

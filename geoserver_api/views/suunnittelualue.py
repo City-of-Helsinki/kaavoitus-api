@@ -1,7 +1,9 @@
-from geoserver_api.views.serializers.v1.suunnittelualueV1Serializer import SuunnittelualueV1Serializer
+from geoserver_api.views.serializers.v1.suunnittelualueV1Serializer import (
+    SuunnittelualueV1Serializer,
+)
 from rest_framework.views import APIView  # pip install django-rest-framework
-from rest_framework import authentication, permissions
-from django.http import JsonResponse, HttpResponseBadRequest
+from rest_framework import permissions
+from django.http import HttpResponseBadRequest
 from drf_spectacular.openapi import AutoSchema
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
@@ -14,7 +16,7 @@ class API(APIView):
     permission_classes = [permissions.IsAuthenticated]
     schema = AutoSchema()
     allowed_methods = [
-        'get',  # 'post', 'put', 'delete'
+        "get",  # 'post', 'put', 'delete'
     ]
 
     @extend_schema(
@@ -25,11 +27,10 @@ class API(APIView):
         },
         parameters=[
             OpenApiParameter(
-                name='hankenumero',
+                name="hankenumero",
                 type=str,
                 location=OpenApiParameter.PATH,
-                description='Hankenumero to get data for',
-
+                description="Hankenumero to get data for",
             ),
         ],
     )
@@ -38,9 +39,9 @@ class API(APIView):
             return HttpResponseBadRequest("Need version!")
 
         version = int(request.version)
-        if 'version' in kwargs:
+        if "version" in kwargs:
             # Note: It's pretty sure the value is there, but let's have an if just to be sure.
-            del kwargs['version']
+            del kwargs["version"]
         if version == 1:
             api = APIv1(request=request)
             return api.get(request, *args, **kwargs)

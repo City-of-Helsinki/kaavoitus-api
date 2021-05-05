@@ -1,4 +1,6 @@
-from rest_framework.authentication import TokenAuthentication as Django_TokenAuthentication
+from rest_framework.authentication import (
+    TokenAuthentication as Django_TokenAuthentication,
+)
 from common_auth.models.token_auth import Token
 
 

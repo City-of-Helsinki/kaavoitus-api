@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
 from .kiinteistonomistajav1serializer import KiinteistonOmistajaV1Serializer
 
 

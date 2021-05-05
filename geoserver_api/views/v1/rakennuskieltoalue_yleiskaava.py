@@ -1,11 +1,13 @@
 from rest_framework.views import APIView  # pip install django-rest-framework
-from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest, \
-    HttpResponseNotFound, HttpResponseForbidden, HttpResponseServerError
-from drf_spectacular.openapi import AutoSchema
-from drf_spectacular.utils import extend_schema, OpenApiParameter
-from drf_spectacular.types import OpenApiTypes
+from django.http import (
+    JsonResponse,
+    HttpResponse,
+    HttpResponseBadRequest,
+    HttpResponseNotFound,
+    HttpResponseForbidden,
+    HttpResponseServerError,
+)
 import logging
-import lxml.etree as etree
 from geoserver_api import hki_geoserver
 from ..serializers.v1.rakennuskieltov1serializer import RakennuskieltoV1Serializer
 
@@ -28,22 +30,24 @@ class API(APIView):
 
         # Confirmed access to GeoServer.
         # Go get the data!
-        kt = hki_geoserver.Kiinteistotunnus(username=geoserver_creds.username,
-                                            password=geoserver_creds.credential)
+        kt = hki_geoserver.Kiinteistotunnus(
+            username=geoserver_creds.username, password=geoserver_creds.credential
+        )
         kt_data = kt.get(kiinteistotunnus)
         if not kt_data:
             log.error("%s not found!" % kiinteistotunnus)
             return HttpResponseNotFound()
 
-        rkay = hki_geoserver.Rakennuskieltoalue_yleiskaava(username=geoserver_creds.username,
-                                                           password=geoserver_creds.credential)
+        rkay = hki_geoserver.Rakennuskieltoalue_yleiskaava(
+            username=geoserver_creds.username, password=geoserver_creds.credential
+        )
         rkay_data = rkay.get(kt_data)
         if not rkay_data:
             log.warning("%s not found by geom!" % kiinteistotunnus)
             return JsonResponse({})
 
-        #del rkay_data['geom']
-        rkay_data['geom'] = rkay.get_geometry(rkay_data)
+        # del rkay_data['geom']
+        rkay_data["geom"] = rkay.get_geometry(rkay_data)
 
         # Go validate the returned data.
         # It needs to be verifiable by serializer rules. Those are published in Swagger.

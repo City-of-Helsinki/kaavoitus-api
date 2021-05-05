@@ -3,11 +3,11 @@ from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
 
 
 @extend_schema_serializer(
-    #exclude_fields=('single',),  # schema ignore these fields
+    # exclude_fields=('single',),  # schema ignore these fields
     examples=[
         OpenApiExample(
-            'Example response',
-            summary='Detailed description of fields returned as response',
+            "Example response",
+            summary="Detailed description of fields returned as response",
             description="""
             Example 09100399030101 is part of Espa, esplanade and urban park in downtown Helsinki.
             Group 9903 indicates a public space, a park.
@@ -51,29 +51,28 @@ from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
                 "sijaintialue": "003",
                 "yksikko": "0101",
                 "gml_id": "Kiinteisto_alue.156.geom.1",
-                "geom": "<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml/3.2\" "
-                        "srsName=\"urn:ogc:def:crs:EPSG::3879\"><gml:exterior><gml:LinearRing>"
-                        "<gml:posList>6672759.0098 2.54969922149E7 6672701.3892 2.54969952458E7 "
-                        "6672711.2563 2.54971894828E7 6672768.3387 2.54971866207E7 "
-                        "6672759.0098 2.54969922149E7</gml:posList></gml:LinearRing>"
-                        "</gml:exterior></gml:Polygon>"
+                "geom": '<gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2" '
+                'srsName="urn:ogc:def:crs:EPSG::3879"><gml:exterior><gml:LinearRing>'
+                "<gml:posList>6672759.0098 2.54969922149E7 6672701.3892 2.54969952458E7 "
+                "6672711.2563 2.54971894828E7 6672768.3387 2.54971866207E7 "
+                "6672759.0098 2.54969922149E7</gml:posList></gml:LinearRing>"
+                "</gml:exterior></gml:Polygon>",
             },
             request_only=False,  # signal that example only applies to requests
             response_only=True,  # signal that example only applies to responses
         ),
     ]
 )
-
 class KiinteistoV1Serializer(serializers.Serializer):
     datanomistaja = serializers.CharField(max_length=40)
     id = serializers.CharField()
     kiinteisto = serializers.CharField(max_length=24)
     kiinteistotunnus = serializers.CharField(max_length=20)
     kunta = serializers.CharField(min_length=3, max_length=3)
-    luontipvm = serializers.DateField(format='YYYY-MM-DD')
-    muokkauspvm = serializers.DateField(format='YYYY-MM-DD')
-    paivitetty_tietopalveluun = serializers.DateField(format='YYYY-MM-DD')
-    rekisterointipvm = serializers.DateField(format='YYYY-MM-DD')
+    luontipvm = serializers.DateField(format="YYYY-MM-DD")
+    muokkauspvm = serializers.DateField(format="YYYY-MM-DD")
+    paivitetty_tietopalveluun = serializers.DateField(format="YYYY-MM-DD")
+    rekisterointipvm = serializers.DateField(format="YYYY-MM-DD")
     ryhma = serializers.CharField(min_length=4, max_length=4)
     sijaintialue = serializers.CharField(min_length=3, max_length=3)
     yksikko = serializers.CharField(min_length=4, max_length=4)

@@ -1,6 +1,6 @@
 from rest_framework.views import APIView  # pip install django-rest-framework
-from rest_framework import authentication, permissions
-from django.http import JsonResponse, HttpResponseBadRequest
+from rest_framework import permissions
+from django.http import HttpResponseBadRequest
 from drf_spectacular.openapi import AutoSchema
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
@@ -14,11 +14,9 @@ class API(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     allowed_methods = [
-        'get',
+        "get",
     ]
-    schema = AutoSchema(
-
-    )
+    schema = AutoSchema()
 
     @extend_schema(
         responses={
@@ -28,31 +26,30 @@ class API(APIView):
         },
         parameters=[
             OpenApiParameter(
-                name='timestamp',
+                name="timestamp",
                 type=str,
                 location=OpenApiParameter.QUERY,
-                description='Filter by timestamp. Query for changes made after given timestamp.',
+                description="Filter by timestamp. Query for changes made after given timestamp.",
             ),
         ],
         # override default docstring extraction
-        description='Get list of changed projects (after given timestamp)',
+        description="Get list of changed projects (after given timestamp)",
         # provide Authentication class that deviates from the views default
-        #auth=None,
+        # auth=None,
         # change the auto-generated operation name
-        #operation_id=None,
+        # operation_id=None,
         # or even completely override what AutoSchema would generate. Provide raw Open API spec as Dict.
-        #operation=None,
+        # operation=None,
         # attach request/response examples to the operation.
-
     )
     def get(self, request, *args, **kwargs):
         if not request.version:
             return HttpResponseBadRequest("Need version!")
 
         version = int(request.version)
-        if 'version' in kwargs:
+        if "version" in kwargs:
             # Note: It's pretty sure the value is there, but let's have an if just to be sure.
-            del kwargs['version']
+            del kwargs["version"]
         if version == 1:
             api = APIv1(request=request)
             return api.get(request, *args, **kwargs)

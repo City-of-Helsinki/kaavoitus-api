@@ -1,11 +1,11 @@
-from rest_framework.views import APIView  # pip install django-rest-framework
-from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest, \
-    HttpResponseNotFound, HttpResponseForbidden, HttpResponseServerError
-from drf_spectacular.openapi import AutoSchema
-from drf_spectacular.utils import extend_schema, OpenApiParameter
-from drf_spectacular.types import OpenApiTypes
+from django.http import (
+    JsonResponse,
+    HttpResponse,
+    HttpResponseBadRequest,
+    HttpResponseForbidden,
+    HttpResponseServerError,
+)
 import logging
-import lxml.etree as etree
 from django.conf import settings
 from ..serializers.v1 import KiinteistonDataV1Serializer
 from facta_api import hel_facta
@@ -38,29 +38,36 @@ class API(KiinteistoAPI):
         if geoserver_creds:
             # Confirmed access to GeoServer.
             # Go get the data!
-            kt = hki_geoserver.Kiinteistotunnus(username=geoserver_creds.username,
-                                                password=geoserver_creds.credential)
+            kt = hki_geoserver.Kiinteistotunnus(
+                username=geoserver_creds.username, password=geoserver_creds.credential
+            )
             kt_data = kt.get(kiinteistotunnus)
             neighbours = []
             if kt_data:
-                t = hki_geoserver.Tontti(username=geoserver_creds.username,
-                                         password=geoserver_creds.credential)
-                neighbours = t.list_of_neighbours(kt_data, neigh_to_skip=[kiinteistotunnus])
+                t = hki_geoserver.Tontti(
+                    username=geoserver_creds.username,
+                    password=geoserver_creds.credential,
+                )
+                neighbours = t.list_of_neighbours(
+                    kt_data, neigh_to_skip=[kiinteistotunnus]
+                )
 
             if neighbours:
                 for neighbour in neighbours:
                     n_owners, n_occupants = self.get_kiinteisto(neighbour)
-                    naapurit.append({
-                        'kiinteistotunnus': neighbour,
-                        'omistajat': n_owners,
-                        'haltijat': n_occupants,
-                    })
+                    naapurit.append(
+                        {
+                            "kiinteistotunnus": neighbour,
+                            "omistajat": n_owners,
+                            "haltijat": n_occupants,
+                        }
+                    )
 
         kiinteisto_data = {
-            'kiinteistotunnus': ktunnus_to_use,
-            'omistajat': owners,
-            'haltijat': occupants,
-            'naapurit': naapurit,
+            "kiinteistotunnus": ktunnus_to_use,
+            "omistajat": owners,
+            "haltijat": occupants,
+            "naapurit": naapurit,
         }
 
         # Go validate the returned data.
@@ -81,11 +88,13 @@ class API(KiinteistoAPI):
         if mock_dir:
             f_ko = hel_facta.KiinteistonOmistajat(mock_data_dir=mock_dir)
         else:
-            f_ko = hel_facta.KiinteistonOmistajat(user=self.facta_creds.username,
-                                                  password=self.facta_creds.credential,
-                                                  host=self.facta_creds.host_spec)
+            f_ko = hel_facta.KiinteistonOmistajat(
+                user=self.facta_creds.username,
+                password=self.facta_creds.credential,
+                host=self.facta_creds.host_spec,
+            )
         rows = f_ko.get_by_kiinteistotunnus(ktunnus)
-        #if not rows:
+        # if not rows:
         #    return HttpResponseNotFound()
 
         # Process result:
@@ -94,30 +103,32 @@ class API(KiinteistoAPI):
         if rows:
             for row in rows:
                 # KiinteistonOmistajaV1Serializer.OWNER_TYPES
-                if row[14] == '10': # C_LAJI
+                if row[14] == "10":  # C_LAJI
                     # Helsinki
-                    owner_type = 'H'
-                elif row[14] in ['8', '11']: # C_LAJI
+                    owner_type = "H"
+                elif row[14] in ["8", "11"]:  # C_LAJI
                     # Govt. of Finland
-                    owner_type = 'F'
+                    owner_type = "F"
                 else:
                     # Private
-                    owner_type = 'P'
+                    owner_type = "P"
 
                 owner = {
-                    'kiinteistotunnus': row[2], # KIINTEISTOTUNNUS
-                    'address': self._extract_omistaja_address(row),
-                    'owner_home_municipality': row[17], # C_KOTIKUNT
-                    'property_owner_type': owner_type
+                    "kiinteistotunnus": row[2],  # KIINTEISTOTUNNUS
+                    "address": self._extract_omistaja_address(row),
+                    "owner_home_municipality": row[17],  # C_KOTIKUNT
+                    "property_owner_type": owner_type,
                 }
                 owner_rows.append(owner)
 
         if mock_dir:
             f_kh = hel_facta.KiinteistonHaltijat(mock_data_dir=mock_dir)
         else:
-            f_kh = hel_facta.KiinteistonHaltijat(user=self.facta_creds.username,
-                                                  password=self.facta_creds.credential,
-                                                  host=self.facta_creds.host_spec)
+            f_kh = hel_facta.KiinteistonHaltijat(
+                user=self.facta_creds.username,
+                password=self.facta_creds.credential,
+                host=self.facta_creds.host_spec,
+            )
         rows = f_kh.get_by_kiinteistotunnus(ktunnus)
 
         # Process result:
@@ -125,8 +136,8 @@ class API(KiinteistoAPI):
             for row in rows:
                 log.debug(row)
                 occupant = {
-                    'kiinteistotunnus': row[2], # KIINTEISTOTUNNUS
-                    'address': self._extract_haltija_address(row),
+                    "kiinteistotunnus": row[2],  # KIINTEISTOTUNNUS
+                    "address": self._extract_haltija_address(row),
                 }
                 occupant_rows.append(occupant)
 

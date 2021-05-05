@@ -1,18 +1,18 @@
 from rest_framework.views import APIView  # pip install django-rest-framework
-from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest, \
-    HttpResponseNotFound, HttpResponseForbidden, HttpResponseServerError
-from drf_spectacular.openapi import AutoSchema
-from drf_spectacular.utils import extend_schema, OpenApiParameter
-from drf_spectacular.types import OpenApiTypes
+from django.http import (
+    JsonResponse,
+    HttpResponse,
+    HttpResponseBadRequest,
+    HttpResponseNotFound,
+    HttpResponseForbidden,
+)
 import logging
-import lxml.etree as etree
 from geoserver_api import hki_geoserver
 
 log = logging.getLogger(__name__)
 
 
 class API(APIView):
-
     def get(self, request, kaavatunnus=None):
         if not kaavatunnus:
             return HttpResponseBadRequest("Need kaavatunnus!")
@@ -25,15 +25,15 @@ class API(APIView):
 
         # Confirmed access to GeoServer.
         # Go get the data!
-        ak = hki_geoserver.Asemakaava(username=geoserver_creds.username,
-                                            password=geoserver_creds.credential)
+        ak = hki_geoserver.Asemakaava(
+            username=geoserver_creds.username, password=geoserver_creds.credential
+        )
         ak_data = ak.get(kaavatunnus)
         if not ak_data:
             log.error("%s not found!" % kaavatunnus)
             return HttpResponseNotFound()
 
-        log.debug("Kaavatunnus: %s" % (ak_data['kaavatunnus']))
-        ak_data['geom'] = ak.get_geometry(ak_data)
+        log.debug("Kaavatunnus: %s" % (ak_data["kaavatunnus"]))
+        ak_data["geom"] = ak.get_geometry(ak_data)
 
         return JsonResponse(ak_data)
-

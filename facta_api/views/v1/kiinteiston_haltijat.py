@@ -1,11 +1,12 @@
-from rest_framework.views import APIView  # pip install django-rest-framework
-from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest, \
-    HttpResponseNotFound, HttpResponseForbidden, HttpResponseServerError
-from drf_spectacular.openapi import AutoSchema
-from drf_spectacular.utils import extend_schema, OpenApiParameter
-from drf_spectacular.types import OpenApiTypes
+from django.http import (
+    JsonResponse,
+    HttpResponse,
+    HttpResponseBadRequest,
+    HttpResponseNotFound,
+    HttpResponseForbidden,
+    HttpResponseServerError,
+)
 import logging
-import lxml.etree as etree
 from django.conf import settings
 from ..serializers.v1 import KiinteistonHaltijatV1Serializer
 from facta_api import hel_facta
@@ -37,9 +38,11 @@ class API(KiinteistoAPI):
         if mock_dir:
             f_kh = hel_facta.KiinteistonHaltijat(mock_data_dir=mock_dir)
         else:
-            f_kh = hel_facta.KiinteistonHaltijat(user=facta_creds.username,
-                                                 password=facta_creds.credential,
-                                                 host=facta_creds.host_spec)
+            f_kh = hel_facta.KiinteistonHaltijat(
+                user=facta_creds.username,
+                password=facta_creds.credential,
+                host=facta_creds.host_spec,
+            )
         rows = f_kh.get_by_kiinteistotunnus(ktunnus_to_use)
         if not rows:
             return HttpResponseNotFound()
@@ -53,14 +56,11 @@ class API(KiinteistoAPI):
                 log.debug("Laji: %s" % row[14])
 
             occupant = {
-                'kiinteistotunnus': row[2], # KIINTEISTOTUNNUS
-                'address': self._extract_haltija_address(row),
+                "kiinteistotunnus": row[2],  # KIINTEISTOTUNNUS
+                "address": self._extract_haltija_address(row),
             }
             occupant_rows.append(occupant)
-        kh_data = {
-            'kiinteistotunnus': ktunnus_to_use,
-            'haltijat': occupant_rows
-        }
+        kh_data = {"kiinteistotunnus": ktunnus_to_use, "haltijat": occupant_rows}
 
         # Go validate the returned data.
         # It needs to be verifiable by serializer rules. Those are published in Swagger.
