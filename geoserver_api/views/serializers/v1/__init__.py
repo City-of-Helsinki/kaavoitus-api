@@ -1,4 +1,6 @@
 from .kiinteistov1serializer import KiinteistoV1Serializer
 from .kiinteistoallv1serializer import KiinteistoAllV1Serializer
 from .rakennuskieltov1serializer import RakennuskieltoV1Serializer
-from .suunnittelualueV1serializer import SuunnittelualueV1Serializer
+from .suunnittelualuev1serializer import SuunnittelualueV1Serializer
+from .kiinteistotv1serializer import KiinteistotV1Serializer
+from .asemakaavav1serializer import AsemakaavaV1Serializer

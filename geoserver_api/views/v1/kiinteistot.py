@@ -1,3 +1,6 @@
+from geoserver_api.views.serializers.v1.kiinteistotv1serializer import (
+    KiinteistotV1Serializer,
+)
 from geoserver_api.views.serializers.v1.kiinteistov1serializer import (
     KiinteistoV1Serializer,
 )
@@ -17,6 +20,8 @@ log = logging.getLogger(__name__)
 
 
 class API(APIView):
+    serializer_class = KiinteistotV1Serializer
+
     def get(self, request, hankenumero=None):
         if not hankenumero:
             return HttpResponseBadRequest("Need hankenumero!")
@@ -65,4 +70,8 @@ class API(APIView):
             "kiinteistot": kiinteistot,
         }
 
-        return JsonResponse(ret_data)
+        serializer = self.serializer_class(data=ret_data)
+        if not serializer.is_valid():
+            return HttpResponseServerError("Invalid output data!")
+
+        return JsonResponse(serializer.validated_data)

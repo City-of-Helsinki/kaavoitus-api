@@ -1,3 +1,6 @@
+from geoserver_api.views.serializers.v1.asemakaavav1serializer import (
+    AsemakaavaV1Serializer,
+)
 from rest_framework.views import APIView  # pip install django-rest-framework
 from rest_framework import permissions
 from django.http import HttpResponseBadRequest
@@ -17,7 +20,11 @@ class API(APIView):
     ]
 
     @extend_schema(
-        responses={200: OpenApiTypes.OBJECT},
+        responses={
+            200: AsemakaavaV1Serializer,
+            401: OpenApiTypes.STR,
+            500: OpenApiTypes.STR,
+        },
         parameters=[
             OpenApiParameter(
                 name="kaavatunnus",
