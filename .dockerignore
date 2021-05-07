@@ -17,4 +17,4 @@ coverage.xml
 .mypy_cache/
 
 # Project files
-pyproject.toml
+#pyproject.toml
