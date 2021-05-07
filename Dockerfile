@@ -80,6 +80,7 @@ COPY --from=compile-image /usr/local/share/proj /usr/local/share/proj
 COPY --from=compile-image /usr/lib64 /usr/lib64
 
 ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+ENV PROJ_LIB=/usr/local/share/proj
 
 # Copy local code to the container image.
 COPY api_project api_project/
@@ -90,9 +91,6 @@ COPY facta_api facta_api/
 COPY manage.py .
 COPY api_project/gunicorn_config.py .
 COPY setup.py .
-
-ENV PROJ_LIB=/usr/local/share/proj
-RUN easy_install GDAL==$(gdal-config --version)
 
 # Security: Non-root execution of gunicorn
 USER app-user

@@ -1,4 +1,4 @@
-from geoserver_api.views.serializers.v1.suunnittelualueV1Serializer import (
+from geoserver_api.views.serializers.v1.suunnittelualueV1serializer import (
     SuunnittelualueV1Serializer,
 )
 from rest_framework.views import APIView  # pip install django-rest-framework

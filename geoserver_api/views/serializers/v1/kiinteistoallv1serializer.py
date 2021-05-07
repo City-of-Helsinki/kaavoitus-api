@@ -53,7 +53,6 @@ REKISTERILAJI = {"T": "Tontti", "M": "Maarekisteri"}
     ]
 )
 class KiinteistoAllV1Serializer(serializers.Serializer):
-
     kiinteistotunnus = serializers.CharField(max_length=20)
     rekisterilaji = serializers.ChoiceField(
         choices=[(type, desc) for type, desc in REKISTERILAJI.items()], allow_blank=True
