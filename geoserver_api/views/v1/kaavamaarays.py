@@ -36,7 +36,7 @@ class API(APIView):
         km = hki_geoserver.Kaavamaarays(
             username=geoserver_creds.username, password=geoserver_creds.credential
         )
-        km_data = km.get(kt_data)
+        km_data = km.get_by_geom(kt_data, single_result=True)
         if not km_data:
             log.warning("%s not found by geom!" % kiinteistotunnus)
             return JsonResponse({})

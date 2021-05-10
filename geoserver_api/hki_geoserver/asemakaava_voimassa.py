@@ -32,13 +32,15 @@ class Asemakaava_voimassa(GeoServer_Reader):
         "required": ["id"],
     }
 
-    def get(self, data):
+    def get_by_geom(self, data, single_result=False):
         gml_polygon = self.convert_data(data)
         if not isinstance(gml_polygon, location.GmlObject):
             raise ValueError("Need GmlObject as input!")
 
         fields_to_retrieve = self._schema_to_fieldlist()
-        num_returned, data = self.query(fields_to_retrieve, filter=gml_polygon)
+        num_returned, data = self.query(
+            fields_to_retrieve, filter=gml_polygon, return_single_result=single_result
+        )
 
         return data
 

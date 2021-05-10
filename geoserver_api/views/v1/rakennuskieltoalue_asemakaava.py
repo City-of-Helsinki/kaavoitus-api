@@ -41,7 +41,7 @@ class API(APIView):
         rkaa = hki_geoserver.Rakennuskieltoalue_asemakaava(
             username=geoserver_creds.username, password=geoserver_creds.credential
         )
-        rkaa_data = rkaa.get(kt_data)
+        rkaa_data = rkaa.get_by_geom(kt_data, single_result=True)
         if not rkaa_data:
             log.warning("%s not found by geom!" % kiinteistotunnus)
             return JsonResponse({})

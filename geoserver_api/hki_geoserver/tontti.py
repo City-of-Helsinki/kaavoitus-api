@@ -65,7 +65,6 @@ class Tontti(GeoServer_Reader):
             fields_to_retrieve,
             filter=gml_polygon,
             return_single_result=False,
-            limit_results_to=499,
         )
         out = [
             tontti["kiinteistotunnus"]
@@ -75,7 +74,7 @@ class Tontti(GeoServer_Reader):
 
         return out
 
-    def get_by_geom(self, data):
+    def get_by_geom(self, data, single_result=False):
         gml_polygon = self.convert_data(data)
         if not isinstance(gml_polygon, location.GmlObject):
             raise ValueError("Need GmlObject as input!")
@@ -84,8 +83,7 @@ class Tontti(GeoServer_Reader):
         num_returned, data = self.query(
             fields_to_retrieve,
             filter=gml_polygon,
-            limit_results_to=1000,
-            return_single_result=False,
+            return_single_result=single_result,
         )
 
         return data

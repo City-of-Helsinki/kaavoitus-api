@@ -36,7 +36,7 @@ class API(APIView):
         akv = hki_geoserver.Asemakaava_voimassa(
             username=geoserver_creds.username, password=geoserver_creds.credential
         )
-        akv_data = akv.get(kt_data)
+        akv_data = akv.get_by_geom(kt_data, single_result=True)
         if not akv_data:
             log.warning("%s not found by geom!" % kiinteistotunnus)
             return JsonResponse({})

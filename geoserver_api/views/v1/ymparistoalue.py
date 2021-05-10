@@ -36,7 +36,7 @@ class API(APIView):
         ya = hki_geoserver.Ymparistoalue(
             username=geoserver_creds.username, password=geoserver_creds.credential
         )
-        ya_data = ya.get(kt_data)
+        ya_data = ya.get_by_geom(kt_data, single_result=True)
         if not ya_data:
             log.warning("%s not found by geom!" % kiinteistotunnus)
             return JsonResponse({})

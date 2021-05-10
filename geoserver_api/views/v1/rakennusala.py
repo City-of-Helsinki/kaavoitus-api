@@ -36,7 +36,7 @@ class API(APIView):
         ra = hki_geoserver.Rakennusala(
             username=geoserver_creds.username, password=geoserver_creds.credential
         )
-        ra_data = ra.get(kt_data)
+        ra_data = ra.get_by_geom(kt_data, single_result=True)
         if not ra_data:
             log.warning("%s not found by geom!" % kiinteistotunnus)
             return JsonResponse({})

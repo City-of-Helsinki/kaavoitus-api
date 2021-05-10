@@ -66,7 +66,7 @@ class API(APIView):
         )
         asemakaavan_numero = None
         asemakaava_voimassa = None
-        akv_data = akv.get(kt_data)
+        akv_data = akv.get_by_geom(kt_data, single_result=True)
         if akv_data:
             asemakaavan_numero = akv_data["kaavatunnus"]
             asemakaava_voimassa = akv_data["vahvistamispvm"]
@@ -76,7 +76,7 @@ class API(APIView):
         rkay = hki_geoserver.Rakennuskieltoalue_yleiskaava(
             username=geoserver_creds.username, password=geoserver_creds.credential
         )
-        rkay_data = rkay.get(kt_data)
+        rkay_data = rkay.get_by_geom(kt_data, single_result=True)
         if rkay_data:
             # del rkay_data['geom']
             rkay_data["geom"] = rkay.get_geometry(rkay_data)
@@ -90,7 +90,7 @@ class API(APIView):
         rkaa = hki_geoserver.Rakennuskieltoalue_asemakaava(
             username=geoserver_creds.username, password=geoserver_creds.credential
         )
-        rkaa_data = rkaa.get(kt_data)
+        rkaa_data = rkaa.get_by_geom(kt_data, single_result=True)
         if rkaa_data:
             # del rkaa_data['geom']
             rkaa_data["geom"] = rkaa.get_geometry(rkaa_data)
