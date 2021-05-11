@@ -36,7 +36,7 @@ from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
     ]
 )
 class SuunnittelualueV1Serializer(serializers.Serializer):
-    suunnittelualueen_rajaus = serializers.CharField()
+    suunnittelualueen_rajaus = serializers.JSONField(required=False, allow_null=True)
     suunnittelualueen_pinta_ala = serializers.CharField()
     keskimaarainen_tonttitehokkuus = serializers.CharField(required=False)
     maanalaisten_tilojen_pinta_ala_yht = serializers.CharField(required=False)

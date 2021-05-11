@@ -77,4 +77,4 @@ class KiinteistoV1Serializer(serializers.Serializer):
     sijaintialue = serializers.CharField(min_length=3, max_length=3)
     yksikko = serializers.CharField(min_length=4, max_length=4)
     gml_id = serializers.CharField(max_length=80, required=False)
-    geom = serializers.CharField()
+    geom = serializers.JSONField(required=False, allow_null=True)

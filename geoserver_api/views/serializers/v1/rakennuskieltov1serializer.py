@@ -35,4 +35,4 @@ class RakennuskieltoV1Serializer(serializers.Serializer):
     tyyppi = serializers.CharField()
     voimaantulopvm = serializers.DateField(format="YYYY-MM-DD")
     gml_id = serializers.CharField(max_length=80, required=False)
-    geom = serializers.CharField(required=False)
+    geom = serializers.JSONField(required=False, allow_null=True)

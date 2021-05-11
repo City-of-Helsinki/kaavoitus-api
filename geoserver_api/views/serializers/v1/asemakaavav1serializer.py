@@ -114,4 +114,4 @@ class AsemakaavaV1Serializer(serializers.Serializer):
     )
     id = serializers.CharField()
     srs = serializers.CharField()
-    geom = serializers.CharField()
+    geom = serializers.JSONField(required=False, allow_null=True)

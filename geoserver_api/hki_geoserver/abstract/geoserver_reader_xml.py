@@ -100,19 +100,25 @@ class GeoServer_Reader_xml:
         log.debug("Filter: %s" % filter_fes)
 
         log.debug("Get feature from: %s" % self.layername)
-        response = self.wfs.getfeature(
-            typename=self.layername,
-            # srsname='urn:ogc:def:crs:EPSG::4326',
-            # srsname='EPSG:3879',
-            filter=filter_fes,
-            startindex=0,
-            method="post",
-        )
+
+        returned = 0
+        kdata_out = []
+        try:
+            response = self.wfs.getfeature(
+                typename=self.layername,
+                # srsname='urn:ogc:def:crs:EPSG::4326',
+                # srsname='EPSG:3879',
+                filter=filter_fes,
+                startindex=0,
+                method="post",
+            )
+        except Exception as e:
+            log.warning(e)
+            # Don't die
+            return returned, kdata_out
 
         # ts = None
         srs = None
-        returned = 0
-        kdata_out = []
         kdata = None
         context = etree.iterparse(response, events=("start", "end"))
 
@@ -145,6 +151,8 @@ class GeoServer_Reader_xml:
                             kdata[GeoServer_Reader_xml.ID] = id
                 elif elem.tag.startswith("{http://www.opengis.net/gml/3.2}"):
                     namespace, tag = elem.tag.split("}", 2)
+                    if elem.get("srsName"):
+                        kdata["srs"] = elem.get("srsName")
                     if tag == "MultiSurface":
                         srs = elem.get("srsName")
                     elif tag == "Polygon":
@@ -247,13 +255,20 @@ class GeoServer_Reader_xml:
 
         # log.info(geom_str)
         geom = ogr.CreateGeometryFromGML(geom_str)
+        if not geom:
+            return None
 
         # create coordinate transformation
         inSpatialRef = osr.SpatialReference()
-        inSpatialRef.ImportFromEPSG(3879)
+        if data['srs']:
+            inSpatialRef.SetFromUserInput(data['srs'])
+        else:
+            # Fallback to the crs that should be in use
+            inSpatialRef.ImportFromEPSG(3879)
 
         outSpatialRef = osr.SpatialReference()
         outSpatialRef.ImportFromEPSG(4326)
+        # Currently our services require coordinates in the latitude first, longitude second
         # outSpatialRef.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
         coordTransform = osr.CoordinateTransformation(inSpatialRef, outSpatialRef)
@@ -278,7 +293,7 @@ class GeoServer_Reader_xml:
                 },
             }
         ]
-        return json.dumps(new_geom)
+        return new_geom
 
         # return geom.ExportToGML(options=['SRSDIMENSION_LOC=GEOMETRY', 'FORMAT=GML32', 'GML3_LONGSRS=YES', 'GMLID=%s' % data['id'], 'NAMESPACE_DECL=YES'])  # noqa: E501
 

@@ -97,15 +97,23 @@ class GeoServer_Reader_json:
         log.debug("Filter: %s" % filter_fes)
 
         log.debug("Get feature from: %s" % self.layername)
-        response = self.wfs.getfeature(
-            typename=self.layername,
-            # srsname='urn:ogc:def:crs:EPSG::4326',
-            # srsname='EPSG:3879',
-            filter=filter_fes,
-            startindex=0,
-            method="post",
-            outputFormat="json",
-        )
+
+        returned = 0
+        kdata_out = []
+        try:
+            response = self.wfs.getfeature(
+                typename=self.layername,
+                # srsname='urn:ogc:def:crs:EPSG::4326',
+                # srsname='EPSG:3879',
+                filter=filter_fes,
+                startindex=0,
+                method="post",
+                outputFormat="json",
+            )
+        except Exception as e:
+            log.warning(e)
+            # Don't die
+            return returned, kdata_out
 
         raw = json.loads(response.read())
         # log.info(raw)
@@ -116,7 +124,6 @@ class GeoServer_Reader_json:
                 "Too much data. Faulty filter! Expecting less than %d, but got %d."
                 % (limit_results_to, returned)
             )
-        kdata_out = []
         kdata = None
         for feature in raw.get("features"):
             kdata = feature.get("properties")
@@ -210,8 +217,12 @@ class GeoServer_Reader_json:
         dump = json.dumps(data["geom"][0]["geometry"])
         geom = ogr.CreateGeometryFromJson(dump)
         spatialReference = osr.SpatialReference()
-        # spatialReference.SetWellKnownGeogCS(data['srs'])
-        spatialReference.ImportFromEPSG(3879)
+        if data['srs']:
+            spatialReference.SetFromUserInput(data['srs'])
+        else:
+            # Fallback to the crs that should be in use
+            spatialReference.ImportFromEPSG(3879)
+
         spatialReference.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
         geom.AssignSpatialReference(spatialReference)  # 'urn:ogc:def:crs:EPSG::3879'
         gml = geom.ExportToGML(
@@ -237,11 +248,17 @@ class GeoServer_Reader_json:
 
         # create coordinate transformation
         inSpatialRef = osr.SpatialReference()
-        inSpatialRef.ImportFromEPSG(3879)
+        if data['srs']:
+            inSpatialRef.SetFromUserInput(data['srs'])
+        else:
+            # Fallback to the crs that should be in use
+            inSpatialRef.ImportFromEPSG(3879)
+
         inSpatialRef.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
         outSpatialRef = osr.SpatialReference()
         outSpatialRef.ImportFromEPSG(4326)
+        # Currently our services require coordinates in the latitude first, longitude second
         # outSpatialRef.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
         coordTransform = osr.CoordinateTransformation(inSpatialRef, outSpatialRef)
@@ -250,6 +267,4 @@ class GeoServer_Reader_json:
         geom.Transform(coordTransform)
 
         new_geom[0]["geometry"] = json.loads(geom.ExportToJson())
-        return json.dumps(new_geom)
-
-        # return json.dumps(data['geom'])
+        return new_geom
