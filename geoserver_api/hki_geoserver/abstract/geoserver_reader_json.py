@@ -217,8 +217,8 @@ class GeoServer_Reader_json:
         dump = json.dumps(data["geom"][0]["geometry"])
         geom = ogr.CreateGeometryFromJson(dump)
         spatialReference = osr.SpatialReference()
-        if data['srs']:
-            spatialReference.SetFromUserInput(data['srs'])
+        if data["srs"]:
+            spatialReference.SetFromUserInput(data["srs"])
         else:
             # Fallback to the crs that should be in use
             spatialReference.ImportFromEPSG(3879)
@@ -248,8 +248,8 @@ class GeoServer_Reader_json:
 
         # create coordinate transformation
         inSpatialRef = osr.SpatialReference()
-        if data['srs']:
-            inSpatialRef.SetFromUserInput(data['srs'])
+        if data["srs"]:
+            inSpatialRef.SetFromUserInput(data["srs"])
         else:
             # Fallback to the crs that should be in use
             inSpatialRef.ImportFromEPSG(3879)

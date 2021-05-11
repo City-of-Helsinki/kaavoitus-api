@@ -260,8 +260,8 @@ class GeoServer_Reader_xml:
 
         # create coordinate transformation
         inSpatialRef = osr.SpatialReference()
-        if data['srs']:
-            inSpatialRef.SetFromUserInput(data['srs'])
+        if data["srs"]:
+            inSpatialRef.SetFromUserInput(data["srs"])
         else:
             # Fallback to the crs that should be in use
             inSpatialRef.ImportFromEPSG(3879)
