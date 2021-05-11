@@ -245,7 +245,7 @@ class GeoServer_Reader_xml:
             data["geom"].element, encoding="ascii", method="xml", xml_declaration=False
         ).decode("ascii")
 
-        # log.info(data)
+        # log.info(geom_str)
         geom = ogr.CreateGeometryFromGML(geom_str)
 
         # create coordinate transformation
@@ -272,7 +272,7 @@ class GeoServer_Reader_xml:
         new_geom = [
             {
                 "type": "Feature",
-                "geometry": linear_geom.ExportToJson(),
+                "geometry": json.loads(linear_geom.ExportToJson()),
                 "properties": {
                     "id": data["id"],
                 },

@@ -207,7 +207,6 @@ class GeoServer_Reader_json:
         if not data["geom"][0]["geometry"]:
             raise ValueError("Gometry missing!")
 
-        # log.info(data)
         dump = json.dumps(data["geom"][0]["geometry"])
         geom = ogr.CreateGeometryFromJson(dump)
         spatialReference = osr.SpatialReference()
@@ -250,7 +249,7 @@ class GeoServer_Reader_json:
         # transform
         geom.Transform(coordTransform)
 
-        new_geom[0]["geometry"] = geom.ExportToJson()
+        new_geom[0]["geometry"] = json.loads(geom.ExportToJson())
         return json.dumps(new_geom)
 
         # return json.dumps(data['geom'])
