@@ -39,24 +39,37 @@ from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
             """,
             value={
                 "datanomistaja": "Helsinki/Kami",
-                "id": 156,
+                "id": "Kiinteisto_alue.29976",
                 "kiinteisto": "91-3-9903-101",
                 "kiinteistotunnus": "09100399030101",
                 "kunta": "091",
                 "luontipvm": "2013-12-09",
                 "muokkauspvm": "2014-06-10",
-                "paivitetty_tietopalveluun": "2021-01-04",
+                "paivitetty_tietopalveluun": "2021-05-11",
                 "rekisterointipvm": "1980-05-30",
                 "ryhma": "9903",
                 "sijaintialue": "003",
                 "yksikko": "0101",
-                "gml_id": "Kiinteisto_alue.156.geom.1",
-                "geom": '<gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2" '
-                'srsName="urn:ogc:def:crs:EPSG::3879"><gml:exterior><gml:LinearRing>'
-                "<gml:posList>6672759.0098 2.54969922149E7 6672701.3892 2.54969952458E7 "
-                "6672711.2563 2.54971894828E7 6672768.3387 2.54971866207E7 "
-                "6672759.0098 2.54969922149E7</gml:posList></gml:LinearRing>"
-                "</gml:exterior></gml:Polygon>",
+                "geom": [
+                    {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "MultiPolygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        [60.16770787604104, 24.945822596882344],
+                                        [60.167190728234246, 24.945878041085354],
+                                        [60.16728067217075, 24.949376521148313],
+                                        [60.167792992022136, 24.949324179702018],
+                                        [60.16770787604104, 24.945822596882344],
+                                    ]
+                                ]
+                            ],
+                        },
+                        "properties": {"id": "Kiinteisto_alue.29976"},
+                    }
+                ],
             },
             request_only=False,  # signal that example only applies to requests
             response_only=True,  # signal that example only applies to responses

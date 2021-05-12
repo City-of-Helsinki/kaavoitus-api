@@ -69,8 +69,29 @@ from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
                         "datanomistaja": "Helsinki/Kami",
                         "paivitetty_tietopalveluun": "2021-05-05",
                         "srs": "urn:ogc:def:crs:EPSG::3879",
-                        "geom": '[{"type": "Feature", "geometry": "{ \\"type\\": \\"MultiPolygon\\", \\"coordinates\\": [ [ [ [ 60.165116141044507, 24.849459663226419 ], [ 60.165024048399765, 24.849598869623378 ], [ 60.165059971289878, 24.849756710335097 ], [ 60.165116141044507, 24.849459663226419 ] ] ] ] }", "properties": {"id": "Kiinteisto_alue.227"}}]',
-                    },
+                        "geom": [
+                            {
+                                "type": "Feature",
+                                "geometry": {
+                                    "type": "MultiPolygon",
+                                    "coordinates": [
+                                        [
+                                            [
+                                                [60.16511614104451, 24.84945966322642],
+                                                [
+                                                    60.165024048399765,
+                                                    24.849598869623378,
+                                                ],
+                                                [60.16505997128988, 24.849756710335097],
+                                                [60.16511614104451, 24.84945966322642],
+                                            ]
+                                        ]
+                                    ],
+                                },
+                                "properties": {"id": "Kiinteisto_alue.227"},
+                            }
+                        ],
+                    }
                 ],
             },
             request_only=False,  # signal that example only applies to requests

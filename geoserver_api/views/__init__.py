@@ -14,3 +14,4 @@ from .ymparistoalue import API
 from .neighbourhood import API
 from .suunnittelualue import API
 from .kiinteistot import API
+from .kaavahanke import API

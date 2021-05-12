@@ -79,4 +79,9 @@ urlpatterns = [
         views.kiinteistot.API.as_view(),
         name="kiinteistot",
     ),
+    re_path(
+        r"^v(?P<version>(1))/kaavahanke/(?P<hankenumero>[^/]*)",
+        views.kaavahanke.API.as_view(),
+        name="kaavahanke",
+    ),
 ]
