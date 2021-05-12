@@ -12,6 +12,8 @@ class API(APIView):
 
         raise NotImplementedError("Not yet!")
 
+        # Inform facta that project has changed
+
         # Go validate the returned data.
         # It needs to be verifiable by serializer rules. Those are published in Swagger.
         # serializer = self.serializer_class(data=data)

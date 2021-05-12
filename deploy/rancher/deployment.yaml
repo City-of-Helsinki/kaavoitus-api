@@ -57,6 +57,8 @@ spec:
           value: mock-data/
         - name: ALLOWED_HOSTS
           value: localhost,kaavoitus-api,kaavapino-testing.ddns.net,kaavapino-staging.ddns.net
+        - name: KAAVAPINO_API_URL
+          value: https://kaavapino-testing.ddns.net/v1
         securityContext:
           allowPrivilegeEscalation: false
 

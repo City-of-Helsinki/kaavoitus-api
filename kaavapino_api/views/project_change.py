@@ -5,7 +5,7 @@ from drf_spectacular.openapi import AutoSchema
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from common_auth.authentication import TokenAuthentication
-from .v1.project import API as APIv1
+from .v1.project_changes import API as APIv1
 from .serializers.v1 import ProjectChangesV1Serializer
 
 

@@ -29,6 +29,7 @@ env = environ.Env(
     LOG_LEVEL=(str, "WARNING"),
     FACTA_DB_MOCK_DATA_DIR=(str, None),
     USE_JSON_READER=(bool, True),
+    KAAVAPINO_API_URL=(str, None),
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -276,3 +277,5 @@ LOGGING = {
 FACTA_DB_MOCK_DATA_DIR = env("FACTA_DB_MOCK_DATA_DIR")
 
 USE_JSON_READER = env("USE_JSON_READER")
+
+KAAVAPINO_API_URL = env("KAAVAPINO_API_URL")
