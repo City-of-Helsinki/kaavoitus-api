@@ -31,33 +31,48 @@ class API(APIView):
 
         # Confirmed access to GeoServer.
         # Go get the data!
-        ak = hki_geoserver.Asemakaava(
+        kh = hki_geoserver.Kaavahanke(
             username=self.geoserver_creds.username,
             password=self.geoserver_creds.credential,
         )
-        ak_data = ak.get_by_hankenumero(hankenumero)
-        if not ak_data:
-            log.error("%s not found!" % hankenumero)
-            return HttpResponseNotFound()
+        data = kh.get_by_hankenumero(hankenumero)
+        if not data:
+            log.error("Kaavahanke (%s) not found!" % hankenumero)
+            # Try with asemakaava
+            ak = hki_geoserver.Asemakaava(
+                username=self.geoserver_creds.username,
+                password=self.geoserver_creds.credential,
+            )
+            data = ak.get_by_hankenumero(hankenumero)
+            ak_data = data
+            if not data:
+                log.error("Asemakaava (%s) not found!" % hankenumero)
+                return HttpResponseNotFound()
+        else:
+            ak = hki_geoserver.Asemakaava(
+                username=self.geoserver_creds.username,
+                password=self.geoserver_creds.credential,
+            )
+            ak_data = ak.get_by_hankenumero(hankenumero)
 
-        log.info("Hankenumero: %s" % (ak_data["hankenumero"]))
+        log.info("Hankenumero: %s" % (data.get("hankenumero")))
 
-        suunnittelualueen_rajaus = ak.get_geometry(ak_data)
+        suunnittelualueen_rajaus = ak.get_geometry(data)
 
-        keskimaarainen_tonttitehokkuus = self.get_tehokkuusluku(ak_data)
+        keskimaarainen_tonttitehokkuus = self.get_tehokkuusluku(data)
         maanalaisten_tilojen_pinta_ala_yht = (
-            self.get_maanalaisten_tilojen_pinta_ala_yht(ak_data)
+            self.get_maanalaisten_tilojen_pinta_ala_yht(data)
         )
-        aluevarausten_pinta_alat_yht = self.get_aluevarausten_pinta_alat_yht(ak_data)
+        aluevarausten_pinta_alat_yht = self.get_aluevarausten_pinta_alat_yht(data)
         pinta_alan_muutokset_yht = self.get_pinta_alan_muutokset_yht()
         (
             suojellut_rakennukset_maara_yht,
             suojellut_rakennukset_ala_yht,
-        ) = self.get_suojellut_rakennukset(ak_data)
+        ) = self.get_suojellut_rakennukset(data)
 
         ret_data = {
             "suunnittelualueen_rajaus": suunnittelualueen_rajaus,
-            "suunnittelualueen_pinta_ala": ak_data["pintaala"],
+            "suunnittelualueen_pinta_ala": ak_data.get("pintaala") if ak_data else 0.0,
             "keskimaarainen_tonttitehokkuus": keskimaarainen_tonttitehokkuus,
             "maanalaisten_tilojen_pinta_ala_yht": maanalaisten_tilojen_pinta_ala_yht,
             "aluevarausten_pinta_alat_yht": aluevarausten_pinta_alat_yht,
@@ -83,14 +98,14 @@ class API(APIView):
         tehokkuus_yht = 0.0
         t_data = t.get_by_geom(ak_data)
         if not t_data:
-            log.error("%s not found!" % ak_data["hankenumero"])
+            log.error("Tontti (%s) not found!" % ak_data.get("hankenumero"))
             return tehokkuus_yht
 
         for tontti in t_data:
             # log.info(tontti)
             # key missing from json
             if tontti.get("tehokkuusluku"):
-                tehokkuus_yht += tontti["tehokkuusluku"]
+                tehokkuus_yht += tontti.get("tehokkuusluku")
 
         return tehokkuus_yht / len(t_data)
 
@@ -103,12 +118,14 @@ class API(APIView):
         maanalainen = 0.0
         km_data = km.get_by_geom(ak_data)
         if not km_data:
-            log.warning("%s not found by geom!" % ak_data["hankenumero"])
+            log.warning(
+                "Kaavamaarays (%s) not found by geom!" % ak_data.get("hankenumero")
+            )
             return maanalainen
 
-        for km in km_data:
-            if km["maanalainen"] and km["pintaala"]:
-                maanalainen += float(km["pintaala"])
+        for kmd in km_data:
+            if kmd.get("maanalainen") and kmd.get("pintaala"):
+                maanalainen += float(kmd.get("pintaala"))
 
         return maanalainen
 
@@ -121,12 +138,12 @@ class API(APIView):
         pinta_ala = 0.0
         ka_data = ka.get_by_geom(ak_data)
         if not ka_data:
-            log.error("%s not found!" % ak_data["hankenumero"])
+            log.error("Korttelialue (%s) not found!" % ak_data.get("hankenumero"))
             return pinta_ala
 
-        for ka in ka_data:
-            if ka["pintaala"]:
-                pinta_ala += float(ka["pintaala"])
+        for kad in ka_data:
+            if kad.get("pintaala"):
+                pinta_ala += float(kad.get("pintaala"))
 
         ya = YleinenTaiMuuAlue(
             username=self.geoserver_creds.username,
@@ -135,12 +152,12 @@ class API(APIView):
 
         ya_data = ya.get_by_geom(ak_data)
         if not ya_data:
-            log.error("%s not found!" % ak_data["hankenumero"])
+            log.error("YleinenTaiMuuAlue (%s) not found!" % ak_data.get("hankenumero"))
             return pinta_ala
 
-        for ya in ya_data:
-            if ya["pintaala"]:
-                pinta_ala += float(ka["pintaala"])
+        for yad in ya_data:
+            if yad.get("pintaala"):
+                pinta_ala += float(yad.get("pintaala"))
 
         return pinta_ala
 
@@ -157,19 +174,21 @@ class API(APIView):
         ala = 0.0
         ra_data = ra.get_by_geom(ak_data)
         if not ra_data:
-            log.warning("%s not found by geom!" % ak_data["hankenumero"])
+            log.warning(
+                "Rakennusala (%s) not found by geom!" % ak_data.get("hankenumero")
+            )
             return maara, ala
 
-        for ra in ra_data:
+        for rad in ra_data:
             if (
-                ra["kaavamerkinta"] == "s"
-                or ra["kaavamerkinta"] == "sr"
-                or ra["kaavamerkinta"] == "sr-1"
-                or ra["kaavamerkinta"] == "sr-2"
-                or ra["kaavamerkinta"] == "sr-3"
+                rad.get("kaavamerkinta") == "s"
+                or rad.get("kaavamerkinta") == "sr"
+                or rad.get("kaavamerkinta") == "sr-1"
+                or rad.get("kaavamerkinta") == "sr-2"
+                or rad.get("kaavamerkinta") == "sr-3"
             ):
                 maara += 1
-                if ra["pintaala"]:
-                    ala += float(ra["pintaala"])  # ra['km2']?
+                if rad.get("pintaala"):
+                    ala += float(rad.get("pintaala"))  # ra.get('km2')?
 
         return maara, ala
