@@ -5,6 +5,7 @@ from django.conf import settings
 log = logging.getLogger(__name__)
 
 PROJECT_PATH = "projects"
+PROJECT_DETAILS_PATH = "simple"
 PROJECT_CHANGES_PATH = "changes"
 
 
@@ -24,7 +25,7 @@ class KaavapinoClient:
             log.debug("GET from Kaavapino: %s", url)
             resp = requests.get(
                 url,
-                headers={"Authorization": self.api_key},
+                headers={"Authorization": "Token %s" % self.api_key},
             )
             if resp.status_code == 200:
                 return resp.json()
@@ -37,7 +38,9 @@ class KaavapinoClient:
             raise e
 
     def get_projects(self, pinonro):
-        return self._get("{:s}/{:d}/".format(PROJECT_PATH, int(pinonro)))
+        return self._get(
+            "{:s}/{:d}/{:s}/".format(PROJECT_PATH, int(pinonro), PROJECT_DETAILS_PATH)
+        )
 
     def get_projects_changes(self, timestamp):
         return self._get(

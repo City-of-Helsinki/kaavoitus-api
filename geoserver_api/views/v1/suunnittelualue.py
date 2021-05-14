@@ -38,6 +38,7 @@ class API(APIView):
         data = kh.get_by_hankenumero(hankenumero)
         if not data:
             log.error("Kaavahanke (%s) not found!" % hankenumero)
+            # TODO: is this required?
             # Try with asemakaava
             ak = hki_geoserver.Asemakaava(
                 username=self.geoserver_creds.username,

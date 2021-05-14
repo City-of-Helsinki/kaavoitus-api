@@ -60,60 +60,80 @@ from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
     ]
 )
 class ProjectV1Serializer(serializers.Serializer):
-    muistutusten_lukumaara = serializers.IntegerField(required=False)
-    valitusten_lukumaara_HaO = serializers.IntegerField(required=False)
-    valitusten_lukumaara_KHO = serializers.IntegerField(required=False)
-    pinonumero = serializers.CharField()
-    diaarinumero = serializers.CharField()
-    hankenumero = serializers.CharField()
-    kaavanlaatija = serializers.CharField()
-    kaavan_piirtaja = serializers.CharField()
-    hyvaksyja = serializers.CharField()
-    kaavatunnus = serializers.CharField()
-    kaavanimi1 = serializers.CharField()
-    kaavanimi2 = serializers.CharField()
-    kaavan_virallinen_nimi = serializers.CharField()
-    kaavaehdotus_lautakunnassa = serializers.DateField(required=False)
-    tarkistettu_kaavaehdotus_lautakunnassa = serializers.DateField(required=False)
-    hyvaksymispvm = serializers.DateField(required=False)
-    tarkistettu_ehdotus_kirje_khs = serializers.DateField(required=False)
-    kaavaehdotus_nahtavillealkupvm_iso = serializers.DateField(required=False)
-    kaavaehdotus_nahtavillealkupvm_pieni = serializers.DateField(required=False)
-    kaavaehdotus_nahtavillaviimpvm = serializers.DateField(required=False)
-    kaavaehdotus_paivatty = serializers.DateField(required=False)
-    tarkistettu_kaavaehdotus_paivatty = serializers.DateField(required=False)
-    voimaantulopvm = serializers.DateField(required=False)
-    tullut_osittain_voimaan_pvm = serializers.DateField(required=False)
-    kumottu_pvm = serializers.DateField(required=False)
-    rauennut_pvm = serializers.DateField(required=False)
-    kaavan_esittelija_ehdotus = serializers.CharField(required=False)
-    kaavan_esittelija_tarkistettu_ehdotus = serializers.CharField(required=False)
-    vireilletulopvm = serializers.DateField(required=False)
-    OAS_nahtavillealkupvm = serializers.DateField(required=False)
-    OAS_nahtavillaviimpvm = serializers.DateField(required=False)
-    HaO_paatospvm = serializers.DateField(required=False)
-    KHO_paatospvm = serializers.DateField(required=False)
+    muistutusten_lukumaara = serializers.IntegerField(required=False, allow_null=True)
+    valitusten_lukumaara_HaO = serializers.IntegerField(required=False, allow_null=True)
+    valitusten_lukumaara_KHO = serializers.IntegerField(required=False, allow_null=True)
+    pinonumero = serializers.CharField(allow_null=False)
+    diaarinumero = serializers.CharField(required=False, allow_null=True)
+    hankenumero = serializers.CharField(required=False, allow_null=True)
+    kaavanlaatija = serializers.CharField(required=False, allow_null=True)
+    kaavan_piirtaja = serializers.CharField(required=False, allow_null=True)
+    hyvaksyja = serializers.CharField(required=False, allow_null=True)
+    kaavatunnus = serializers.CharField(required=False, allow_null=True)
+    kaavanimi1 = serializers.CharField(required=False, allow_null=True)
+    kaavanimi2 = serializers.CharField(required=False, allow_null=True)
+    kaavan_virallinen_nimi = serializers.CharField(required=False, allow_null=True)
+    kaavaehdotus_lautakunnassa = serializers.DateField(required=False, allow_null=True)
+    tarkistettu_kaavaehdotus_lautakunnassa = serializers.DateField(
+        required=False, allow_null=True
+    )
+    hyvaksymispvm = serializers.DateField(required=False, allow_null=True)
+    tarkistettu_ehdotus_kirje_khs = serializers.DateField(
+        required=False, allow_null=True
+    )
+    kaavaehdotus_nahtavillealkupvm_iso = serializers.DateField(
+        required=False, allow_null=True
+    )
+    kaavaehdotus_nahtavillealkupvm_pieni = serializers.DateField(
+        required=False, allow_null=True
+    )
+    kaavaehdotus_nahtavillaviimpvm = serializers.DateField(
+        required=False, allow_null=True
+    )
+    kaavaehdotus_paivatty = serializers.DateField(required=False, allow_null=True)
+    tarkistettu_kaavaehdotus_paivatty = serializers.DateField(
+        required=False, allow_null=True
+    )
+    voimaantulopvm = serializers.DateField(required=False, allow_null=True)
+    tullut_osittain_voimaan_pvm = serializers.DateField(required=False, allow_null=True)
+    kumottu_pvm = serializers.DateField(required=False, allow_null=True)
+    rauennut_pvm = serializers.DateField(required=False, allow_null=True)
+    kaavan_esittelija_ehdotus = serializers.CharField(required=False, allow_null=True)
+    kaavan_esittelija_tarkistettu_ehdotus = serializers.CharField(
+        required=False, allow_null=True
+    )
+    vireilletulopvm = serializers.DateField(required=False, allow_null=True)
+    OAS_nahtavillealkupvm = serializers.DateField(required=False, allow_null=True)
+    OAS_nahtavillaviimpvm = serializers.DateField(required=False, allow_null=True)
+    HaO_paatospvm = serializers.DateField(required=False, allow_null=True)
+    KHO_paatospvm = serializers.DateField(required=False, allow_null=True)
     kaavaehdotus_uudelleen_nahtavillealkupvm_iso2 = serializers.DateField(
-        required=False
+        required=False, allow_null=True
     )
     kaavaehdotus_uudelleen_nahtavillealkupvm_pieni2 = serializers.DateField(
-        required=False
+        required=False, allow_null=True
     )
-    kaavaehdotus_uudelleen_nahtavillaviimpvm_2 = serializers.DateField(required=False)
+    kaavaehdotus_uudelleen_nahtavillaviimpvm_2 = serializers.DateField(
+        required=False, allow_null=True
+    )
     kaavaehdotus_uudelleen_nahtavillealkupvm_iso3 = serializers.DateField(
-        required=False
+        required=False, allow_null=True
     )
     kaavaehdotus_uudelleen_nahtavillealkupvm_pieni3 = serializers.DateField(
-        required=False
+        required=False, allow_null=True
     )
-    kaavaehdotus_uudelleen_nahtavillaviimpvm_3 = serializers.DateField(required=False)
+    kaavaehdotus_uudelleen_nahtavillaviimpvm_3 = serializers.DateField(
+        required=False, allow_null=True
+    )
     kaavaehdotus_uudelleen_nahtavillealkupvm_iso4 = serializers.DateField(
-        required=False
+        required=False, allow_null=True
     )
     kaavaehdotus_uudelleen_nahtavillealkupvm_pieni4 = serializers.DateField(
-        required=False
+        required=False, allow_null=True
     )
-    kaavaehdotus_uudelleen_nahtavillaviimpvm_4 = serializers.DateField(required=False)
+    kaavaehdotus_uudelleen_nahtavillaviimpvm_4 = serializers.DateField(
+        required=False, allow_null=True
+    )
     # TBD later
     # HL51_muutettu_huomautukset = serializers.CharField(required=False)
     # HL51_muutettu_poydalle_ehdotus = serializers.CharField(required=False)
