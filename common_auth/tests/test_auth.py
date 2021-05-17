@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from unittest.mock import Mock
 
-from common_auth.tests.mock import OracleConn
+from common_auth.tests.mock import OracleConnMock
 from kaavapino_api.kaavapino.kaavapino_client import KaavapinoClient
 from facta_api.hel_facta.abstract.facta import Facta
 from geoserver_api.hki_geoserver.abstract.geoserver_reader import GeoServer_Reader
@@ -39,7 +39,8 @@ class TestAuthentication:
         )
 
         facta = Facta
-        facta.conn = OracleConn
+        facta.__init__ = Mock(return_value=None)
+        facta.conn = OracleConnMock
 
         reader = GeoServer_Reader
         reader.query = Mock(return_value=(0, {}))
@@ -103,6 +104,7 @@ class TestAuthentication:
         url = reverse("kaavapino:project", kwargs={"version": 1, "pinonro": 1})
 
         client = KaavapinoClient
+        client.__init__ = Mock(return_value=None)
         client._get = Mock(return_value={})
 
         response = self.client.get(url)

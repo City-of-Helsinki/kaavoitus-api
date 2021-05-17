@@ -1,8 +1,17 @@
-class OracleCursor:
+class OracleCursorMock:
+    def __init__(self):
+        self.data = []
+
     def execute(self, *args, **kwargs):
-        return {}
+        return []
+
+    def close(self):
+        pass
+
+    def __iter__(self):
+        yield from self.data
 
 
-class OracleConn:
-    def cursor(oracle_cursor):
-        return oracle_cursor
+class OracleConnMock:
+    def cursor():
+        return OracleCursorMock()
