@@ -35,6 +35,9 @@ setup(
             "black",
             "flake8",
             "flake8-print",
+            "pytest",
+            "pytest-cov",
+            "pytest-django",
         ]
     },
 )

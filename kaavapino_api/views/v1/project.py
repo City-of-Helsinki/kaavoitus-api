@@ -1,5 +1,6 @@
 from django.http.response import (
     HttpResponseForbidden,
+    HttpResponseNotFound,
     HttpResponseServerError,
     JsonResponse,
 )
@@ -34,114 +35,93 @@ class API(APIView):
         # Fetch project data from kaavopino
         project_data = self.client.get_projects(pinonro)
         # log.info(project_data)
+        attribute_data = project_data.get("attribute_data", {})
+        if not attribute_data:
+            return HttpResponseNotFound()
 
         data = {
-            "muistutusten_lukumaara": project_data.get("attribute_data").get(
-                "muistutusten_lukumaara"
-            ),
-            "valitusten_lukumaara_HaO": project_data.get("attribute_data").get(
+            "muistutusten_lukumaara": attribute_data.get("muistutusten_lukumaara"),
+            "valitusten_lukumaara_HaO": attribute_data.get(
                 "valitusten_lukumaara_hallinto_oikeus"
             ),
-            "valitusten_lukumaara_KHO": project_data.get("attribute_data").get(
-                "valitusten_lukumaara_kho"
-            ),
+            "valitusten_lukumaara_KHO": attribute_data.get("valitusten_lukumaara_kho"),
             "pinonumero": project_data.get("pino_number"),
-            "diaarinumero": project_data.get("attribute_data").get("diaarinumero"),
-            "hankenumero": project_data.get("attribute_data").get("hankenumero"),
-            "kaavanlaatija": project_data.get("attribute_data").get(
-                "vastuuhenkilo_nimi"
+            "diaarinumero": attribute_data.get("diaarinumero"),
+            "hankenumero": attribute_data.get("hankenumero"),
+            "kaavanlaatija": attribute_data.get("vastuuhenkilo_nimi"),
+            "kaavan_piirtaja": attribute_data.get("suunnitteluavustaja_nimi"),
+            "hyvaksyja": attribute_data.get("kaavan_hyvaksyjataho"),
+            "kaavatunnus": attribute_data.get("kaavanumero"),
+            "kaavanimi1": attribute_data.get("projektin_nimi"),
+            "kaavanimi2": attribute_data.get("kaavan_nimi_ruotsiksi"),
+            "kaavan_virallinen_nimi": attribute_data.get("kaavan_nimi"),
+            "kaavaehdotus_lautakunnassa": attribute_data.get("ehdotus_hyvaksytty_kylk"),
+            "tarkistettu_kaavaehdotus_lautakunnassa": attribute_data.get(
+                "tarkistettu_ehdotus_hyvaksytty_kylk"
             ),
-            "kaavan_piirtaja": project_data.get("attribute_data").get(
-                "suunnitteluavustaja_nimi"
-            ),
-            "hyvaksyja": project_data.get("attribute_data").get("kaavan_hyvaksyjataho"),
-            "kaavatunnus": project_data.get("attribute_data").get("kaavanumero"),
-            "kaavanimi1": project_data.get("attribute_data").get("projektin_nimi"),
-            "kaavanimi2": project_data.get("attribute_data").get(
-                "kaavan_nimi_ruotsiksi"
-            ),
-            "kaavan_virallinen_nimi": project_data.get("attribute_data").get(
-                "kaavan_nimi"
-            ),
-            "kaavaehdotus_lautakunnassa": project_data.get("attribute_data").get(
-                "ehdotus_hyvaksytty_kylk"
-            ),
-            "tarkistettu_kaavaehdotus_lautakunnassa": project_data.get(
-                "attribute_data"
-            ).get("tarkistettu_ehdotus_hyvaksytty_kylk"),
-            "hyvaksymispvm": project_data.get("attribute_data").get(
-                "hyvaksymispaatos_pvm"
-            ),
-            "tarkistettu_ehdotus_kirje_khs": project_data.get("attribute_data").get(
+            "hyvaksymispvm": attribute_data.get("hyvaksymispaatos_pvm"),
+            "tarkistettu_ehdotus_kirje_khs": attribute_data.get(
                 "toteutunut_kirje_kaupunginhallitukselle"
             ),
-            "kaavaehdotus_nahtavillealkupvm_iso": project_data.get(
-                "attribute_data"
-            ).get("milloin_ehdotuksen_nahtavilla_alkaa_iso"),
-            "kaavaehdotus_nahtavillealkupvm_pieni": project_data.get(
-                "attribute_data"
-            ).get("milloin_ehdotuksen_nahtavilla_alkaa_pieni"),
-            "kaavaehdotus_nahtavillaviimpvm": project_data.get("attribute_data").get(
+            "kaavaehdotus_nahtavillealkupvm_iso": attribute_data.get(
+                "milloin_ehdotuksen_nahtavilla_alkaa_iso"
+            ),
+            "kaavaehdotus_nahtavillealkupvm_pieni": attribute_data.get(
+                "milloin_ehdotuksen_nahtavilla_alkaa_pieni"
+            ),
+            "kaavaehdotus_nahtavillaviimpvm": attribute_data.get(
                 "milloin_ehdotuksen_nahtavilla_paattyy"
             ),
-            "kaavaehdotus_paivatty": project_data.get("attribute_data").get(
+            "kaavaehdotus_paivatty": attribute_data.get(
                 "milloin_kaavaehdotus_lautakunnassa"
             ),
-            "tarkistettu_kaavaehdotus_paivatty": project_data.get("attribute_data").get(
+            "tarkistettu_kaavaehdotus_paivatty": attribute_data.get(
                 "milloin_tarkistettu_ehdotus_lautakunnassa"
             ),
-            "voimaantulopvm": project_data.get("attribute_data").get("voimaantulo_pvm"),
-            "tullut_osittain_voimaan_pvm": project_data.get("attribute_data").get(
+            "voimaantulopvm": attribute_data.get("voimaantulo_pvm"),
+            "tullut_osittain_voimaan_pvm": attribute_data.get(
                 "tullut_osittain_voimaan_pvm"
             ),
-            "kumottu_pvm": project_data.get("attribute_data").get("kumottu_pvm"),
-            "rauennut_pvm": project_data.get("attribute_data").get("rauennut"),
-            "kaavan_esittelija_ehdotus": project_data.get("attribute_data").get(
-                "akp_kylk_ehdotus"
+            "kumottu_pvm": attribute_data.get("kumottu_pvm"),
+            "rauennut_pvm": attribute_data.get("rauennut"),
+            "kaavan_esittelija_ehdotus": attribute_data.get("akp_kylk_ehdotus"),
+            "kaavan_esittelija_tarkistettu_ehdotus": attribute_data.get(
+                "akp_kylk_tarkistettu_ehdotus"
             ),
-            "kaavan_esittelija_tarkistettu_ehdotus": project_data.get(
-                "attribute_data"
-            ).get("akp_kylk_tarkistettu_ehdotus"),
-            "vireilletulopvm": project_data.get("attribute_data").get("oasn_paivays"),
-            "OAS_nahtavillealkupvm": project_data.get("attribute_data").get(
-                "milloin_oas_esillaolo_alkaa"
-            ),
-            "OAS_nahtavillaviimpvm": project_data.get("attribute_data").get(
+            "vireilletulopvm": attribute_data.get("oasn_paivays"),
+            "OAS_nahtavillealkupvm": attribute_data.get("milloin_oas_esillaolo_alkaa"),
+            "OAS_nahtavillaviimpvm": attribute_data.get(
                 "milloin_oas_esillaolo_paattyy"
             ),
-            "HaO_paatospvm": project_data.get("attribute_data").get(
-                "valitusten_ratkaisu_hallinto_oikeus"
+            "HaO_paatospvm": attribute_data.get("valitusten_ratkaisu_hallinto_oikeus"),
+            "KHO_paatospvm": attribute_data.get("valitusten_ratkaisu_kho"),
+            "kaavaehdotus_uudelleen_nahtavillealkupvm_iso2": attribute_data.get(
+                "milloin_ehdotuksen_nahtavilla_alkaa_iso_2"
             ),
-            "KHO_paatospvm": project_data.get("attribute_data").get(
-                "valitusten_ratkaisu_kho"
+            "kaavaehdotus_uudelleen_nahtavillealkupvm_pieni2": attribute_data.get(
+                "milloin_ehdotuksen_nahtavilla_alkaa_pieni_2"
             ),
-            "kaavaehdotus_uudelleen_nahtavillealkupvm_iso2": project_data.get(
-                "attribute_data"
-            ).get("milloin_ehdotuksen_nahtavilla_alkaa_iso_2"),
-            "kaavaehdotus_uudelleen_nahtavillealkupvm_pieni2": project_data.get(
-                "attribute_data"
-            ).get("milloin_ehdotuksen_nahtavilla_alkaa_pieni_2"),
-            "kaavaehdotus_uudelleen_nahtavillaviimpvm_2": project_data.get(
-                "attribute_data"
-            ).get("milloin_ehdotuksen_nahtavilla_paattyy_2"),
-            "kaavaehdotus_uudelleen_nahtavillealkupvm_iso3": project_data.get(
-                "attribute_data"
-            ).get("milloin_ehdotuksen_nahtavilla_alkaa_iso_3"),
-            "kaavaehdotus_uudelleen_nahtavillealkupvm_pieni3": project_data.get(
-                "attribute_data"
-            ).get("milloin_ehdotuksen_nahtavilla_alkaa_pieni_3"),
-            "kaavaehdotus_uudelleen_nahtavillaviimpvm_3": project_data.get(
-                "attribute_data"
-            ).get("milloin_ehdotuksen_nahtavilla_paattyy_3"),
-            "kaavaehdotus_uudelleen_nahtavillealkupvm_iso4": project_data.get(
-                "attribute_data"
-            ).get("milloin_ehdotuksen_nahtavilla_alkaa_iso_4"),
-            "kaavaehdotus_uudelleen_nahtavillealkupvm_pieni4": project_data.get(
-                "attribute_data"
-            ).get("milloin_ehdotuksen_nahtavilla_alkaa_pieni_4"),
-            "kaavaehdotus_uudelleen_nahtavillaviimpvm_4": project_data.get(
-                "attribute_data"
-            ).get("milloin_ehdotuksen_nahtavilla_paattyy_4"),
+            "kaavaehdotus_uudelleen_nahtavillaviimpvm_2": attribute_data.get(
+                "milloin_ehdotuksen_nahtavilla_paattyy_2"
+            ),
+            "kaavaehdotus_uudelleen_nahtavillealkupvm_iso3": attribute_data.get(
+                "milloin_ehdotuksen_nahtavilla_alkaa_iso_3"
+            ),
+            "kaavaehdotus_uudelleen_nahtavillealkupvm_pieni3": attribute_data.get(
+                "milloin_ehdotuksen_nahtavilla_alkaa_pieni_3"
+            ),
+            "kaavaehdotus_uudelleen_nahtavillaviimpvm_3": attribute_data.get(
+                "milloin_ehdotuksen_nahtavilla_paattyy_3"
+            ),
+            "kaavaehdotus_uudelleen_nahtavillealkupvm_iso4": attribute_data.get(
+                "milloin_ehdotuksen_nahtavilla_alkaa_iso_4"
+            ),
+            "kaavaehdotus_uudelleen_nahtavillealkupvm_pieni4": attribute_data.get(
+                "milloin_ehdotuksen_nahtavilla_alkaa_pieni_4"
+            ),
+            "kaavaehdotus_uudelleen_nahtavillaviimpvm_4": attribute_data.get(
+                "milloin_ehdotuksen_nahtavilla_paattyy_4"
+            ),
         }
 
         # Go validate the returned data.

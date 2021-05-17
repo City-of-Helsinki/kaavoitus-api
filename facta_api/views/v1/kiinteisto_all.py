@@ -7,6 +7,7 @@ from django.http import (
 )
 import logging
 from django.conf import settings
+from django.http.response import HttpResponseNotFound
 from ..serializers.v1 import KiinteistonDataV1Serializer
 from facta_api import hel_facta
 from .kiinteisto import KiinteistoAPI
@@ -32,6 +33,9 @@ class API(KiinteistoAPI):
             return HttpResponseForbidden("No access!")
 
         owners, occupants = self.get_kiinteisto(ktunnus_to_use)
+
+        if not owners and not occupants:
+            return HttpResponseNotFound()
 
         naapurit = []
         geoserver_creds = request.auth.access_geoserver
