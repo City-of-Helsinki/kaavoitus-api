@@ -54,10 +54,11 @@ class API(KiinteistoAPI):
 
             if neighbours:
                 for neighbour in neighbours:
-                    n_owners, n_occupants = self.get_kiinteisto(neighbour)
+                    neighbour_ktunnus = self._format_kiinteistotunnus(neighbour)
+                    n_owners, n_occupants = self.get_kiinteisto(neighbour_ktunnus)
                     naapurit.append(
                         {
-                            "kiinteistotunnus": neighbour,
+                            "kiinteistotunnus": neighbour_ktunnus,
                             "omistajat": n_owners,
                             "haltijat": n_occupants,
                         }
