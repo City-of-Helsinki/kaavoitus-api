@@ -11,12 +11,13 @@ from django.http.response import HttpResponseNotFound
 from ..serializers.v1 import KiinteistonDataV1Serializer
 from facta_api import hel_facta
 from .kiinteisto import KiinteistoAPI
+from .rakennus import RakennusAPI
 from geoserver_api import hki_geoserver
 
 log = logging.getLogger(__name__)
 
 
-class API(KiinteistoAPI):
+class API(KiinteistoAPI, RakennusAPI):
     serializer_class = KiinteistonDataV1Serializer
 
     def get(self, request, kiinteistotunnus=None):
@@ -65,6 +66,9 @@ class API(KiinteistoAPI):
                             "kiinteistotunnus": neighbour_ktunnus,
                             "omistajat": n_owners,
                             "haltijat": n_occupants,
+                            "rakennuksen_omistajat": self.get_rakennus(
+                                neighbour_ktunnus
+                            ),
                         }
                     )
 
@@ -73,6 +77,7 @@ class API(KiinteistoAPI):
             "omistajat": owners,
             "haltijat": occupants,
             "naapurit": naapurit,
+            "rakennuksen_omistajat": self.get_rakennus(ktunnus_to_use),
         }
 
         # Go validate the returned data.
@@ -147,3 +152,26 @@ class API(KiinteistoAPI):
                 occupant_rows.append(occupant)
 
         return owner_rows, occupant_rows
+
+    def get_rakennus(self, ktunnus):
+        mock_dir = settings.FACTA_DB_MOCK_DATA_DIR
+        if mock_dir:
+            f_ko = hel_facta.RakennuksenOmistajat(mock_data_dir=mock_dir)
+        else:
+            f_ko = hel_facta.RakennuksenOmistajat(
+                user=self.facta_creds.username,
+                password=self.facta_creds.credential,
+                host=self.facta_creds.host_spec,
+            )
+        rows = f_ko.get_by_kiinteistotunnus(ktunnus)
+
+        owner_rows = []
+        if rows:
+            for row in rows:
+                owner = {
+                    "kiinteistotunnus": row[1],  # C_KIINTEISTOTUNNUS
+                    "address": self._extract_rakennuksen_omistaja_address(row),
+                }
+                owner_rows.append(owner)
+
+        return owner_rows

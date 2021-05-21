@@ -5,40 +5,47 @@ from .abstract import Facta
 log = logging.getLogger(__name__)
 
 
-class Rakennuskiellot(Facta):
-    table_name = "MV_KIINTEISTON_RAKKIELLOT"
+class RakennuksenOmistajat(Facta):
+    table_name = "MV_RAKENNUKSEN_OMISTAJAT"
 
     def get_by_kiinteistotunnus(self, kiinteistotunnus):
-        # Note:
-        # KIINTEISTOTUNNUS == C_KUNTA - C_SIJAINTI - C_RYHMA - C_YKSIKKO
         sql = """
 select
-    KG_KRAKKIEL,
-    KG_KKIINT,
+    I_PYRAKNRO,
+    C_KIINTEISTOTUNNUS,
     C_KUNTA,
     C_SIJAINTI,
     C_RYHMA,
     C_YKSIKKO,
-    C_KIINTEISTO,
-    C_TUNNUS,
-    C_POIKPAATPVM,
-    C_KOKOS,
-    C_ANTAJA,
-    C_JATKAMPVM,
-    C_LAATU,
-    C_VOIMPVM,
-    C_PAATPVM,
-    C_PAATOSPVM,
-    C_NIMI,
-    C_KTJ_MILLOIN,
-    C_SIJKUNTA,
-    C_HALLINTAYKSIKKOTUNNUS,
-    C_HALLKIRJ,
-    C_HALLTUNN
+    KC_RAKNRO,
+    C_SUKUNIMI,
+    C_ETUNIMET,
+    C_LAHIOSOITE,
+    C_POSTINRO,
+    C_ONKO_KUOLLUT,
+    C_LAJI,
+    C_KOTIKUNT,
+    C_LYTUNN,
+    C_SOTU,
+    C_YHTTIED1,
+    POSTITMP_FIN,
+    POSTITMP_SWE,
+    C_OMISTUSPERUSTE,
+    KG_KOSAP,
+    KG_KYHTTIED,
+    C_ONKO_ASIAMIES,
+    C_OLOTILA,
+    GEOMETRY,
+    C_ONKO_ULKOMAINEN_OSOITE,
+    C_ULKOMAINEN_OSOITE1,
+    C_ULKOMAINEN_OSOITE2,
+    C_ULKOMAINEN_OSOITE_MAA,
+    C_VTJ_PRT,
+    C_VTJ_PRT_TILANNE
 FROM
-    MV_KIINTEISTON_RAKKIELLOT
+    MV_RAKENNUKSEN_OMISTAJAT
 WHERE
-    C_KIINTEISTO = :kiinteistotunnus
+    C_KIINTEISTOTUNNUS = :kiinteistotunnus
 """
         rows = []
         # Docs: https://cx-oracle.readthedocs.io/en/latest/api_manual/cursor.html

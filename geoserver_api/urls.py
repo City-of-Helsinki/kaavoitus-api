@@ -22,12 +22,12 @@ urlpatterns = [
     re_path(
         r"^v(?P<version>(1|2))/kiinteisto/(?P<kiinteistotunnus>[^/]*)$",
         views.kiinteisto.API.as_view(),
-        name="kiinteistötunnus",
+        name="kiinteisto",
     ),
     re_path(
         r"^v(?P<version>(1))/kiinteisto/(?P<kiinteistotunnus>[^/]*)/all$",
         views.kiinteisto_all.API.as_view(),
-        name="kiinteistötunnus",
+        name="kiinteisto-info",
     ),
     re_path(
         r"^v(?P<version>(1))/maarekisterikiinteisto/(?P<kiinteistotunnus>[^/]*)",

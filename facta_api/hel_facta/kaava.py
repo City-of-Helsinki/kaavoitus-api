@@ -11,28 +11,28 @@ class Kaava(Facta):
     def get_by_kaavatunnus(self, kaavatunnus):
         sql = """
 select
-    KG_KKAAVA
-    C_KAAVTUNN
-    C_KIRJTUNN
-    C_LISATUNN
-    C_KAAVATUNNUS
-    C_KAAVLAJI
-    C_TYONIMI
-    C_SAILMERK
-    C_KAAVATIL
-    C_VAHVPTEK
-    C_LAINVPVM
-    C_VOIMPVM
-    C_NIMI
-    C_KTJ_MILLOIN
-    C_KUNTA
-    C_NIMIJATKO
-    C_KMERKPAATOS
-    C_VAHPVM
-    C_HUOM
-    I_LASKPALA
-    C_AJANMUK
-    C_AJANMUK_PAIV
+    KG_KKAAVA,
+    C_KAAVTUNN,
+    C_KIRJTUNN,
+    C_LISATUNN,
+    C_KAAVATUNNUS,
+    C_KAAVLAJI,
+    C_TYONIMI,
+    C_SAILMERK,
+    C_KAAVATIL,
+    C_VAHVPTEK,
+    C_LAINVPVM,
+    C_VOIMPVM,
+    C_NIMI,
+    C_KTJ_MILLOIN,
+    C_KUNTA,
+    C_NIMIJATKO,
+    C_KMERKPAATOS,
+    C_VAHPVM,
+    C_HUOM,
+    I_LASKPALA,
+    C_AJANMUK,
+    C_AJANMUK_PAIV,
     I_VOIM_PALA
 FROM
     MV_KAAVA

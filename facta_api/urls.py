@@ -18,4 +18,9 @@ urlpatterns = [
         views.kiinteisto_all.API.as_view(),
         name="kiinteisto-info",
     ),
+    re_path(
+        r"^v(?P<version>(1))/rakennus/omistajat/(?P<kiinteistotunnus>[^/]*)$",
+        views.rakennuksen_omistajat.API.as_view(),
+        name="rakennuksen-omistajat",
+    ),
 ]
