@@ -3,7 +3,7 @@
 trigger:
   branches:
     include:
-    - development
+    - master
   paths:
     exclude:
     - README.md
@@ -32,6 +32,6 @@ resources:
 
 extends:
   # Filename in Azure DevOps Repository (note possible -ui or -api)
-  # Django example: azure-pipelines-PROJECTNAME-api-master.yml
-  # Drupal example: azure-pipelines-drupal-master.yml
-  template: azure-pipelines-kaavoitus-api-api-master.yml@kaavapino-pipelines
+  # Django example: azure-pipelines-PROJECTNAME-api-release.yml
+  # Drupal example: azure-pipelines-drupal-release.yml
+  template: azure-pipelines-kaavoitus-api-api-release.yml@kaavapino-pipelines
