@@ -25,10 +25,10 @@ pool: Default
 resources:
   repositories:
   # Azure DevOps repository
-  - repository: kaavapino-pipelines
+  - repository: kaavoitus-api-api-pipelines
     type: git
     # Azure DevOps project/repository
-    name: kaavapino/kaavapino-pipelines
+    name: kaavapino/kaavoitus-api-api-pipelines
 
 extends:
   # Filename in Azure DevOps Repository (note possible -ui or -api)
