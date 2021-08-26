@@ -56,7 +56,9 @@ class API(APIView):
         kaya_data = kaya.get(kiinteistotunnus)
         rekisterilaji = None
         if (t_data and mr_data) or (mr_data and kaya_data) or (kaya_data and t_data):
-            log.warning("Internal: Confusing, which one M, T OR Y? %s" % kiinteistotunnus)
+            log.warning(
+                "Internal: Confusing, which one M, T OR Y? %s" % kiinteistotunnus
+            )
         else:
             rekisterilajit = serializer.fields["rekisterilaji"].choices
             if t_data and "T" in rekisterilajit:
