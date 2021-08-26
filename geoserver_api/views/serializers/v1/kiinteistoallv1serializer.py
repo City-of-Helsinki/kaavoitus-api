@@ -4,7 +4,7 @@ from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
 from .rakennuskieltov1serializer import RakennuskieltoV1Serializer
 
 
-REKISTERILAJI = {"T": "Tontti", "M": "Maarekisteri"}
+REKISTERILAJI = {"T": "Tontti", "M": "Maarekisteri", "Y": "Yleinen alue"}
 
 
 @extend_schema_serializer(
@@ -16,7 +16,7 @@ REKISTERILAJI = {"T": "Tontti", "M": "Maarekisteri"}
             description="""
     Fields:
         * kiinteistotunnus: Kiinteistötunnus
-        * rekisterilaji: Suunnittelualueella olevan kiinteistön rekisterilaji (M/T)
+        * rekisterilaji: Suunnittelualueella olevan kiinteistön rekisterilaji (M/T/Y)
         * asemakaavan_numero: Voimassa olevan asemakaavan numero
         * asemakaava_voimassa: Milloin kiinteistön asemakaava on tullut voimaan
         * rakennuskiellot: Rakennuskielto/kiellot perusteineen

@@ -50,15 +50,21 @@ class API(APIView):
             username=geoserver_creds.username, password=geoserver_creds.credential
         )
         mr_data = mr.get(kiinteistotunnus)
+        kaya = hki_geoserver.KiinteistoAlueYleinenAlue(
+            username=geoserver_creds.username, password=geoserver_creds.credential
+        )
+        kaya_data = kaya.get(kiinteistotunnus)
         rekisterilaji = None
-        if t_data and mr_data:
-            log.warning("Internal: Confusing, which one M or T? %s" % kiinteistotunnus)
+        if (t_data and mr_data) or (mr_data and kaya_data) or (kaya_data and t_data):
+            log.warning("Internal: Confusing, which one M, T OR Y? %s" % kiinteistotunnus)
         else:
             rekisterilajit = serializer.fields["rekisterilaji"].choices
             if t_data and "T" in rekisterilajit:
                 rekisterilaji = "T"
             elif mr_data and "M" in rekisterilajit:
                 rekisterilaji = "M"
+            elif kaya_data and "Y" in rekisterilajit:
+                rekisterilaji = "Y"
 
         # 3) Asemakaava
         akv = hki_geoserver.Asemakaava_voimassa(

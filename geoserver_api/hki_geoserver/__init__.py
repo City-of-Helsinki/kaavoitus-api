@@ -11,5 +11,6 @@ from .korttelialue import Korttelialue
 from .rakennusala import Rakennusala
 from .ymparistoalue import Ymparistoalue
 from .kaavahanke import Kaavahanke
+from .kiinteisto_alue_yleinen_alue import KiinteistoAlueYleinenAlue
 
 # from .yleinen_tai_muu_alue import YleinenTaiMuuAlue

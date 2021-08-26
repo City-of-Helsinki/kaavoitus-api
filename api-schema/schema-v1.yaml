@@ -868,7 +868,7 @@ paths:
                   summary: Detailed description of fields returned as response
                   description: "\n    Fields:\n        * kiinteistotunnus: Kiinteistötunnus\n\
                     \        * rekisterilaji: Suunnittelualueella olevan kiinteistön\
-                    \ rekisterilaji (M/T)\n        * asemakaavan_numero: Voimassa\
+                    \ rekisterilaji (M/T/Y)\n        * asemakaavan_numero: Voimassa\
                     \ olevan asemakaavan numero\n        * asemakaava_voimassa: Milloin\
                     \ kiinteistön asemakaava on tullut voimaan\n        * rakennuskiellot:\
                     \ Rakennuskielto/kiellot perusteineen\n            "
@@ -1442,6 +1442,29 @@ paths:
   /api/geoserver/v1/tontti/{kiinteistotunnus}:
     get:
       operationId: geoserver_v1_tontti_retrieve
+      description: ''
+      parameters:
+      - in: path
+        name: kiinteistotunnus
+        schema:
+          type: string
+        description: Kiinteistötunnus to get data for
+        required: true
+      tags:
+      - geoserver
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/geoserver/v1/yleinen_alue/{kiinteistotunnus}:
+    get:
+      operationId: geoserver_v1_yleinen_alue_retrieve
       description: ''
       parameters:
       - in: path
@@ -2590,6 +2613,7 @@ components:
       enum:
       - T
       - M
+      - Y
       type: string
     SuunnittelualueV1:
       type: object
