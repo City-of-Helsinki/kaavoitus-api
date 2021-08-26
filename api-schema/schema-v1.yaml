@@ -2250,6 +2250,9 @@ components:
           maxLength: 17
         address:
           $ref: '#/components/schemas/KiinteistoAddressV1'
+        y_tunnus:
+          type: string
+          nullable: true
       required:
       - address
       - kiinteistotunnus
@@ -2282,6 +2285,9 @@ components:
           oneOf:
           - $ref: '#/components/schemas/PropertyOwnerTypeEnum'
           - $ref: '#/components/schemas/NullEnum'
+        y_tunnus:
+          type: string
+          nullable: true
       required:
       - address
       - property_owner_type
@@ -2529,6 +2535,9 @@ components:
           maxLength: 17
         address:
           $ref: '#/components/schemas/KiinteistoAddressV1'
+        y_tunnus:
+          type: string
+          nullable: true
       required:
       - address
     RakennuksenOmistajatV1:
