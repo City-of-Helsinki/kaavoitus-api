@@ -52,6 +52,7 @@ class API(KiinteistoAPI, RakennusAPI):
             owner = {
                 "kiinteistotunnus": row[1],  # C_KIINTEISTOTUNNUS
                 "address": self._extract_rakennuksen_omistaja_address(row),
+                "y_tunnus": row[14],  # C_LYTUNN
             }
             owner_rows.append(owner)
 

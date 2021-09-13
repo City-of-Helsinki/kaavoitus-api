@@ -128,6 +128,7 @@ class API(KiinteistoAPI, RakennusAPI):
                     "address": self._extract_omistaja_address(row),
                     "owner_home_municipality": row[17],  # C_KOTIKUNT
                     "property_owner_type": owner_type,
+                    "y_tunnus": row[16],  # C_LYTUNN
                 }
                 owner_rows.append(owner)
 
@@ -148,6 +149,7 @@ class API(KiinteistoAPI, RakennusAPI):
                 occupant = {
                     "kiinteistotunnus": row[2],  # KIINTEISTOTUNNUS
                     "address": self._extract_haltija_address(row),
+                    "y_tunnus": row[23],  # C_LYTUNN
                 }
                 occupant_rows.append(occupant)
 
@@ -171,6 +173,7 @@ class API(KiinteistoAPI, RakennusAPI):
                 owner = {
                     "kiinteistotunnus": row[1],  # C_KIINTEISTOTUNNUS
                     "address": self._extract_rakennuksen_omistaja_address(row),
+                    "y_tunnus": row[14],  # C_LYTUNN
                 }
                 owner_rows.append(owner)
 

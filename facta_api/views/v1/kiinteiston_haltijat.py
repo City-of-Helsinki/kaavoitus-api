@@ -58,6 +58,7 @@ class API(KiinteistoAPI):
             occupant = {
                 "kiinteistotunnus": row[2],  # KIINTEISTOTUNNUS
                 "address": self._extract_haltija_address(row),
+                "y_tunnus": row[23],  # C_LYTUNN
             }
             occupant_rows.append(occupant)
         kh_data = {"kiinteistotunnus": ktunnus_to_use, "haltijat": occupant_rows}

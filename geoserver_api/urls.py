@@ -84,4 +84,9 @@ urlpatterns = [
         views.kaavahanke.API.as_view(),
         name="kaavahanke",
     ),
+    re_path(
+        r"^v(?P<version>(1))/yleinen_alue/(?P<kiinteistotunnus>[^/]*)",
+        views.yleinen_alue.API.as_view(),
+        name="yleinen_alue",
+    ),
 ]
