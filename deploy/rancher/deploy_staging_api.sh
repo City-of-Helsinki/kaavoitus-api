@@ -1,8 +1,8 @@
 #!/bin/bash
 
 
-echo "TODO: fix deployment.yaml env before using this script! There is env that points to testing domain"
-exit 1
+#echo "TODO: fix deployment.yaml env before using this script! There is env that points to testing domain"
+#exit 1
 
 if test "$2" == ""; then
 	echo "Usage: $0 <version> <test/run>"
