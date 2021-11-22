@@ -1,0 +1,13 @@
+pipelines:
+  default:
+    - step:
+        name: Build & test
+        caches:
+          - docker
+        services:
+          - docker
+        script:
+          - docker build -f Dockerfile.test . -t kaavoitus-api-test
+          - docker run kaavoitus-api-test flake8
+          - docker run kaavoitus-api-test black --check .
+          - docker run kaavoitus-api-test pytest -ra -vvv

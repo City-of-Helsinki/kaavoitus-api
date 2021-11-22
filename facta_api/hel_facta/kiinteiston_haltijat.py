@@ -17,7 +17,10 @@ select
     KG_KHALLYKS,
     KIINTEISTOTUNNUS,
     HALLINTAYKSIKKO,
-    C_KUNTA, C_SIJAINTI, C_RYHMA, C_YKSIKKO,
+    C_KUNTA,
+    C_SIJAINTI,
+    C_RYHMA,
+    C_YKSIKKO,
     C_HALLKIRJ,
     C_HALLTUNN,
     C_VUOLOPVM,
@@ -59,10 +62,13 @@ WHERE
             for row in kt_cursor:
                 rows.append(row)
         except DatabaseError as exc:
-            err, = exc.args
+            (err,) = exc.args
             log.error("Oracle-Error-Code: %d" % err.code)
             log.error("Oracle-Error-Message: %s" % err.message)
-            raise RuntimeError("Oracle-Error-Code: %d, Oracle-Error-Message: %s" % (err.code, err.message))
+            raise RuntimeError(
+                "Oracle-Error-Code: %d, Oracle-Error-Message: %s"
+                % (err.code, err.message)
+            )
         except Exception as exc:
             log.error("Query failed: %s" % exc)
             raise RuntimeError("Query failed: %s" % exc)

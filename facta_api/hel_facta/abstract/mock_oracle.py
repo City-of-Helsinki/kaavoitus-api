@@ -4,7 +4,6 @@ import sqlparse
 
 
 class MockOracleConnection:
-
     def __init__(self, mock_data_dir):
         self.mock_dir = mock_data_dir
 
@@ -13,7 +12,6 @@ class MockOracleConnection:
 
 
 class MockOracleCursor:
-
     def __init__(self, mock_data_dir):
         self.mock_dir = mock_data_dir
         self.data = None

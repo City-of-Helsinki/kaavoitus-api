@@ -6,14 +6,12 @@ from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
     # exclude_fields=('single',),  # schema ignore these fields
     examples=[
         OpenApiExample(
-            'Example response',
-            summary='Detailed description of fields returned as response',
+            "Example response",
+            summary="Detailed description of fields returned as response",
             description="""
             Example 09100399030101 is
             """,
-            value={
-                "datanomistaja": "Helsinki/Kami"
-            },
+            value={"datanomistaja": "Helsinki/Kami"},
             request_only=False,  # signal that example only applies to requests
             response_only=True,  # signal that example only applies to responses
         ),

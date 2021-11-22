@@ -1,11 +1,13 @@
 from rest_framework.views import APIView  # pip install django-rest-framework
-from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest, \
-    HttpResponseNotFound, HttpResponseForbidden, HttpResponseServerError
-from drf_spectacular.openapi import AutoSchema
-from drf_spectacular.utils import extend_schema, OpenApiParameter
-from drf_spectacular.types import OpenApiTypes
+from django.http import (
+    JsonResponse,
+    HttpResponse,
+    HttpResponseBadRequest,
+    HttpResponseNotFound,
+    HttpResponseForbidden,
+    HttpResponseServerError,
+)
 import logging
-import lxml.etree as etree
 from geoserver_api import hki_geoserver
 from ..serializers.v1 import KiinteistoAllV1Serializer
 from ..serializers.v1.rakennuskieltov1serializer import RakennuskieltoV1Serializer
@@ -28,59 +30,79 @@ class API(APIView):
 
         # Confirmed access to GeoServer.
         # 1) Go get the data!
-        kt = hki_geoserver.Kiinteistotunnus(username=geoserver_creds.username, password=geoserver_creds.credential)
+        kt = hki_geoserver.Kiinteistotunnus(
+            username=geoserver_creds.username, password=geoserver_creds.credential
+        )
         kt_data = kt.get(kiinteistotunnus)
         if not kt_data:
             log.error("%s not found!" % kiinteistotunnus)
             return HttpResponseNotFound()
 
-        log.debug("Found kiinteistötunnus: %s" % (kt_data['kiinteisto']))
+        log.debug("Found kiinteistötunnus: %s" % (kt_data["kiinteisto"]))
         serializer = self.serializer_class()
 
         # 2) Which one? Tontti or Maarekisterikiinteistö?
-        t = hki_geoserver.Tontti(username=geoserver_creds.username,
-                                 password=geoserver_creds.credential)
+        t = hki_geoserver.Tontti(
+            username=geoserver_creds.username, password=geoserver_creds.credential
+        )
         t_data = t.get(kiinteistotunnus)
-        mr = hki_geoserver.Maarekisterikiinteisto(username=geoserver_creds.username,
-                                                  password=geoserver_creds.credential)
+        mr = hki_geoserver.Maarekisterikiinteisto(
+            username=geoserver_creds.username, password=geoserver_creds.credential
+        )
         mr_data = mr.get(kiinteistotunnus)
+        kaya = hki_geoserver.KiinteistoAlueYleinenAlue(
+            username=geoserver_creds.username, password=geoserver_creds.credential
+        )
+        kaya_data = kaya.get(kiinteistotunnus)
         rekisterilaji = None
-        if t_data and mr_data:
-            log.warning("Internal: Confusing, which one M or T? %s" % kiinteistotunnus)
+        if (t_data and mr_data) or (mr_data and kaya_data) or (kaya_data and t_data):
+            log.warning(
+                "Internal: Confusing, which one M, T OR Y? %s" % kiinteistotunnus
+            )
         else:
-            rekisterilajit = serializer.fields['rekisterilaji'].choices
-            if t_data and 'T' in rekisterilajit:
-                rekisterilaji = 'T'
-            elif mr_data and 'M' in rekisterilajit:
-                rekisterilaji = 'M'
+            rekisterilajit = serializer.fields["rekisterilaji"].choices
+            if t_data and "T" in rekisterilajit:
+                rekisterilaji = "T"
+            elif mr_data and "M" in rekisterilajit:
+                rekisterilaji = "M"
+            elif kaya_data and "Y" in rekisterilajit:
+                rekisterilaji = "Y"
 
         # 3) Asemakaava
-        akv = hki_geoserver.Asemakaava_voimassa(username=geoserver_creds.username,
-                                                password=geoserver_creds.credential)
+        akv = hki_geoserver.Asemakaava_voimassa(
+            username=geoserver_creds.username, password=geoserver_creds.credential
+        )
         asemakaavan_numero = None
         asemakaava_voimassa = None
-        if akv:
-            asemakaavan_numero = akv['kaavatunnus']
-            asemakaava_voimassa = akv['vahvistamispvm']
+        akv_data = akv.get_by_geom(kt_data, single_result=True)
+        if akv_data:
+            asemakaavan_numero = akv_data["kaavatunnus"]
+            asemakaava_voimassa = akv_data["vahvistamispvm"]
 
         # 4) Rakennuskiellot
         rakennuskiellot = []
-        rkay = hki_geoserver.Rakennuskieltoalue_yleiskaava(username=geoserver_creds.username,
-                                                               password=geoserver_creds.credential)
-        rkay_data = rkay.get(kt_data['geom'])
+        rkay = hki_geoserver.Rakennuskieltoalue_yleiskaava(
+            username=geoserver_creds.username, password=geoserver_creds.credential
+        )
+        rkay_data = rkay.get_by_geom(kt_data, single_result=True)
         if rkay_data:
-            del rkay_data['geom']
+            # del rkay_data['geom']
+            rkay_data["geom"] = rkay.get_geometry(rkay_data)
+
             rk_serializer = RakennuskieltoV1Serializer(data=rkay_data)
             if not rk_serializer.is_valid():
                 log.error("Invalid WMF-data: %s" % serializer.errors)
                 return HttpResponseServerError("Invalid RKAY data received from WFS!")
             rakennuskiellot.append(rkay_data)
 
-        rkaa = hki_geoserver.Rakennuskieltoalue_asemakaava(username=geoserver_creds.username,
-                                                           password=geoserver_creds.credential)
-        rkaa_data = rkaa.get(kt_data['geom'])
-        if not rkaa_data:
-            del rkaa_data['geom']
+        rkaa = hki_geoserver.Rakennuskieltoalue_asemakaava(
+            username=geoserver_creds.username, password=geoserver_creds.credential
+        )
+        rkaa_data = rkaa.get_by_geom(kt_data, single_result=True)
+        if rkaa_data:
+            # del rkaa_data['geom']
+            rkaa_data["geom"] = rkaa.get_geometry(rkaa_data)
+
             rk_serializer = RakennuskieltoV1Serializer(data=rkaa_data)
             if not rk_serializer.is_valid():
                 log.error("Invalid WMF-data: %s" % serializer.errors)
@@ -89,11 +111,11 @@ class API(APIView):
 
         # Return the data
         ret_data = {
-            kiinteistotunnus: kt_data[''],
-            rekisterilaji: rekisterilaji,
-            asemakaavan_numero: asemakaavan_numero,
-            asemakaava_voimassa: asemakaava_voimassa,
-            rakennuskiellot: rakennuskiellot
+            "kiinteistotunnus": kt_data["kiinteistotunnus"],
+            "rekisterilaji": rekisterilaji,
+            "asemakaavan_numero": asemakaavan_numero,
+            "asemakaava_voimassa": asemakaava_voimassa,
+            "rakennuskiellot": rakennuskiellot,
         }
 
         # Go validate the returned data.

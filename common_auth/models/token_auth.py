@@ -8,23 +8,36 @@ class Token(models.Model):
     """
     The default authorization token model.
     """
+
     key = models.CharField(_("Key"), max_length=40, primary_key=True)
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
-        related_name='wasted_auth_token',
+        related_name="wasted_auth_token",
         on_delete=models.CASCADE,
-        verbose_name=_("User")
+        verbose_name=_("User"),
     )
     created = models.DateTimeField(_("Created"), auto_now_add=True)
-    access_facta = models.ForeignKey('common_auth.ExtAuthCred',
-                                     related_name='access_facta_creds',
-                                     verbose_name=_("Facta"),
-                                     null=True, on_delete=models.PROTECT)
-    access_geoserver = models.ForeignKey('common_auth.ExtAuthCred',
-                                         related_name='access_geoserver_creds',
-                                         verbose_name=_("GeoServer"),
-                                         null=True, on_delete=models.PROTECT)
-    access_kaavapino = models.BooleanField(_("Kaavapino"), null=False)
+    access_facta = models.ForeignKey(
+        "common_auth.ExtAuthCred",
+        related_name="access_facta_creds",
+        verbose_name=_("Facta"),
+        null=True,
+        on_delete=models.PROTECT,
+    )
+    access_geoserver = models.ForeignKey(
+        "common_auth.ExtAuthCred",
+        related_name="access_geoserver_creds",
+        verbose_name=_("GeoServer"),
+        null=True,
+        on_delete=models.PROTECT,
+    )
+    access_kaavapino = models.ForeignKey(
+        "common_auth.ExtAuthCred",
+        related_name="access_kaavapino_creds",
+        verbose_name=_("Kaavapino"),
+        null=True,
+        on_delete=models.PROTECT,
+    )
 
     class Meta:
         # Work around for a bug in Django:
@@ -34,7 +47,7 @@ class Token(models.Model):
         # https://github.com/encode/django-rest-framework/issues/705
         verbose_name = _("Token")
         verbose_name_plural = _("Tokens")
-        db_table = 'authtoken_token'
+        db_table = "authtoken_token"
 
     def save(self, *args, **kwargs):
         if not self.key:

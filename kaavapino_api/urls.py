@@ -1,24 +1,21 @@
 from django.urls import path, re_path
-from rest_framework.versioning import URLPathVersioning
 from kaavapino_api import views
 
 urlpatterns = [
-    path('heartbeat',
-         views.heartbeat.API.as_view(),
-         name='heartbeat'),
+    path("heartbeat", views.heartbeat.API.as_view(), name="heartbeat"),
     re_path(
-        r'^v(?P<version>(1))/project/(?P<pinonro>[^/]*)',
-        views.project.API.as_view(),
-        name='project'
-    ),
-    re_path(
-        r'^v(?P<version>(1))/project/changes',
+        r"^v(?P<version>(1))/project/changes",
         views.project_change.API.as_view(),
-        name='changes'
+        name="changes",
     ),
     re_path(
-        r'^v(?P<version>(1))/project/(?P<pinonro>[^/]*)/trigger-change',
+        r"^v(?P<version>(1))/project/(?P<pinonro>[^/]*)",
+        views.project.API.as_view(),
+        name="project",
+    ),
+    re_path(
+        r"^v(?P<version>(1))/project/(?P<pinonro>[^/]*)/trigger-change",
         views.project_trigger_change.API.as_view(),
-        name='changes'
+        name="changes",
     ),
 ]

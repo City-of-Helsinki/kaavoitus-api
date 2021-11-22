@@ -7,6 +7,21 @@ USER root
 ENV APP_HOME /kaavoitus-api
 WORKDIR $APP_HOME
 
+RUN dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+
+RUN cd /tmp
+RUN wget https://download.osgeo.org/proj/proj-7.2.1.tar.gz
+RUN tar -xvf proj-7.2.1.tar.gz
+RUN cd proj-7.2.1 && \
+./configure && make && make install && cd ..
+
+RUN wget https://github.com/OSGeo/gdal/releases/download/v3.2.2/gdal-3.2.2.tar.gz
+RUN tar -xvf gdal-3.2.2.tar.gz
+RUN cd gdal-3.2.2 && \
+./configure --with-python && \
+make && \
+make install
+
 # Copy local code to the container image.
 COPY setup.py .
 COPY api_project api_project/
@@ -55,6 +70,17 @@ COPY --from=compile-image /opt/app-root/lib/python3.8/site-packages /opt/app-roo
 COPY --from=compile-image /oracle /oracle
 COPY --from=compile-image /opt/app-root/bin /opt/app-root/bin
 ENV PATH=/opt/app-root/bin:$PATH
+
+#GDAL dependencies
+COPY --from=compile-image /usr/local/bin /usr/local/bin
+COPY --from=compile-image /usr/local/include /usr/local/include
+COPY --from=compile-image /usr/local/lib /usr/local/lib
+COPY --from=compile-image /usr/local/share/gdal /usr/local/share/gdal
+COPY --from=compile-image /usr/local/share/proj /usr/local/share/proj
+COPY --from=compile-image /usr/lib64 /usr/lib64
+
+ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+ENV PROJ_LIB=/usr/local/share/proj
 
 # Copy local code to the container image.
 COPY api_project api_project/

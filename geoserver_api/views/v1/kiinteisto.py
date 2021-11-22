@@ -1,11 +1,15 @@
 from rest_framework.views import APIView  # pip install django-rest-framework
-from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest, \
-    HttpResponseNotFound, HttpResponseForbidden, HttpResponseServerError
-from drf_spectacular.openapi import AutoSchema
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from django.http import (
+    JsonResponse,
+    HttpResponse,
+    HttpResponseBadRequest,
+    HttpResponseNotFound,
+    HttpResponseForbidden,
+    HttpResponseServerError,
+)
+from drf_spectacular.utils import extend_schema
 from drf_spectacular.types import OpenApiTypes
 import logging
-import lxml.etree as etree
 from geoserver_api.hki_geoserver.kiinteistotunnus import Kiinteistotunnus
 from geoserver_api.views.serializers.v1 import KiinteistoV1Serializer
 
@@ -27,18 +31,16 @@ class API(APIView):
 
         # Confirmed access to GeoServer.
         # Go get the data!
-        kt = Kiinteistotunnus(username=geoserver_creds.username, password=geoserver_creds.credential)
+        kt = Kiinteistotunnus(
+            username=geoserver_creds.username, password=geoserver_creds.credential
+        )
         kt_data = kt.get(kiinteistotunnus)
         if not kt_data:
             log.error("%s not found!" % kiinteistotunnus)
             return HttpResponseNotFound()
 
-        log.info("Kiinteistötunnus: %s" % (kt_data['kiinteisto']))
-        # Convert part of XML-tree from objects to str to be returned as JSON.
-        geom_str = etree.tostring(kt_data['geom'].element,
-                                  encoding='ascii', method='xml',
-                                  xml_declaration=False).decode('ascii')
-        kt_data['geom'] = geom_str
+        log.info("Kiinteistötunnus: %s" % (kt_data["kiinteisto"]))
+        kt_data["geom"] = kt.get_geometry(kt_data)
 
         # Go validate the returned data.
         # It needs to be verifiable by serializer rules. Those are published in Swagger.

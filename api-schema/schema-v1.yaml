@@ -25,6 +25,142 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
+  /api/facta/v1/kiinteisto/{kiinteistotunnus}/all:
+    get:
+      operationId: facta_v1_kiinteisto_all_retrieve
+      description: Hae kiinteistö kiinteistötunnuksella
+      parameters:
+      - in: path
+        name: kiinteistotunnus
+        schema:
+          type: string
+        description: Kiinteistötunnus to get data for
+        required: true
+      tags:
+      - facta
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KiinteistonDataV1'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+  /api/facta/v1/kiinteisto/haltijat/{kiinteistotunnus}:
+    get:
+      operationId: facta_v1_kiinteisto_haltijat_retrieve
+      description: Hae kiinteistön haltijat kiinteistötunnuksella
+      parameters:
+      - in: path
+        name: kiinteistotunnus
+        schema:
+          type: string
+        description: Kiinteistötunnus to get data for
+        required: true
+      tags:
+      - facta
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KiinteistonHaltijatV1'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+  /api/facta/v1/kiinteisto/omistajat/{kiinteistotunnus}:
+    get:
+      operationId: facta_v1_kiinteisto_omistajat_retrieve
+      description: Hae kiinteistö kiinteistötunnuksella
+      parameters:
+      - in: path
+        name: kiinteistotunnus
+        schema:
+          type: string
+        description: Kiinteistötunnus to get data for
+        required: true
+      tags:
+      - facta
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KiinteistonOmistajatV1'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+  /api/facta/v1/rakennus/omistajat/{kiinteistotunnus}:
+    get:
+      operationId: facta_v1_rakennus_omistajat_retrieve
+      description: Hae rakennuksen omistajatiedots kiinteistötunnuksella
+      parameters:
+      - in: path
+        name: kiinteistotunnus
+        schema:
+          type: string
+        description: Kiinteistötunnus to get data for
+        required: true
+      tags:
+      - facta
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RakennuksenOmistajatV1'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
   /api/geoserver/heartbeat:
     get:
       operationId: geoserver_heartbeat_retrieve
@@ -46,13 +182,254 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/geoserver/v1/asemakaava_voimassa/{id}:
+  /api/geoserver/v1/asemakaava/{kaavatunnus}:
     get:
-      operationId: geoserver_v1_asemakaava_voimassa_retrieve
+      operationId: geoserver_v1_asemakaava_retrieve
       description: ''
       parameters:
       - in: path
-        name: id
+        name: kaavatunnus
+        schema:
+          type: string
+        description: Kaavanumero to get data for
+        required: true
+      tags:
+      - geoserver
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsemakaavaV1'
+              examples:
+                ExampleResponse:
+                  value:
+                    gid: 30
+                    asemakaava_uuid: 11f63694-73aa-4f8f-913d-f2afd4c2c27a
+                    kaavatunnus: '12587'
+                    hankenumero: 0845_2
+                    kieli1: fi-FI
+                    kieli2: sv-FI
+                    kaavanimi1: Koivusaaren asemakaava ja asemakaavan muutos
+                    kaavanimi2: 'null'
+                    kaavanlaatija: Mikko Reinikainen/Miika Vuoristo
+                    hyvaksyja: 'null'
+                    vireilletulopvm: '2020-04-09'
+                    hyvaksymispvm: '2020-04-09'
+                    voimaantulopvm: '2020-04-09'
+                    kuntakoodi: 91
+                    kaavanvaihe: vireilletullut
+                    kaavatyyppi: Asemakaava
+                    kaavatyyppi2: 'null'
+                    aluesijainti: voimaantulosijainti
+                    nahtavillealkupvm: '2020-04-09'
+                    nahtavillaviimpvm: '2020-04-09'
+                    kaavamaarayskirjasto: 31.3.2000 Ympäristöministeriön asetus MRL:n
+                      mukaisista kaavamerkinnöistä
+                    kaavalinkki: 'null'
+                    pintaala: 856041.696977
+                    lisatietoja: 'null'
+                    yhtluontipvm: '2020-04-09'
+                    yhtmuokkauspvm: '2020-04-20'
+                    yhtdatanomistaja: Helsinki/Kymp/Maka/Aska
+                    paivitetty_tietopalveluun: 'null'
+                    id: asemakaava.30
+                    srs: urn:ogc:def:crs:EPSG::3879
+                    geom:
+                    - type: Feature
+                      geometry:
+                        type: Polygon
+                        coordinates:
+                        - - - 60.16268526954202
+                            - 24.85560361382704
+                          - - 60.16271848524254
+                            - 24.85559276360192
+                          - - 60.1627510313494
+                            - 24.855585846938084
+                          - - 60.16279610493577
+                            - 24.85558221332046
+                          - - 60.162817369359715
+                            - 24.85558288866241
+                          - - 60.162973458732836
+                            - 24.85559341317887
+                          - - 60.16303501846143
+                            - 24.855699466142454
+                          - - 60.16310458039353
+                            - 24.856424542341138
+                          - - 60.16300968746828
+                            - 24.856895227578235
+                          - - 60.16271899349028
+                            - 24.857007213086252
+                          - - 60.16276215597355
+                            - 24.857458339972947
+                          - - 60.16281205498318
+                            - 24.857979979506027
+                          - - 60.162828146749966
+                            - 24.85814812112544
+                          - - 60.16285019101903
+                            - 24.858378583474725
+                          - - 60.162720843129684
+                            - 24.85911986226137
+                          - - 60.162707502439375
+                            - 24.85919628760949
+                          - - 60.163495048679614
+                            - 24.858892249027445
+                          - - 60.16357586209433
+                            - 24.858143245590437
+                          - - 60.16361296065637
+                            - 24.857714809096887
+                          - - 60.163906054283416
+                            - 24.855894598863472
+                          - - 60.164046446769774
+                            - 24.855955812186213
+                          - - 60.16418683922309
+                            - 24.85601702422923
+                          - - 60.16415086280358
+                            - 24.855541838401933
+                          - - 60.16418082681866
+                            - 24.855458176051773
+                          - - 60.16443718952046
+                            - 24.855367868858668
+                          - - 60.16456039048357
+                            - 24.855324471054423
+                          - - 60.164569421971706
+                            - 24.85532166777401
+                          - - 60.16459869475206
+                            - 24.855317688473885
+                          - - 60.16462797593888
+                            - 24.85532141040197
+                          - - 60.16464361238159
+                            - 24.855326605153287
+                          - - 60.164656764522434
+                            - 24.855332769895224
+                          - - 60.16468456792004
+                            - 24.855351572608726
+                          - - 60.164710910404764
+                            - 24.855377496838795
+                          - - 60.164720721834975
+                            - 24.85538945887011
+                          - - 60.16484212811866
+                            - 24.855546415960845
+                          - - 60.16503482429366
+                            - 24.85579555514213
+                          - - 60.16504638238458
+                            - 24.855811872444345
+                          - - 60.165064136728134
+                            - 24.855842979582164
+                          - - 60.165075360249055
+                            - 24.855867425063774
+                          - - 60.165079715792295
+                            - 24.855878470945736
+                          - - 60.16509285301169
+                            - 24.855917739266243
+                          - - 60.165103323601784
+                            - 24.85596011264702
+                          - - 60.16510338651943
+                            - 24.855960262479257
+                          - - 60.16519499543102
+                            - 24.855923092037568
+                          - - 60.16515360117438
+                            - 24.85549571139991
+                          - - 60.165141152076956
+                            - 24.855368040945194
+                          - - 60.16604507390624
+                            - 24.85539992976369
+                          - - 60.16633085173626
+                            - 24.855407469327176
+                          - - 60.16664983915069
+                            - 24.855416203209426
+                          - - 60.16828037163885
+                            - 24.855383254710347
+                          - - 60.16853167872191
+                            - 24.855378072281066
+                          - - 60.16956491317837
+                            - 24.855357447420484
+                          - - 60.170914401083984
+                            - 24.844221750367453
+                          - - 60.17050530367665
+                            - 24.844235668048235
+                          - - 60.166019829144865
+                            - 24.84439115754545
+                          - - 60.165974962523
+                            - 24.844393374343525
+                          - - 60.16571943454498
+                            - 24.84440543423219
+                          - - 60.16558427235925
+                            - 24.84441246718259
+                          - - 60.1654218942266
+                            - 24.844348700721454
+                          - - 60.165244816094386
+                            - 24.844280389994623
+                          - - 60.15901586955488
+                            - 24.841749486492027
+                          - - 60.15809229736619
+                            - 24.841374291455246
+                          - - 60.15809839324884
+                            - 24.85233216234293
+                          - - 60.16132980714572
+                            - 24.852325461715054
+                          - - 60.161500140476235
+                            - 24.852712296823213
+                          - - 60.16153641280492
+                            - 24.853441578223574
+                          - - 60.16140763605972
+                            - 24.854371090355006
+                          - - 60.16148767581398
+                            - 24.854583757723073
+                          - - 60.16151009489568
+                            - 24.854651821061513
+                          - - 60.16159809051237
+                            - 24.85472728316425
+                          - - 60.16158659704654
+                            - 24.85508027743823
+                          - - 60.16213053248185
+                            - 24.85624054958485
+                          - - 60.162198983876294
+                            - 24.856195068655534
+                          - - 60.162617553501654
+                            - 24.855946945760863
+                          - - 60.16258827830357
+                            - 24.855640969805144
+                          - - 60.16268526954202
+                            - 24.85560361382704
+                      properties:
+                        id: asemakaava.30
+                  summary: Detailed description of fields returned as response
+                  description: "\n    Fields:\n        * gid:\n        * asemakaava_uuid:\n\
+                    \        * kaavatunnus:\n        * hankenumero:\n        * kieli1:\n\
+                    \        * kieli2:\n        * kaavanimi1:\n        * kaavanimi2:\n\
+                    \        * kaavanlaatija:\n        * hyvaksyja:\n        * vireilletulopvm:\n\
+                    \        * hyvaksymispvm:\n        * voimaantulopvm:\n       \
+                    \ * kuntakoodi:\n        * kaavanvaihe:\n        * kaavatyyppi:\n\
+                    \        * kaavatyyppi2:\n        * aluesijainti:\n        * nahtavillealkupvm:\n\
+                    \        * nahtavillaviimpvm:\n        * kaavamaarayskirjasto:\n\
+                    \        * kaavalinkki:\n        * pintaala:\n        * lisatietoja:\n\
+                    \        * yhtluontipvm:\n        * yhtmuokkauspvm:\n        *\
+                    \ yhtdatanomistaja:\n        * paivitetty_tietopalveluun:\n  \
+                    \      * id:\n        * srs:\n        * geom: String, GML representation\
+                    \ of the geographical area for this data\n            "
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+  /api/geoserver/v1/asemakaava/{kiinteistotunnus}/kaavamaarays:
+    get:
+      operationId: geoserver_v1_asemakaava_kaavamaarays_retrieve
+      description: ''
+      parameters:
+      - in: path
+        name: kiinteistotunnus
         schema:
           type: string
         description: Kiinteistötunnus to get data for
@@ -69,9 +446,157 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/geoserver/v1/kiinteistotunnus/{id}:
+  /api/geoserver/v1/asemakaava/{kiinteistotunnus}/voimassa:
     get:
-      operationId: geoserver_v1_kiinteistotunnus_retrieve
+      operationId: geoserver_v1_asemakaava_voimassa_retrieve
+      description: ''
+      parameters:
+      - in: path
+        name: kiinteistotunnus
+        schema:
+          type: string
+        description: Kiinteistötunnus to get data for
+        required: true
+      tags:
+      - geoserver
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/geoserver/v1/kaavahanke/{hankenumero}:
+    get:
+      operationId: geoserver_v1_kaavahanke_retrieve
+      description: ''
+      parameters:
+      - in: path
+        name: hankenumero
+        schema:
+          type: string
+        description: hankenumero to get data for
+        required: true
+      tags:
+      - geoserver
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KaavahankeV1'
+              examples:
+                ExampleResponse:
+                  value:
+                    tietopalvelu_id: 1053
+                    hankenumero: 0592_13
+                    kaavahankkeen_nimi: Merikorttikuja 6, asemakaavan muutos
+                    kaavahankkeen_kuvaus: Olemassa olevan kerrostalotontin täydennysrakentaminen.
+                    vastuuhenkilo: UKKONEN JUSSI VILI MIKAEL
+                    vastuuyksikko: VUOSAARI-VARTIOKYLÄ
+                    muut_vastuuhenkilot: LIKE/Janne Antila, TEK/Leivo Pekka
+                    toimintasuunnitelmaan: Ei
+                    diaarinumero: HEL 2017-010023
+                    kaavanumero: '12553'
+                    hanketyyppi: asemakaava
+                    kaavaprosessi: M
+                    maankayttosopimus: kyllä
+                    kaavavaihe: 07 Hyväksytty
+                    oas_pvm: 04.04.2018
+                    asuminen_yhteensa_k_m2: 9900
+                    toimitila_yhteensa_k_m2: 200
+                    suunnitteluperiaatteet_suunniteltu_pvm: 'null'
+                    suunnitteluperiaatteet_hyvaksytty_pvm: 'null'
+                    luonnos_suunniteltu_pvm: 'null'
+                    luonnos_hyvaksytty_pvm: 'null'
+                    ehdotus_suunniteltu_pvm: 'null'
+                    ehdotus_hyvaksytty_pvm: 'null'
+                    tarkistettu_ehdotus_suunniteltu_pvm: 16.04.2019
+                    tarkistettu_ehdotus_hyvaksytty_pvm: 'null'
+                    hyvaksytty_pvm: 31.03.2021
+                    hyvaksyja: Kvsto
+                    tavoite_1: 1.1 Asuntotuotannon edistäminen
+                    tavoite_2: 1.5 Elävät, omaleimaiset ja turvalliset kaupunginosat
+                    tavoite_3: 2.2 Kumppanuus ja osallisuus toimintatapana vahvistuvat
+                    aineistot_pwssa: pw://hels000601.helsinki1.hki.local:HKIPW/Documents/P{ad07509c-e419-4bda-b5a7-7fe71e5baacb}/
+                    luontipvm: '2018-02-07'
+                    muokkauspvm: '2018-02-07'
+                    selostus: 'null'
+                    datanomistaja: Helsinki/MAKA
+                    paivitetty_tietopalveluun: '2021-05-12'
+                    id: Hankerajaukset_alue_kaavahanke.1053
+                    srs: urn:ogc:def:crs:EPSG::3879
+                    geom:
+                    - type: Feature
+                      geometry:
+                        type: Polygon
+                        coordinates:
+                        - - - 60.21628762979331
+                            - 25.129485638715988
+                          - - 60.21533520601964
+                            - 25.12935510847131
+                          - - 60.21525123891026
+                            - 25.13182959391695
+                          - - 60.21503046984468
+                            - 25.131928552015655
+                          - - 60.215192278800046
+                            - 25.133223155604057
+                          - - 60.21524695428115
+                            - 25.133660629712733
+                          - - 60.21660588988698
+                            - 25.133011195177044
+                          - - 60.21655477098117
+                            - 25.132306703814645
+                          - - 60.21642015079162
+                            - 25.13229605757576
+                          - - 60.21645579707743
+                            - 25.130475506603347
+                          - - 60.21627398719765
+                            - 25.130231702047492
+                          - - 60.21628762979331
+                            - 25.129485638715988
+                      properties:
+                        id: Hankerajaukset_alue_kaavahanke.1053
+                  summary: Detailed description of fields returned as response
+                  description: "\n    Fields:\n        * tietopalvelu_id:\n      \
+                    \  * hankenumero:\n        * kaavahankkeen_nimi:\n        * kaavahankkeen_kuvaus:\n\
+                    \        * vastuuhenkilo:\n        * vastuuyksikko:\n        *\
+                    \ muut_vastuuhenkilot:\n        * toimintasuunnitelmaan:\n   \
+                    \     * diaarinumero:\n        * kaavanumero:\n        * hanketyyppi:\n\
+                    \        * kaavaprosessi:\n        * maankayttosopimus:\n    \
+                    \    * kaavavaihe:\n        * oas_pvm:\n        * asuminen_yhteensa_k_m2:\n\
+                    \        * toimitila_yhteensa_k_m2:\n        * suunnitteluperiaatteet_suunniteltu_pvm:\n\
+                    \        * suunnitteluperiaatteet_hyvaksytty_pvm:\n        * luonnos_suunniteltu_pvm:\n\
+                    \        * luonnos_hyvaksytty_pvm:\n        * ehdotus_suunniteltu_pvm:\n\
+                    \        * ehdotus_hyvaksytty_pvm:\n        * tarkistettu_ehdotus_suunniteltu_pvm:\n\
+                    \        * tarkistettu_ehdotus_hyvaksytty_pvm:\n        * hyvaksytty_pvm:\n\
+                    \        * hyvaksyja:\n        * tavoite_1:\n        * tavoite_2:\n\
+                    \        * tavoite_3:\n        * aineistot_pwssa:\n        * luontipvm:\n\
+                    \        * muokkauspvm:\n        * selostus:\n        * datanomistaja:\n\
+                    \        * paivitetty_tietopalveluun:\n        * id:\n       \
+                    \ * srs:\n        * geom: String, GML representation of the geographical\
+                    \ area for this data\n            "
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+  /api/geoserver/v1/kiinteisto/{kiinteistotunnus}:
+    get:
+      operationId: geoserver_v1_kiinteisto_retrieve
       description: Hae kiinteistö kiinteistötunnuksella
       parameters:
       - in: query
@@ -80,7 +605,7 @@ paths:
           type: string
         description: (test-version only) Filter by alue
       - in: path
-        name: id
+        name: kiinteistotunnus
         schema:
           type: string
         description: Kiinteistötunnus to get data for
@@ -99,29 +624,41 @@ paths:
                 ExampleResponse:
                   value:
                     datanomistaja: Helsinki/Kami
-                    id: 156
+                    id: Kiinteisto_alue.29976
                     kiinteisto: 91-3-9903-101
                     kiinteistotunnus: 09100399030101
                     kunta: 091
                     luontipvm: '2013-12-09'
                     muokkauspvm: '2014-06-10'
-                    paivitetty_tietopalveluun: '2021-01-04'
+                    paivitetty_tietopalveluun: '2021-05-11'
                     rekisterointipvm: '1980-05-30'
                     ryhma: '9903'
                     sijaintialue: '003'
                     yksikko: '0101'
-                    gml_id: Kiinteisto_alue.156.geom.1
-                    geom: <gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2"
-                      srsName="urn:ogc:def:crs:EPSG::3879"><gml:exterior><gml:LinearRing><gml:posList>6672759.0098
-                      2.54969922149E7 6672701.3892 2.54969952458E7 6672711.2563 2.54971894828E7
-                      6672768.3387 2.54971866207E7 6672759.0098 2.54969922149E7</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>
+                    geom:
+                    - type: Feature
+                      geometry:
+                        type: MultiPolygon
+                        coordinates:
+                        - - - - 60.16770787604104
+                              - 24.945822596882344
+                            - - 60.167190728234246
+                              - 24.945878041085354
+                            - - 60.16728067217075
+                              - 24.949376521148313
+                            - - 60.167792992022136
+                              - 24.949324179702018
+                            - - 60.16770787604104
+                              - 24.945822596882344
+                      properties:
+                        id: Kiinteisto_alue.29976
                   summary: Detailed description of fields returned as response
                   description: "\n            Example 09100399030101 is part of Espa,\
                     \ esplanade and urban park in downtown Helsinki.\n           \
-                    \ Group 9903 indicates a public space, a park.\n            \n\
-                    \            Fields:\n            * datanomistaja: Owner of this\
-                    \ data in City of Helsinki\n            * id: Database unique\
-                    \ id\n            * gml_id: Database unique id in GML (ISO 19136:2007)\n\
+                    \ Group 9903 indicates a public space, a park.\n\n           \
+                    \ Fields:\n            * datanomistaja: Owner of this data in\
+                    \ City of Helsinki\n            * id: Database unique id\n   \
+                    \         * gml_id: Database unique id in GML (ISO 19136:2007)\n\
                     \            * kiinteistotunnus: zero padded 14 digit (3-3-4-4)\
                     \ representation of field 'kiinteisto'\n            * kiinteisto:\
                     \ dash-separated value of kunta-sijaintialue-ryhma-yksikko\n \
@@ -153,13 +690,398 @@ paths:
               schema:
                 type: string
           description: ''
-  /api/geoserver/v1/maarekisterikiinteisto/{id}:
+  /api/geoserver/v1/kiinteisto/{kiinteistotunnus}/all:
+    get:
+      operationId: geoserver_v1_kiinteisto_all_retrieve
+      description: Hae kiinteistön Kaavapino data kiinteistötunnuksella
+      parameters:
+      - in: path
+        name: kiinteistotunnus
+        schema:
+          type: string
+        description: Kiinteistötunnus to get all Kaavapino data for
+        required: true
+      tags:
+      - geoserver
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KiinteistoAllV1'
+              examples:
+                ExampleResponse:
+                  value:
+                    kiinteistotunnus: 09143600030009
+                    rekisterilaji: M
+                    asemakaavan_numero: '12475'
+                    asemakaava_voimassa: '2018-04-25'
+                    rakennuskiellot:
+                    - datanomistaja: Helsinki/KAMI
+                      antaja_selite: Lautakunta
+                      antaja_tunnus: '8'
+                      id: Rakennuskieltoalue_asemakaavan_laatimiseksi.12
+                      kunta: 091
+                      laatu_selite: § 58.5 Asemakaavan mukainen toteuttamisen ajoituskielto
+                      laatu_tunnus: '17540'
+                      luontipvm: '2020-06-10'
+                      muokkauspvm: '2020-06-11'
+                      paatospvm: '2020-06-09'
+                      paattymispvm: '2023-06-29'
+                      paivitetty_tietopalveluun: '2021-05-03'
+                      rakennuskieltotunnus: '12657'
+                      tyyppi: RK ajoituskielto
+                      voimaantulopvm: '2020-06-09'
+                      geom:
+                      - type: Feature
+                        geometry:
+                          type: Polygon
+                          coordinates:
+                          - - - 60.20347358574124
+                              - 24.926132082557697
+                            - - 60.20347207422368
+                              - 24.926132078434573
+                            - - 60.20343224570241
+                              - 24.92613741295874
+                            - - 60.20339310449809
+                              - 24.926153146172446
+                            - - 60.20335532032394
+                              - 24.926179008840467
+                            - - 60.20331953967213
+                              - 24.926214558415708
+                            - - 60.203286374751784
+                              - 24.926259186612043
+                            - - 60.20325639301537
+                              - 24.926312129814026
+                            - - 60.20323010744942
+                              - 24.926372482144192
+                            - - 60.203207967797795
+                              - 24.926439210962325
+                            - - 60.203201198243065
+                              - 24.926464185078647
+                            - - 60.20319035286757
+                              - 24.926511174534603
+                            - - 60.20317756404759
+                              - 24.926587141567452
+                            - - 60.203169820152326
+                              - 24.926665812273892
+                            - - 60.20316725367862
+                              - 24.926745840611417
+                            - - 60.20316990853806
+                              - 24.926825857310806
+                            - - 60.203177739306796
+                              - 24.92690449330156
+                            - - 60.20319061200159
+                              - 24.926980403135087
+                            - - 60.20320830637297
+                              - 24.927052288003182
+                            - - 60.203224489049205
+                              - 24.927102596064177
+                            - - 60.20340239752261
+                              - 24.927600711139945
+                            - - 60.20385247922556
+                              - 24.926951865737937
+                            - - 60.203911998262356
+                              - 24.926871316871292
+                            - - 60.2039519393831
+                              - 24.926822790049325
+                            - - 60.203973785725815
+                              - 24.926797986387285
+                            - - 60.204073042361316
+                              - 24.92669961714486
+                            - - 60.204093958156626
+                              - 24.92668169241763
+                            - - 60.204176352632786
+                              - 24.926619854886187
+                            - - 60.204179343792475
+                              - 24.926617604579985
+                            - - 60.204184617266975
+                              - 24.92661236511038
+                            - - 60.20418950522922
+                              - 24.926605787552628
+                            - - 60.20419392404455
+                              - 24.926597984450158
+                            - - 60.204197798105554
+                              - 24.926589089316145
+                            - - 60.204201061125836
+                              - 24.92657925434894
+                            - - 60.204203657274064
+                              - 24.926568647828045
+                            - - 60.204205214837216
+                              - 24.92655989402324
+                            - - 60.20420554212918
+                              - 24.92655745123403
+                            - - 60.20420668344062
+                              - 24.926545856144788
+                            - - 60.204207061680286
+                              - 24.92653406095622
+                            - - 60.20420667037627
+                              - 24.926522267487808
+                            - - 60.20420551622403
+                              - 24.926510677530203
+                            - - 60.20420361897137
+                              - 24.926499489391485
+                            - - 60.204201011080954
+                              - 24.92648889450429
+                            - - 60.204197737174766
+                              - 24.926479074150716
+                            - - 60.20419724780552
+                              - 24.92647803213482
+                            - - 60.2041940444973
+                              - 24.926470909433355
+                            - - 60.20418995710424
+                              - 24.926463481881083
+                            - - 60.20418949679695
+                              - 24.92646291470635
+                            - - 60.204184468602925
+                              - 24.926456180962088
+                            - - 60.204181209959074
+                              - 24.926452645958403
+                            - - 60.20386106084458
+                              - 24.92615155374843
+                            - - 60.203854450454216
+                              - 24.926145696666957
+                            - - 60.20383562650711
+                              - 24.92613290613551
+                            - - 60.203820445781595
+                              - 24.92612647929569
+                            - - 60.203816132619735
+                              - 24.926125161361696
+                            - - 60.2037963023389
+                              - 24.9261225948518
+                            - - 60.20377796434164
+                              - 24.926124879766814
+                            - - 60.20374005788018
+                              - 24.92613173244237
+                            - - 60.20370505417023
+                              - 24.926133827139132
+                            - - 60.20370201323999
+                              - 24.926133826735544
+                            - - 60.20349239376431
+                              - 24.926132226012275
+                            - - 60.20347358574124
+                              - 24.926132082557697
+                        properties:
+                          id: Rakennuskieltoalue_asemakaavan_laatimiseksi.12
+                  summary: Detailed description of fields returned as response
+                  description: "\n    Fields:\n        * kiinteistotunnus: Kiinteistötunnus\n\
+                    \        * rekisterilaji: Suunnittelualueella olevan kiinteistön\
+                    \ rekisterilaji (M/T/Y)\n        * asemakaavan_numero: Voimassa\
+                    \ olevan asemakaavan numero\n        * asemakaava_voimassa: Milloin\
+                    \ kiinteistön asemakaava on tullut voimaan\n        * rakennuskiellot:\
+                    \ Rakennuskielto/kiellot perusteineen\n            "
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+  /api/geoserver/v1/kiinteistot/{hankenumero}:
+    get:
+      operationId: geoserver_v1_kiinteistot_retrieve
+      description: ''
+      parameters:
+      - in: path
+        name: hankenumero
+        schema:
+          type: string
+        description: Hankenumero to get data for
+        required: true
+      tags:
+      - geoserver
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KiinteistotV1'
+              examples:
+                ExampleResponse:
+                  value:
+                    asemakaava:
+                      gid: 30
+                      asemakaava_uuid: 11f63694-73aa-4f8f-913d-f2afd4c2c27a
+                      kaavatunnus: '12587'
+                      hankenumero: 0845_2
+                      kieli1: fi-FI
+                      kieli2: sv-FI
+                      kaavanimi1: Koivusaaren asemakaava ja asemakaavan muutos
+                      kaavanimi2: 'null'
+                      kaavanlaatija: Mikko Reinikainen/Miika Vuoristo
+                      hyvaksyja: 'null'
+                      vireilletulopvm: '2020-04-09'
+                      hyvaksymispvm: '2020-04-09'
+                      voimaantulopvm: '2020-04-09'
+                      kuntakoodi: 91
+                      kaavanvaihe: vireilletullut
+                      kaavatyyppi: Asemakaava
+                      kaavatyyppi2: 'null'
+                      aluesijainti: voimaantulosijainti
+                      nahtavillealkupvm: '2020-04-09'
+                      nahtavillaviimpvm: '2020-04-09'
+                      kaavamaarayskirjasto: 31.3.2000 Ympäristöministeriön asetus
+                        MRL:n mukaisista kaavamerkinnöistä
+                      kaavalinkki: 'null'
+                      pintaala: 856041.696977
+                      lisatietoja: 'null'
+                      yhtluontipvm: '2020-04-09'
+                      yhtmuokkauspvm: '2020-04-20'
+                      yhtdatanomistaja: Helsinki/Kymp/Maka/Aska
+                      paivitetty_tietopalveluun: 'null'
+                      id: asemakaava.30
+                      srs: urn:ogc:def:crs:EPSG::3879
+                      geom: '[{"type": "Feature", "geometry": "{ \"type\": \"Polygon\",
+                        \"coordinates\": [ [ [ 60.162685269542017, 24.855603613827039
+                        ], [ 60.162718485242543, 24.855592763601919 ], [ 60.162751031349401,
+                        24.855585846938084 ], [ 60.162796104935772, 24.85558221332046
+                        ], [ 60.162817369359715, 24.855582888662411 ], [ 60.162973458732836,
+                        24.85559341317887 ], [ 60.163035018461429, 24.855699466142454
+                        ], [ 60.163104580393529, 24.856424542341138 ], [ 60.163009687468282,
+                        24.856895227578235 ], [ 60.16271899349028, 24.857007213086252
+                        ], [ 60.162762155973553, 24.857458339972947 ], [ 60.162812054983178,
+                        24.857979979506027 ], [ 60.162828146749966, 24.858148121125438
+                        ], [ 60.162850191019032, 24.858378583474725 ], [ 60.162720843129684,
+                        24.85911986226137 ], [ 60.162707502439375, 24.859196287609489
+                        ], [ 60.163495048679614, 24.858892249027445 ], [ 60.163575862094334,
+                        24.858143245590437 ], [ 60.163612960656373, 24.857714809096887
+                        ], [ 60.163906054283416, 24.855894598863472 ], [ 60.164046446769774,
+                        24.855955812186213 ], [ 60.164186839223092, 24.856017024229232
+                        ], [ 60.164150862803581, 24.855541838401933 ], [ 60.164180826818658,
+                        24.855458176051773 ], [ 60.164437189520463, 24.855367868858668
+                        ], [ 60.164560390483572, 24.855324471054423 ], [ 60.164569421971706,
+                        24.85532166777401 ], [ 60.164598694752058, 24.855317688473885
+                        ], [ 60.164627975938878, 24.85532141040197 ], [ 60.164643612381589,
+                        24.855326605153287 ], [ 60.164656764522434, 24.855332769895224
+                        ], [ 60.164684567920041, 24.855351572608726 ], [ 60.164710910404764,
+                        24.855377496838795 ], [ 60.164720721834975, 24.855389458870111
+                        ], [ 60.164842128118657, 24.855546415960845 ], [ 60.165034824293663,
+                        24.85579555514213 ], [ 60.165046382384581, 24.855811872444345
+                        ], [ 60.165064136728134, 24.855842979582164 ], [ 60.165075360249055,
+                        24.855867425063774 ], [ 60.165079715792295, 24.855878470945736
+                        ], [ 60.165092853011693, 24.855917739266243 ], [ 60.165103323601784,
+                        24.855960112647018 ], [ 60.165103386519426, 24.855960262479257
+                        ], [ 60.165194995431023, 24.855923092037568 ], [ 60.165153601174381,
+                        24.855495711399911 ], [ 60.165141152076956, 24.855368040945194
+                        ], [ 60.16604507390624, 24.855399929763689 ], [ 60.166330851736262,
+                        24.855407469327176 ], [ 60.166649839150693, 24.855416203209426
+                        ], [ 60.168280371638851, 24.855383254710347 ], [ 60.168531678721912,
+                        24.855378072281066 ], [ 60.16956491317837, 24.855357447420484
+                        ], [ 60.170914401083984, 24.844221750367453 ], [ 60.170505303676649,
+                        24.844235668048235 ], [ 60.166019829144865, 24.844391157545449
+                        ], [ 60.165974962523002, 24.844393374343525 ], [ 60.165719434544982,
+                        24.84440543423219 ], [ 60.165584272359247, 24.84441246718259
+                        ], [ 60.165421894226597, 24.844348700721454 ], [ 60.165244816094386,
+                        24.844280389994623 ], [ 60.159015869554878, 24.841749486492027
+                        ], [ 60.158092297366188, 24.841374291455246 ], [ 60.158098393248842,
+                        24.852332162342929 ], [ 60.161329807145719, 24.852325461715054
+                        ], [ 60.161500140476235, 24.852712296823213 ], [ 60.161536412804921,
+                        24.853441578223574 ], [ 60.161407636059721, 24.854371090355006
+                        ], [ 60.16148767581398, 24.854583757723073 ], [ 60.161510094895682,
+                        24.854651821061513 ], [ 60.161598090512371, 24.854727283164252
+                        ], [ 60.161586597046544, 24.85508027743823 ], [ 60.162130532481847,
+                        24.85624054958485 ], [ 60.162198983876294, 24.856195068655534
+                        ], [ 60.162617553501654, 24.855946945760863 ], [ 60.162588278303573,
+                        24.855640969805144 ], [ 60.162685269542017, 24.855603613827039
+                        ] ] ] }", "properties": {"id": "asemakaava.30"}}]'
+                    kiinteistot:
+                    - id: Kiinteisto_alue.227
+                      kiinteistotunnus: 09141400010681
+                      kiinteisto: 91-414-1-681
+                      kunta: 091
+                      sijaintialue: '414'
+                      ryhma: '0001'
+                      yksikko: 0681
+                      rekisterointipvm: '1976-03-08'
+                      luontipvm: '2013-12-09'
+                      muokkauspvm: '2014-06-10'
+                      datanomistaja: Helsinki/Kami
+                      paivitetty_tietopalveluun: '2021-05-05'
+                      srs: urn:ogc:def:crs:EPSG::3879
+                      geom:
+                      - type: Feature
+                        geometry:
+                          type: MultiPolygon
+                          coordinates:
+                          - - - - 60.16511614104451
+                                - 24.84945966322642
+                              - - 60.165024048399765
+                                - 24.849598869623378
+                              - - 60.16505997128988
+                                - 24.849756710335097
+                              - - 60.16511614104451
+                                - 24.84945966322642
+                        properties:
+                          id: Kiinteisto_alue.227
+                  summary: Detailed description of fields returned as response
+                  description: "\n    Fields:\n        * asemakaava: Asemakaavan tiedot\n\
+                    \        * kiinteistot: Lista alueella olevista kiinteistöistä\n\
+                    \            "
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+  /api/geoserver/v1/korttelialue/{korttelinnumero}:
+    get:
+      operationId: geoserver_v1_korttelialue_retrieve
+      description: Hae kortteli korttelinnumerolla
+      parameters:
+      - in: path
+        name: korttelinnumero
+        schema:
+          type: string
+        description: Korttelinnumero to get data for
+        required: true
+      tags:
+      - geoserver
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+  /api/geoserver/v1/maarekisterikiinteisto/{kiinteistotunnus}:
     get:
       operationId: geoserver_v1_maarekisterikiinteisto_retrieve
       description: ''
       parameters:
       - in: path
-        name: id
+        name: kiinteistotunnus
         schema:
           type: string
         description: Kiinteistötunnus to get data for
@@ -176,13 +1098,37 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/geoserver/v1/neighbourhood/{id}:
+  /api/geoserver/v1/neighbourhood/{kiinteistotunnus}:
     get:
       operationId: geoserver_v1_neighbourhood_retrieve
       description: ''
       parameters:
       - in: path
-        name: id
+        name: kiinteistotunnus
+        schema:
+          type: string
+        description: Experimental query for neighbours, kiinteistötunnus to get data
+          for
+        required: true
+      tags:
+      - geoserver
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/geoserver/v1/rakennusala/{kiinteistotunnus}:
+    get:
+      operationId: geoserver_v1_rakennusala_retrieve
+      description: ''
+      parameters:
+      - in: path
+        name: kiinteistotunnus
         schema:
           type: string
         description: Kiinteistötunnus to get data for
@@ -199,13 +1145,13 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/geoserver/v1/rakennuskieltoalue_asemakaava/{id}:
+  /api/geoserver/v1/rakennuskieltoalue/asemakaava/{kiinteistotunnus}:
     get:
       operationId: geoserver_v1_rakennuskieltoalue_asemakaava_retrieve
       description: ''
       parameters:
       - in: path
-        name: id
+        name: kiinteistotunnus
         schema:
           type: string
         description: Kiinteistötunnus to get data for
@@ -219,16 +1165,287 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/RakennuskieltoV1'
+              examples:
+                ExampleResponse:
+                  summary: Detailed description of fields returned as response
+                  description: "\n            Example:\n            Fields:\n    \
+                    \        * Tyyppi: \"RK asemakaavan laatimiseksi\" tai \"RK yleiskaavan\
+                    \ laatimiseksi\"\n            "
           description: ''
-  /api/geoserver/v1/rakennuskieltoalue_yleiskaava/{id}:
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+  /api/geoserver/v1/rakennuskieltoalue/yleiskaava/{kiinteistotunnus}:
     get:
       operationId: geoserver_v1_rakennuskieltoalue_yleiskaava_retrieve
       description: ''
       parameters:
       - in: path
-        name: id
+        name: kiinteistotunnus
+        schema:
+          type: string
+        description: Kiinteistötunnus to get data for
+        required: true
+      tags:
+      - geoserver
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RakennuskieltoV1'
+              examples:
+                ExampleResponse:
+                  summary: Detailed description of fields returned as response
+                  description: "\n            Example:\n            Fields:\n    \
+                    \        * Tyyppi: \"RK asemakaavan laatimiseksi\" tai \"RK yleiskaavan\
+                    \ laatimiseksi\"\n            "
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+  /api/geoserver/v1/suunnittelualue/{hankenumero}:
+    get:
+      operationId: geoserver_v1_suunnittelualue_retrieve
+      description: ''
+      parameters:
+      - in: path
+        name: hankenumero
+        schema:
+          type: string
+        description: Hankenumero to get data for
+        required: true
+      tags:
+      - geoserver
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuunnittelualueV1'
+              examples:
+                ExampleResponse:
+                  value:
+                    suunnittelualueen_rajaus:
+                    - type: Feature
+                      geometry:
+                        type: Polygon
+                        coordinates:
+                        - - - 60.16268526954202
+                            - 24.85560361382704
+                          - - 60.16271848524254
+                            - 24.85559276360192
+                          - - 60.1627510313494
+                            - 24.855585846938084
+                          - - 60.16279610493577
+                            - 24.85558221332046
+                          - - 60.162817369359715
+                            - 24.85558288866241
+                          - - 60.162973458732836
+                            - 24.85559341317887
+                          - - 60.16303501846143
+                            - 24.855699466142454
+                          - - 60.16310458039353
+                            - 24.856424542341138
+                          - - 60.16300968746828
+                            - 24.856895227578235
+                          - - 60.16271899349028
+                            - 24.857007213086252
+                          - - 60.16276215597355
+                            - 24.857458339972947
+                          - - 60.16281205498318
+                            - 24.857979979506027
+                          - - 60.162828146749966
+                            - 24.85814812112544
+                          - - 60.16285019101903
+                            - 24.858378583474725
+                          - - 60.162720843129684
+                            - 24.85911986226137
+                          - - 60.162707502439375
+                            - 24.85919628760949
+                          - - 60.163495048679614
+                            - 24.858892249027445
+                          - - 60.16357586209433
+                            - 24.858143245590437
+                          - - 60.16361296065637
+                            - 24.857714809096887
+                          - - 60.163906054283416
+                            - 24.855894598863472
+                          - - 60.164046446769774
+                            - 24.855955812186213
+                          - - 60.16418683922309
+                            - 24.85601702422923
+                          - - 60.16415086280358
+                            - 24.855541838401933
+                          - - 60.16418082681866
+                            - 24.855458176051773
+                          - - 60.16443718952046
+                            - 24.855367868858668
+                          - - 60.16456039048357
+                            - 24.855324471054423
+                          - - 60.164569421971706
+                            - 24.85532166777401
+                          - - 60.16459869475206
+                            - 24.855317688473885
+                          - - 60.16462797593888
+                            - 24.85532141040197
+                          - - 60.16464361238159
+                            - 24.855326605153287
+                          - - 60.164656764522434
+                            - 24.855332769895224
+                          - - 60.16468456792004
+                            - 24.855351572608726
+                          - - 60.164710910404764
+                            - 24.855377496838795
+                          - - 60.164720721834975
+                            - 24.85538945887011
+                          - - 60.16484212811866
+                            - 24.855546415960845
+                          - - 60.16503482429366
+                            - 24.85579555514213
+                          - - 60.16504638238458
+                            - 24.855811872444345
+                          - - 60.165064136728134
+                            - 24.855842979582164
+                          - - 60.165075360249055
+                            - 24.855867425063774
+                          - - 60.165079715792295
+                            - 24.855878470945736
+                          - - 60.16509285301169
+                            - 24.855917739266243
+                          - - 60.165103323601784
+                            - 24.85596011264702
+                          - - 60.16510338651943
+                            - 24.855960262479257
+                          - - 60.16519499543102
+                            - 24.855923092037568
+                          - - 60.16515360117438
+                            - 24.85549571139991
+                          - - 60.165141152076956
+                            - 24.855368040945194
+                          - - 60.16604507390624
+                            - 24.85539992976369
+                          - - 60.16633085173626
+                            - 24.855407469327176
+                          - - 60.16664983915069
+                            - 24.855416203209426
+                          - - 60.16828037163885
+                            - 24.855383254710347
+                          - - 60.16853167872191
+                            - 24.855378072281066
+                          - - 60.16956491317837
+                            - 24.855357447420484
+                          - - 60.170914401083984
+                            - 24.844221750367453
+                          - - 60.17050530367665
+                            - 24.844235668048235
+                          - - 60.166019829144865
+                            - 24.84439115754545
+                          - - 60.165974962523
+                            - 24.844393374343525
+                          - - 60.16571943454498
+                            - 24.84440543423219
+                          - - 60.16558427235925
+                            - 24.84441246718259
+                          - - 60.1654218942266
+                            - 24.844348700721454
+                          - - 60.165244816094386
+                            - 24.844280389994623
+                          - - 60.15901586955488
+                            - 24.841749486492027
+                          - - 60.15809229736619
+                            - 24.841374291455246
+                          - - 60.15809839324884
+                            - 24.85233216234293
+                          - - 60.16132980714572
+                            - 24.852325461715054
+                          - - 60.161500140476235
+                            - 24.852712296823213
+                          - - 60.16153641280492
+                            - 24.853441578223574
+                          - - 60.16140763605972
+                            - 24.854371090355006
+                          - - 60.16148767581398
+                            - 24.854583757723073
+                          - - 60.16151009489568
+                            - 24.854651821061513
+                          - - 60.16159809051237
+                            - 24.85472728316425
+                          - - 60.16158659704654
+                            - 24.85508027743823
+                          - - 60.16213053248185
+                            - 24.85624054958485
+                          - - 60.162198983876294
+                            - 24.856195068655534
+                          - - 60.162617553501654
+                            - 24.855946945760863
+                          - - 60.16258827830357
+                            - 24.855640969805144
+                          - - 60.16268526954202
+                            - 24.85560361382704
+                      properties:
+                        id: Hankerajaukset_alue_kaavahanke.783
+                    suunnittelualueen_pinta_ala: '856041.696977'
+                    keskimaarainen_tonttitehokkuus: '0.0'
+                    maanalaisten_tilojen_pinta_ala_yht: '0.0'
+                    aluevarausten_pinta_alat_yht: '1242503.2089670005'
+                    pinta_alan_muutokset_yht: '0.0'
+                    suojellut_rakennukset_maara_yht: '0'
+                    suojellut_rakennukset_ala_yht: '0.0'
+                  summary: Detailed description of fields returned as response
+                  description: "\n    Fields:\n        * suunnittelualueen_rajaus:\
+                    \ Suunnittelualueen rajaus (GeoJSON)\n        * suunnittelualueen_pinta_ala:\
+                    \ Suunnittelualueen pinta-ala              \n        * keskimaarainen_tonttitehokkuus:\
+                    \ Tonttien keskimääräinen tehokkuusluku                   \n \
+                    \       * maanalaisten_tilojen_pinta_ala_yht: Maanalaisten tilojen\
+                    \ pinta-ala yhteensä\n        * aluevarausten_pinta_alat_yht:\
+                    \ Aluevarausten pinta-alat yhteensä  \n        * pinta_alan_muutokset_yht:\
+                    \ Pinta-alan muutokset yhteensä\n        * suojellut_rakennukset_maara_yht:\
+                    \ Suojellut rakennukset, lukumäärä\n        * suojellut_rakennukset_ala_yht:\
+                    \ Suojellut rakennukset, kerrosala yhteensä\n            "
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+  /api/geoserver/v1/tontti/{kiinteistotunnus}:
+    get:
+      operationId: geoserver_v1_tontti_retrieve
+      description: ''
+      parameters:
+      - in: path
+        name: kiinteistotunnus
         schema:
           type: string
         description: Kiinteistötunnus to get data for
@@ -245,13 +1462,36 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/geoserver/v1/tontti/{id}:
+  /api/geoserver/v1/yleinen_alue/{kiinteistotunnus}:
     get:
-      operationId: geoserver_v1_tontti_retrieve
+      operationId: geoserver_v1_yleinen_alue_retrieve
       description: ''
       parameters:
       - in: path
-        name: id
+        name: kiinteistotunnus
+        schema:
+          type: string
+        description: Kiinteistötunnus to get data for
+        required: true
+      tags:
+      - geoserver
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/geoserver/v1/ymparistoalue/{kiinteistotunnus}:
+    get:
+      operationId: geoserver_v1_ymparistoalue_retrieve
+      description: ''
+      parameters:
+      - in: path
+        name: kiinteistotunnus
         schema:
           type: string
         description: Kiinteistötunnus to get data for
@@ -288,6 +1528,159 @@ paths:
               schema:
                 type: object
                 additionalProperties: {}
+          description: ''
+  /api/kaavapino/v1/project/{pinonro}:
+    get:
+      operationId: kaavapino_v1_project_retrieve
+      description: Projektin tiedot
+      parameters:
+      - in: path
+        name: pinonro
+        schema:
+          type: string
+        description: Pinonumero to get data for
+        required: true
+      tags:
+      - kaavapino
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectV1'
+              examples:
+                ExampleResponse:
+                  value:
+                    pinonumero: '0000027'
+                  summary: Detailed description of fields returned as response
+                  description: "\n    Fields:\n        * muistutusten_lukumaara: Muistutusten\
+                    \ lukumäärä\n        * valitusten_lukumaara_HaO: Valitusten lukumäärä\
+                    \ HAO\n        * valitusten_lukumaara_KHO: Valitusten lukumäärä\
+                    \ KHO\n        * pinonumero: Pinonumero\n        * diaarinumero:\
+                    \ Diaarinumero\n        * hankenumero: Hankenumero (PW)\n    \
+                    \    * kaavanlaatija: Vastuuhenkilö\n        * kaavan_piirtaja:\
+                    \ Suunnitteluavustajan nimi\n        * hyvaksyja: Kaavan hyväksyjätaho\n\
+                    \        * kaavatunnus: Kaavanumero\n        * kaavanimi1: Projektin\
+                    \ nimi\n        * kaavanimi2: Kaavan (projektin) nimi ruotsiksi\n\
+                    \        * kaavan_virallinen_nimi: Kaavan virallinen nimi\n  \
+                    \      * kaavaehdotus_lautakunnassa: Ehdotus on hyväksytty lautakunnassa\n\
+                    \        * tarkistettu_kaavaehdotus_lautakunnassa: Tarkistettu\
+                    \ ehdotus on hyväksytty lautakunnassa\n        * hyvaksymispvm:\
+                    \ Hyväksymispäätöksen päivämäärä\n        * tarkistettu_ehdotus_kirje_khs:\
+                    \ Milloin ehdotus kirjeellä kaupunginhallitukselle\n        *\
+                    \ kaavaehdotus_nahtavillealkupvm_iso: Milloin kaavaehdotuksen\
+                    \ nähtävilläolo alkaa (L, XL)\n        * kaavaehdotus_nahtavillealkupvm_pieni:\
+                    \ Milloin kaavaehdotuksen nähtävilläolo alkaa (XS, S, M)\n   \
+                    \     * kaavaehdotus_nahtavillaviimpvm Milloin kaavaehdotuksen\
+                    \ nähtävilläolo päättyy\n        * kaavaehdotus_paivatty: Milloin\
+                    \ kaavaehdotus on lautakunnassa\n        * tarkistettu_kaavaehdotus_paivatty:\
+                    \ Milloin tarkistettu ehdotus on lautakunnassa\n        * voimaantulopvm:\
+                    \ Kaava on tullut voimaan\n        * tullut_osittain_voimaan_pvm:\
+                    \ Kaava on tullut osittain voimaan\n        * kumottu_pvm: Kaava\
+                    \ on kumottu\n        * rauennut_pvm: Kaava on rauennut\n    \
+                    \    * kaavan_esittelija_ehdotus: Asemakaavapäällikkönä lautakunnassa,\
+                    \ kun ehdotus esitellään\n        * kaavan_esittelija_tarkistettu_ehdotus:\
+                    \ Asemakaavapäällikkönä lautakunnassa, kun tarkistettu ehdotus\
+                    \ esitellään\n        * vireilletulopvm: OAS:n päiväys\n     \
+                    \   * OAS_nahtavillealkupvm: Milloin OAS-aineiston esilläolo alkaa\n\
+                    \        * OAS_nahtavillaviimpvm: Milloin OAS-aineiston esilläolo\
+                    \ päättyy\n        * HaO_paatospvm: Valitusten ratkaisupäivämäärä\
+                    \ hallinto-oikeudessa\n        * KHO_paatospvm: Valitusten ratkaisupäivämäärä\
+                    \ korkeimmassa hallinto-oikeudessa\n        * kaavaehdotus_uudelleen_nahtavillealkupvm_iso2:\
+                    \ Milloin kaavaehdotuksen nähtävilläolo alkaa (L, XL)\n      \
+                    \  * kaavaehdotus_uudelleen_nahtavillealkupvm_pieni2: Milloin\
+                    \ kaavaehdotuksen nähtävilläolo alkaa (XS, S, M)\n        * kaavaehdotus_uudelleen_nahtavillaviimpvm_2:\
+                    \ Milloin kaavaehdotuksen nähtävilläolo päättyy\n        * kaavaehdotus_uudelleen_nahtavillealkupvm_iso3:\
+                    \ Milloin kaavaehdotuksen nähtävilläolo alkaa (L, XL)\n      \
+                    \  * kaavaehdotus_uudelleen_nahtavillealkupvm_pieni3: Milloin\
+                    \ kaavaehdotuksen nähtävilläolo alkaa (XS, S, M)\n        * kaavaehdotus_uudelleen_nahtavillaviimpvm_3:\
+                    \ Milloin kaavaehdotuksen nähtävilläolo päättyy\n        * kaavaehdotus_uudelleen_nahtavillealkupvm_iso4:\
+                    \ Milloin kaavaehdotuksen nähtävilläolo alkaa (L, XL)\n      \
+                    \  * kaavaehdotus_uudelleen_nahtavillealkupvm_pieni4: Milloin\
+                    \ kaavaehdotuksen nähtävilläolo alkaa (XS, S, M)\n        * kaavaehdotus_uudelleen_nahtavillaviimpvm_4:\
+                    \ Milloin kaavaehdotuksen nähtävilläolo päättyy\n            "
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+  /api/kaavapino/v1/project/{pinonro}/trigger-change:
+    patch:
+      operationId: kaavapino_v1_project_trigger_change_partial_update
+      description: Trigger a project to update
+      parameters:
+      - in: path
+        name: pinonro
+        schema:
+          type: string
+        description: Pinonumero to get data for
+        required: true
+      tags:
+      - kaavapino
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+  /api/kaavapino/v1/project/changes:
+    get:
+      operationId: kaavapino_v1_project_changes_retrieve
+      description: Get list of changed projects (after given timestamp)
+      parameters:
+      - in: query
+        name: timestamp
+        schema:
+          type: string
+        description: Filter by timestamp. Query for changes made after given timestamp.
+      tags:
+      - kaavapino
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectChangesV1'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: string
           description: ''
   /schema/v1/:
     get:
@@ -433,6 +1826,332 @@ paths:
           description: ''
 components:
   schemas:
+    AsemakaavaV1:
+      type: object
+      properties:
+        gid:
+          type: string
+        asemakaava_uuid:
+          type: string
+        kaavatunnus:
+          type: string
+        hankenumero:
+          type: string
+        kieli1:
+          type: string
+        kieli2:
+          type: string
+        kaavanimi1:
+          type: string
+        kaavanimi2:
+          type: string
+          nullable: true
+        kaavanlaatija:
+          type: string
+        hyvaksyja:
+          type: string
+          nullable: true
+        vireilletulopvm:
+          type: string
+          format: date
+        hyvaksymispvm:
+          type: string
+          format: date
+        voimaantulopvm:
+          type: string
+          format: date
+        kuntakoodi:
+          type: string
+        kaavanvaihe:
+          type: string
+        kaavatyyppi:
+          type: string
+        kaavatyyppi2:
+          type: string
+          nullable: true
+        aluesijainti:
+          type: string
+        nahtavillealkupvm:
+          type: string
+          format: date
+        nahtavillaviimpvm:
+          type: string
+          format: date
+        kaavamaarayskirjasto:
+          type: string
+        kaavalinkki:
+          type: string
+          nullable: true
+        pintaala:
+          type: string
+        lisatietoja:
+          type: string
+          nullable: true
+        yhtluontipvm:
+          type: string
+          format: date
+        yhtmuokkauspvm:
+          type: string
+          format: date
+        yhtdatanomistaja:
+          type: string
+        paivitetty_tietopalveluun:
+          type: string
+          format: date
+          nullable: true
+        id:
+          type: string
+        srs:
+          type: string
+        geom:
+          type: object
+          additionalProperties: {}
+          nullable: true
+      required:
+      - aluesijainti
+      - asemakaava_uuid
+      - gid
+      - hankenumero
+      - hyvaksyja
+      - hyvaksymispvm
+      - id
+      - kaavalinkki
+      - kaavamaarayskirjasto
+      - kaavanimi1
+      - kaavanimi2
+      - kaavanlaatija
+      - kaavanvaihe
+      - kaavatunnus
+      - kaavatyyppi
+      - kaavatyyppi2
+      - kieli1
+      - kieli2
+      - kuntakoodi
+      - lisatietoja
+      - nahtavillaviimpvm
+      - nahtavillealkupvm
+      - paivitetty_tietopalveluun
+      - pintaala
+      - srs
+      - vireilletulopvm
+      - voimaantulopvm
+      - yhtdatanomistaja
+      - yhtluontipvm
+      - yhtmuokkauspvm
+    BlankEnum:
+      enum:
+      - ''
+    KaavahankeV1:
+      type: object
+      properties:
+        tietopalvelu_id:
+          type: string
+        hankenumero:
+          type: string
+        kaavahankkeen_nimi:
+          type: string
+        kaavahankkeen_kuvaus:
+          type: string
+        vastuuhenkilo:
+          type: string
+        vastuuyksikko:
+          type: string
+        muut_vastuuhenkilot:
+          type: string
+        toimintasuunnitelmaan:
+          type: string
+        diaarinumero:
+          type: string
+        kaavanumero:
+          type: string
+        hanketyyppi:
+          type: string
+        kaavaprosessi:
+          type: string
+        maankayttosopimus:
+          type: string
+        kaavavaihe:
+          type: string
+        oas_pvm:
+          type: string
+          format: date
+          nullable: true
+        asuminen_yhteensa_k_m2:
+          type: string
+        toimitila_yhteensa_k_m2:
+          type: string
+        suunnitteluperiaatteet_suunniteltu_pvm:
+          type: string
+          format: date
+          nullable: true
+        suunnitteluperiaatteet_hyvaksytty_pvm:
+          type: string
+          format: date
+          nullable: true
+        luonnos_suunniteltu_pvm:
+          type: string
+          format: date
+          nullable: true
+        luonnos_hyvaksytty_pvm:
+          type: string
+          format: date
+          nullable: true
+        ehdotus_suunniteltu_pvm:
+          type: string
+          format: date
+          nullable: true
+        ehdotus_hyvaksytty_pvm:
+          type: string
+          format: date
+          nullable: true
+        tarkistettu_ehdotus_suunniteltu_pvm:
+          type: string
+          format: date
+          nullable: true
+        tarkistettu_ehdotus_hyvaksytty_pvm:
+          type: string
+          format: date
+          nullable: true
+        hyvaksytty_pvm:
+          type: string
+          format: date
+          nullable: true
+        hyvaksyja:
+          type: string
+        tavoite_1:
+          type: string
+        tavoite_2:
+          type: string
+        tavoite_3:
+          type: string
+        aineistot_pwssa:
+          type: string
+        luontipvm:
+          type: string
+          format: date
+          nullable: true
+        muokkauspvm:
+          type: string
+          format: date
+          nullable: true
+        selostus:
+          type: string
+        datanomistaja:
+          type: string
+        paivitetty_tietopalveluun:
+          type: string
+          format: date
+          nullable: true
+        id:
+          type: string
+        srs:
+          type: string
+        geom:
+          type: object
+          additionalProperties: {}
+          nullable: true
+      required:
+      - aineistot_pwssa
+      - asuminen_yhteensa_k_m2
+      - datanomistaja
+      - diaarinumero
+      - ehdotus_hyvaksytty_pvm
+      - ehdotus_suunniteltu_pvm
+      - hankenumero
+      - hanketyyppi
+      - hyvaksyja
+      - hyvaksytty_pvm
+      - id
+      - kaavahankkeen_kuvaus
+      - kaavahankkeen_nimi
+      - kaavanumero
+      - kaavaprosessi
+      - kaavavaihe
+      - luonnos_hyvaksytty_pvm
+      - luonnos_suunniteltu_pvm
+      - luontipvm
+      - maankayttosopimus
+      - muokkauspvm
+      - muut_vastuuhenkilot
+      - oas_pvm
+      - paivitetty_tietopalveluun
+      - selostus
+      - srs
+      - suunnitteluperiaatteet_hyvaksytty_pvm
+      - suunnitteluperiaatteet_suunniteltu_pvm
+      - tarkistettu_ehdotus_hyvaksytty_pvm
+      - tarkistettu_ehdotus_suunniteltu_pvm
+      - tavoite_1
+      - tavoite_2
+      - tavoite_3
+      - tietopalvelu_id
+      - toimintasuunnitelmaan
+      - toimitila_yhteensa_k_m2
+      - vastuuhenkilo
+      - vastuuyksikko
+    KiinteistoAddressV1:
+      type: object
+      properties:
+        first_names:
+          type: string
+          nullable: true
+          maxLength: 110
+        last_name:
+          type: string
+          nullable: true
+          maxLength: 100
+        address:
+          type: string
+          nullable: true
+          maxLength: 271
+        address2:
+          type: string
+          nullable: true
+          maxLength: 100
+        zip_code:
+          type: string
+          nullable: true
+          maxLength: 5
+        city_fin:
+          type: string
+          nullable: true
+          maxLength: 402
+        city_swe:
+          type: string
+          nullable: true
+          maxLength: 402
+      required:
+      - address
+      - address2
+      - city_fin
+      - city_swe
+      - first_names
+      - last_name
+      - zip_code
+    KiinteistoAllV1:
+      type: object
+      properties:
+        kiinteistotunnus:
+          type: string
+          maxLength: 20
+        rekisterilaji:
+          oneOf:
+          - $ref: '#/components/schemas/RekisterilajiEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        asemakaavan_numero:
+          type: string
+          maxLength: 20
+        asemakaava_voimassa:
+          type: string
+          format: date
+        rakennuskiellot:
+          type: array
+          items:
+            $ref: '#/components/schemas/RakennuskieltoV1'
+      required:
+      - kiinteistotunnus
+      - rakennuskiellot
+      - rekisterilaji
     KiinteistoV1:
       type: object
       properties:
@@ -440,7 +2159,7 @@ components:
           type: string
           maxLength: 40
         id:
-          type: integer
+          type: string
         kiinteisto:
           type: string
           maxLength: 24
@@ -479,10 +2198,11 @@ components:
           type: string
           maxLength: 80
         geom:
-          type: string
+          type: object
+          additionalProperties: {}
+          nullable: true
       required:
       - datanomistaja
-      - geom
       - id
       - kiinteisto
       - kiinteistotunnus
@@ -494,6 +2214,439 @@ components:
       - ryhma
       - sijaintialue
       - yksikko
+    KiinteistonDataV1:
+      type: object
+      properties:
+        kiinteistotunnus:
+          type: string
+          maxLength: 17
+        omistajat:
+          type: array
+          items:
+            $ref: '#/components/schemas/KiinteistonOmistajaV1'
+        haltijat:
+          type: array
+          items:
+            $ref: '#/components/schemas/KiinteistonHaltijaV1'
+        naapurit:
+          type: array
+          items:
+            $ref: '#/components/schemas/NaapuritV1'
+        rakennuksen_omistajat:
+          type: array
+          items:
+            $ref: '#/components/schemas/RakennuksenOmistajatV1'
+      required:
+      - haltijat
+      - kiinteistotunnus
+      - naapurit
+      - omistajat
+      - rakennuksen_omistajat
+    KiinteistonHaltijaV1:
+      type: object
+      properties:
+        kiinteistotunnus:
+          type: string
+          maxLength: 17
+        address:
+          $ref: '#/components/schemas/KiinteistoAddressV1'
+        y_tunnus:
+          type: string
+          nullable: true
+      required:
+      - address
+      - kiinteistotunnus
+    KiinteistonHaltijatV1:
+      type: object
+      properties:
+        kiinteistotunnus:
+          type: string
+          maxLength: 17
+        haltijat:
+          type: array
+          items:
+            $ref: '#/components/schemas/KiinteistonHaltijaV1'
+      required:
+      - haltijat
+      - kiinteistotunnus
+    KiinteistonOmistajaV1:
+      type: object
+      properties:
+        kiinteistotunnus:
+          type: string
+          maxLength: 17
+        address:
+          $ref: '#/components/schemas/KiinteistoAddressV1'
+        owner_home_municipality:
+          type: string
+          nullable: true
+        property_owner_type:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/PropertyOwnerTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        y_tunnus:
+          type: string
+          nullable: true
+      required:
+      - address
+      - property_owner_type
+    KiinteistonOmistajatV1:
+      type: object
+      properties:
+        kiinteistotunnus:
+          type: string
+          maxLength: 17
+        omistajat:
+          type: array
+          items:
+            $ref: '#/components/schemas/KiinteistonOmistajaV1'
+      required:
+      - kiinteistotunnus
+      - omistajat
+    KiinteistotV1:
+      type: object
+      properties:
+        asemakaava:
+          $ref: '#/components/schemas/AsemakaavaV1'
+        kiinteistot:
+          type: array
+          items:
+            $ref: '#/components/schemas/KiinteistoV1'
+      required:
+      - asemakaava
+      - kiinteistot
+    NaapuritV1:
+      type: object
+      properties:
+        kiinteistotunnus:
+          type: string
+          maxLength: 17
+        omistajat:
+          type: array
+          items:
+            $ref: '#/components/schemas/KiinteistonOmistajaV1'
+        haltijat:
+          type: array
+          items:
+            $ref: '#/components/schemas/KiinteistonHaltijaV1'
+        rakennuksen_omistajat:
+          type: array
+          items:
+            $ref: '#/components/schemas/RakennuksenOmistajatV1'
+      required:
+      - haltijat
+      - kiinteistotunnus
+      - omistajat
+      - rakennuksen_omistajat
+    NullEnum:
+      enum:
+      - null
+    ProjectChangeV1:
+      type: object
+      properties:
+        Identifier:
+          type: string
+          maxLength: 255
+        Changed:
+          type: string
+          format: date
+      required:
+      - Changed
+      - Identifier
+    ProjectChangesV1:
+      type: object
+      properties:
+        Changes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectChangeV1'
+          readOnly: true
+      required:
+      - Changes
+    ProjectV1:
+      type: object
+      properties:
+        muistutusten_lukumaara:
+          type: integer
+          nullable: true
+        valitusten_lukumaara_HaO:
+          type: integer
+          nullable: true
+        valitusten_lukumaara_KHO:
+          type: integer
+          nullable: true
+        pinonumero:
+          type: string
+        diaarinumero:
+          type: string
+          nullable: true
+        hankenumero:
+          type: string
+          nullable: true
+        kaavanlaatija:
+          type: string
+          nullable: true
+        kaavan_piirtaja:
+          type: string
+          nullable: true
+        hyvaksyja:
+          type: string
+          nullable: true
+        kaavatunnus:
+          type: string
+          nullable: true
+        kaavanimi1:
+          type: string
+          nullable: true
+        kaavanimi2:
+          type: string
+          nullable: true
+        kaavan_virallinen_nimi:
+          type: string
+          nullable: true
+        kaavaehdotus_lautakunnassa:
+          type: string
+          format: date
+          nullable: true
+        tarkistettu_kaavaehdotus_lautakunnassa:
+          type: string
+          format: date
+          nullable: true
+        hyvaksymispvm:
+          type: string
+          format: date
+          nullable: true
+        tarkistettu_ehdotus_kirje_khs:
+          type: string
+          format: date
+          nullable: true
+        kaavaehdotus_nahtavillealkupvm_iso:
+          type: string
+          format: date
+          nullable: true
+        kaavaehdotus_nahtavillealkupvm_pieni:
+          type: string
+          format: date
+          nullable: true
+        kaavaehdotus_nahtavillaviimpvm:
+          type: string
+          format: date
+          nullable: true
+        kaavaehdotus_paivatty:
+          type: string
+          format: date
+          nullable: true
+        tarkistettu_kaavaehdotus_paivatty:
+          type: string
+          format: date
+          nullable: true
+        voimaantulopvm:
+          type: string
+          format: date
+          nullable: true
+        tullut_osittain_voimaan_pvm:
+          type: string
+          format: date
+          nullable: true
+        kumottu_pvm:
+          type: string
+          format: date
+          nullable: true
+        rauennut_pvm:
+          type: string
+          format: date
+          nullable: true
+        kaavan_esittelija_ehdotus:
+          type: string
+          nullable: true
+        kaavan_esittelija_tarkistettu_ehdotus:
+          type: string
+          nullable: true
+        vireilletulopvm:
+          type: string
+          format: date
+          nullable: true
+        OAS_nahtavillealkupvm:
+          type: string
+          format: date
+          nullable: true
+        OAS_nahtavillaviimpvm:
+          type: string
+          format: date
+          nullable: true
+        HaO_paatospvm:
+          type: string
+          format: date
+          nullable: true
+        KHO_paatospvm:
+          type: string
+          format: date
+          nullable: true
+        kaavaehdotus_uudelleen_nahtavillealkupvm_iso2:
+          type: string
+          format: date
+          nullable: true
+        kaavaehdotus_uudelleen_nahtavillealkupvm_pieni2:
+          type: string
+          format: date
+          nullable: true
+        kaavaehdotus_uudelleen_nahtavillaviimpvm_2:
+          type: string
+          format: date
+          nullable: true
+        kaavaehdotus_uudelleen_nahtavillealkupvm_iso3:
+          type: string
+          format: date
+          nullable: true
+        kaavaehdotus_uudelleen_nahtavillealkupvm_pieni3:
+          type: string
+          format: date
+          nullable: true
+        kaavaehdotus_uudelleen_nahtavillaviimpvm_3:
+          type: string
+          format: date
+          nullable: true
+        kaavaehdotus_uudelleen_nahtavillealkupvm_iso4:
+          type: string
+          format: date
+          nullable: true
+        kaavaehdotus_uudelleen_nahtavillealkupvm_pieni4:
+          type: string
+          format: date
+          nullable: true
+        kaavaehdotus_uudelleen_nahtavillaviimpvm_4:
+          type: string
+          format: date
+          nullable: true
+      required:
+      - pinonumero
+    PropertyOwnerTypeEnum:
+      enum:
+      - H
+      - F
+      - P
+      type: string
+    RakennuksenOmistajaV1:
+      type: object
+      properties:
+        kiinteistotunnus:
+          type: string
+          maxLength: 17
+        address:
+          $ref: '#/components/schemas/KiinteistoAddressV1'
+        y_tunnus:
+          type: string
+          nullable: true
+      required:
+      - address
+    RakennuksenOmistajatV1:
+      type: object
+      properties:
+        kiinteistotunnus:
+          type: string
+          maxLength: 17
+        omistajat:
+          type: array
+          items:
+            $ref: '#/components/schemas/RakennuksenOmistajaV1'
+      required:
+      - kiinteistotunnus
+      - omistajat
+    RakennuskieltoV1:
+      type: object
+      properties:
+        datanomistaja:
+          type: string
+          maxLength: 40
+        antaja_selite:
+          type: string
+        antaja_tunnus:
+          type: string
+        id:
+          type: string
+        kunta:
+          type: string
+          maxLength: 3
+          minLength: 3
+        laatu_selite:
+          type: string
+        laatu_tunnus:
+          type: string
+        luontipvm:
+          type: string
+          format: date
+        muokkauspvm:
+          type: string
+          format: date
+        paatospvm:
+          type: string
+          format: date
+        paattymispvm:
+          type: string
+          format: date
+        paivitetty_tietopalveluun:
+          type: string
+          format: date
+        rakennuskieltotunnus:
+          type: string
+        tyyppi:
+          type: string
+        voimaantulopvm:
+          type: string
+          format: date
+        gml_id:
+          type: string
+          maxLength: 80
+        geom:
+          type: object
+          additionalProperties: {}
+          nullable: true
+      required:
+      - antaja_selite
+      - antaja_tunnus
+      - datanomistaja
+      - id
+      - kunta
+      - laatu_selite
+      - laatu_tunnus
+      - luontipvm
+      - muokkauspvm
+      - paatospvm
+      - paattymispvm
+      - paivitetty_tietopalveluun
+      - rakennuskieltotunnus
+      - tyyppi
+      - voimaantulopvm
+    RekisterilajiEnum:
+      enum:
+      - T
+      - M
+      - Y
+      type: string
+    SuunnittelualueV1:
+      type: object
+      properties:
+        suunnittelualueen_rajaus:
+          type: object
+          additionalProperties: {}
+          nullable: true
+        suunnittelualueen_pinta_ala:
+          type: string
+        keskimaarainen_tonttitehokkuus:
+          type: string
+        maanalaisten_tilojen_pinta_ala_yht:
+          type: string
+        aluevarausten_pinta_alat_yht:
+          type: string
+        pinta_alan_muutokset_yht:
+          type: string
+        suojellut_rakennukset_maara_yht:
+          type: string
+        suojellut_rakennukset_ala_yht:
+          type: string
+      required:
+      - suunnittelualueen_pinta_ala
   securitySchemes:
     tokenAuth:
       type: apiKey

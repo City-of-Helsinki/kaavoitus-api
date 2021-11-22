@@ -1,20 +1,23 @@
-from rest_framework.views import APIView  # pip install django-rest-framework
-from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest, \
-    HttpResponseNotFound, HttpResponseForbidden, HttpResponseServerError
-from drf_spectacular.openapi import AutoSchema
-from drf_spectacular.utils import extend_schema, OpenApiParameter
-from drf_spectacular.types import OpenApiTypes
+from django.http import (
+    JsonResponse,
+    HttpResponse,
+    HttpResponseBadRequest,
+    HttpResponseForbidden,
+    HttpResponseServerError,
+)
 import logging
-import lxml.etree as etree
 from django.conf import settings
+from django.http.response import HttpResponseNotFound
 from ..serializers.v1 import KiinteistonDataV1Serializer
 from facta_api import hel_facta
 from .kiinteisto import KiinteistoAPI
+from .rakennus import RakennusAPI
+from geoserver_api import hki_geoserver
 
 log = logging.getLogger(__name__)
 
 
-class API(KiinteistoAPI):
+class API(KiinteistoAPI, RakennusAPI):
     serializer_class = KiinteistonDataV1Serializer
 
     def get(self, request, kiinteistotunnus=None):
@@ -26,69 +29,55 @@ class API(KiinteistoAPI):
             return HttpResponseBadRequest("Need valid kiinteistotunnus!")
         if not request.auth:
             return HttpResponse(status=401)
-        facta_creds = request.auth.access_facta
-        if not facta_creds:
+        self.facta_creds = request.auth.access_facta
+        if not self.facta_creds:
             return HttpResponseForbidden("No access!")
 
-        # Confirmed access to Facta Oracle SQL.
-        # Mocking?
-        mock_dir = settings.FACTA_DB_MOCK_DATA_DIR
-        # Go get the data!
-        if mock_dir:
-            f_ko = hel_facta.KiinteistonOmistajat(mock_data_dir=mock_dir)
-        else:
-            f_ko = hel_facta.KiinteistonOmistajat(user=facta_creds.username,
-                                                  password=facta_creds.credential,
-                                                  host=facta_creds.host_spec)
-        rows = f_ko.get_by_kiinteistotunnus(ktunnus_to_use)
-        if not rows:
+        owners, occupants = self.get_kiinteisto(ktunnus_to_use)
+
+        if not owners and not occupants:
             return HttpResponseNotFound()
 
-        # Process result:
-        owner_rows = []
-        occupant_rows = []
-        if rows:
-            for row in rows:
-                # KiinteistonOmistajaV1Serializer.OWNER_TYPES
-                if row[14] == '10': # C_LAJI
-                    # Helsinki
-                    owner_type = 'H'
-                elif row[14] in ['8', '11']: # C_LAJI
-                    # Govt. of Finland
-                    owner_type = 'F'
-                else:
-                    # Private
-                    owner_type = 'P'
+        naapurit = []
+        geoserver_creds = request.auth.access_geoserver
+        if geoserver_creds:
+            # Confirmed access to GeoServer.
+            # Go get the data!
+            kt = hki_geoserver.Kiinteistotunnus(
+                username=geoserver_creds.username, password=geoserver_creds.credential
+            )
+            kt_data = kt.get(kiinteistotunnus)
+            neighbours = []
+            if kt_data:
+                t = hki_geoserver.Tontti(
+                    username=geoserver_creds.username,
+                    password=geoserver_creds.credential,
+                )
+                neighbours = t.list_of_neighbours(
+                    kt_data, neigh_to_skip=[kiinteistotunnus]
+                )
 
-                owner = {
-                    'kiinteistotunnus': row[2], # KIINTEISTOTUNNUS
-                    'address': self._extract_omistaja_address(row),
-                    'owner_home_municipality': row[17], # C_KOTIKUNT
-                    'property_owner_type': owner_type
-                }
-                owner_rows.append(owner)
-
-        if mock_dir:
-            f_kh = hel_facta.KiinteistonHaltijat(mock_data_dir=mock_dir)
-        else:
-            f_kh = hel_facta.KiinteistonHaltijat(user=facta_creds.username,
-                                                  password=facta_creds.credential,
-                                                  host=facta_creds.host_spec)
-        rows = f_kh.get_by_kiinteistotunnus(ktunnus_to_use)
-
-        # Process result:
-        if rows:
-            for row in rows:
-                occupant = {
-                    'kiinteistotunnus': row[2], # KIINTEISTOTUNNUS
-                    'address': self._extract_haltija_address(row),
-                }
-                occupant_rows.append(occupant)
+            if neighbours:
+                for neighbour in neighbours:
+                    neighbour_ktunnus = self._format_kiinteistotunnus(neighbour)
+                    n_owners, n_occupants = self.get_kiinteisto(neighbour_ktunnus)
+                    naapurit.append(
+                        {
+                            "kiinteistotunnus": neighbour_ktunnus,
+                            "omistajat": n_owners,
+                            "haltijat": n_occupants,
+                            "rakennuksen_omistajat": self.get_rakennus(
+                                neighbour_ktunnus
+                            ),
+                        }
+                    )
 
         kiinteisto_data = {
-            'kiinteistotunnus': ktunnus_to_use,
-            'omistajat': owner_rows,
-            'haltijat': occupant_rows,
+            "kiinteistotunnus": ktunnus_to_use,
+            "omistajat": owners,
+            "haltijat": occupants,
+            "naapurit": naapurit,
+            "rakennuksen_omistajat": self.get_rakennus(ktunnus_to_use),
         }
 
         # Go validate the returned data.
@@ -100,3 +89,92 @@ class API(KiinteistoAPI):
             return HttpResponseServerError("Data not formatted correctly!")
 
         return JsonResponse(serializer.validated_data)
+
+    def get_kiinteisto(self, ktunnus):
+        # Confirmed access to Facta Oracle SQL.
+        # Mocking?
+        mock_dir = settings.FACTA_DB_MOCK_DATA_DIR
+        # Go get the data!
+        if mock_dir:
+            f_ko = hel_facta.KiinteistonOmistajat(mock_data_dir=mock_dir)
+        else:
+            f_ko = hel_facta.KiinteistonOmistajat(
+                user=self.facta_creds.username,
+                password=self.facta_creds.credential,
+                host=self.facta_creds.host_spec,
+            )
+        rows = f_ko.get_by_kiinteistotunnus(ktunnus)
+        # if not rows:
+        #    return HttpResponseNotFound()
+
+        # Process result:
+        owner_rows = []
+        occupant_rows = []
+        if rows:
+            for row in rows:
+                # KiinteistonOmistajaV1Serializer.OWNER_TYPES
+                if row[14] == "10":  # C_LAJI
+                    # Helsinki
+                    owner_type = "H"
+                elif row[14] in ["8", "11"]:  # C_LAJI
+                    # Govt. of Finland
+                    owner_type = "F"
+                else:
+                    # Private
+                    owner_type = "P"
+
+                owner = {
+                    "kiinteistotunnus": row[2],  # KIINTEISTOTUNNUS
+                    "address": self._extract_omistaja_address(row),
+                    "owner_home_municipality": row[17],  # C_KOTIKUNT
+                    "property_owner_type": owner_type,
+                    "y_tunnus": row[16],  # C_LYTUNN
+                }
+                owner_rows.append(owner)
+
+        if mock_dir:
+            f_kh = hel_facta.KiinteistonHaltijat(mock_data_dir=mock_dir)
+        else:
+            f_kh = hel_facta.KiinteistonHaltijat(
+                user=self.facta_creds.username,
+                password=self.facta_creds.credential,
+                host=self.facta_creds.host_spec,
+            )
+        rows = f_kh.get_by_kiinteistotunnus(ktunnus)
+
+        # Process result:
+        if rows:
+            for row in rows:
+                log.debug(row)
+                occupant = {
+                    "kiinteistotunnus": row[2],  # KIINTEISTOTUNNUS
+                    "address": self._extract_haltija_address(row),
+                    "y_tunnus": row[23],  # C_LYTUNN
+                }
+                occupant_rows.append(occupant)
+
+        return owner_rows, occupant_rows
+
+    def get_rakennus(self, ktunnus):
+        mock_dir = settings.FACTA_DB_MOCK_DATA_DIR
+        if mock_dir:
+            f_ko = hel_facta.RakennuksenOmistajat(mock_data_dir=mock_dir)
+        else:
+            f_ko = hel_facta.RakennuksenOmistajat(
+                user=self.facta_creds.username,
+                password=self.facta_creds.credential,
+                host=self.facta_creds.host_spec,
+            )
+        rows = f_ko.get_by_kiinteistotunnus(ktunnus)
+
+        owner_rows = []
+        if rows:
+            for row in rows:
+                owner = {
+                    "kiinteistotunnus": row[1],  # C_KIINTEISTOTUNNUS
+                    "address": self._extract_rakennuksen_omistaja_address(row),
+                    "y_tunnus": row[14],  # C_LYTUNN
+                }
+                owner_rows.append(owner)
+
+        return owner_rows

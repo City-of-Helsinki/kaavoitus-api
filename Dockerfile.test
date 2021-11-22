@@ -1,0 +1,27 @@
+FROM ubuntu:21.04
+
+COPY ["test-apt-sources.list", "/etc/apt/sources.list"]
+COPY ["test-apt.settings", "/etc/apt/apt.conf.d/99own"]
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-mark hold unattended-upgrades && apt-get upgrade -y
+
+RUN apt-get install -y software-properties-common
+RUN add-apt-repository universe
+RUN apt-get update && apt-get install -y \
+    #libproj-dev \
+    python3-pip \
+    libgdal-dev=3.2.2+dfsg-1ubuntu1 \
+    gdal-bin=3.2.2+dfsg-1ubuntu1
+
+RUN export CPLUS_INCLUDE_PATH=/usr/include/gdal
+RUN export C_INCLUDE_PATH=/usr/include/gdal
+
+COPY . /code
+WORKDIR /code
+RUN pip install -e .[dev]
+
+# RUN tests with
+# RUN flake8
+# RUN black --check .

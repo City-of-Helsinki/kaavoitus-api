@@ -1,0 +1,20 @@
+# Git
+.git
+.gitignore
+
+# Byte-compiled / optimized / DLL files
+**/__pycache__/
+**/*.py[cod]
+
+# Docker
+Dockerfile*
+docker-compose.yml
+
+# Unit test / coverage reports
+.coverage
+coverage.xml
+.pytest_cache/
+.mypy_cache/
+
+# Project files
+#pyproject.toml
