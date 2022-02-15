@@ -28,7 +28,7 @@ setup(
         "gunicorn == 20.0.4",
         "numpy == 1.20.0",
         "geojson == 2.5.0",
-        "GDAL == 3.2.2",
+        "GDAL >=3.0.0,<3.1",
     ],
     extras_require={
         "dev": [
