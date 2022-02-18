@@ -24,6 +24,7 @@ setup(
         "owslib == 0.22.0",
         "lxml == 4.6.2",
         "pydov == 2.0.0",
+        "psycopg2 == 2.9.2",
         "cx_Oracle == 8.1.0",
         "gunicorn == 20.0.4",
         "numpy == 1.20.0",
