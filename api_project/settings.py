@@ -19,9 +19,12 @@ logger = logging.getLogger(__name__)
 
 CONFIG_FILE_NAME = "config_dev.env"
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 root = environ.Path(__file__) - 1  # one level back in hierarchy
 env = environ.Env(
+    DATABASE_URL=(str, "sqlite:///" + str(BASE_DIR / "db/db.sqlite3")),
     DEBUG=(bool, False),
     LANGUAGES=(list, ["fi", "sv", "en"]),
     SECRET_KEY=(str, None),
@@ -32,8 +35,6 @@ env = environ.Env(
     KAAVAPINO_API_URL=(str, None),
 )
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Django environ has a nasty habit of complaining at level
 # WARN about env file not being preset. Here we pre-empt it.
@@ -122,10 +123,7 @@ WSGI_APPLICATION = "api_project.wsgi.application"
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db/db.sqlite3",
-    }
+    "default": env.db()
 }
 
 # Password validation
