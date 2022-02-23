@@ -11,3 +11,33 @@ pipelines:
           - docker run kaavoitus-api-test flake8
           - docker run kaavoitus-api-test black --check .
           - docker run kaavoitus-api-test pytest -ra -vvv
+  branches:
+    '{development,test}':
+    - step:
+        name: Build & test
+        caches:
+          - docker
+        services:
+          - docker
+        script:
+          - docker build -f Dockerfile.test . -t kaavoitus-api-test
+          - docker run kaavoitus-api-test flake8
+          - docker run kaavoitus-api-test black --check .
+          - docker run kaavoitus-api-test pytest -ra -vvv
+          - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
+          - docker push kleklekle/spia:kaavoitus-api-$BITBUCKET_BUILD_NUMBER-$BITBUCKET_COMMIT
+    - step:
+        name: Deploy
+        caches:
+          - docker
+        deployment: production
+        script:
+          - sed -i 's|${CICD_EXECUTION_SEQUENCE}|'$BITBUCKET_BUILD_NUMBER'|g' deploy/rancher/deployment.yaml
+          - sed -i 's|${CICD_GIT_COMMIT}|'$BITBUCKET_COMMIT'|g' deploy/rancher/deployment.yaml
+          - pipe: atlassian/kubectl-run:3.1.2
+            variables:
+              KUBE_CONFIG: $KUBE_CONFIG
+              KUBECTL_COMMAND: 'apply'
+              RESOURCE_PATH: 'deploy/rancher/deployment.yaml'
+              KUBECTL_ARGS:
+                - '--namespace=p-c94d9-pipeline'
