@@ -5,7 +5,7 @@ log = logging.getLogger(__name__)
 
 
 class Maarekisterikiinteisto(GeoServer_Reader):
-    use_auth = True
+    use_auth = False
     layername = "hel:Kiinteisto_alue_maarekisterikiinteisto"
     schema = {
         "geometry": "GeometryCollection",

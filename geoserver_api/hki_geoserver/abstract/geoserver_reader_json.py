@@ -16,7 +16,7 @@ import json
 
 log = logging.getLogger(__name__)
 
-HELSINKI_GEOSERVER_OPENDATA_URL = "https://kartta.hel.fi/ws/geoserver/avoindata/wfs"
+HELSINKI_GEOSERVER_OPENDATA_URL = "http://apila.hel.fi/gis/hel/wfs"
 HELSINKI_GEOSERVER_INTERNAL_URL = "http://apila.hel.fi/gis/hel/wfs"
 
 

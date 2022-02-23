@@ -6,7 +6,7 @@ log = logging.getLogger(__name__)
 
 
 class Kaavamaarays(GeoServer_Reader):
-    use_auth = True
+    use_auth = False
     layername = "hel:kaavamaarays"
     schema = {
         "geometry": "GeometryCollection",
