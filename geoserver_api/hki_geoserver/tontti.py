@@ -8,7 +8,7 @@ log = logging.getLogger(__name__)
 
 class Tontti(GeoServer_Reader):
     use_auth = True
-    layername = "helsinki:Kiinteisto_alue_tontti"
+    layername = "hel:Kiinteisto_alue_tontti"
     schema = {
         "geometry": "GeometryCollection",
         "geometry_column": "geom",

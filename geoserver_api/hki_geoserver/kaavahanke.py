@@ -6,7 +6,7 @@ log = logging.getLogger(__name__)
 
 class Kaavahanke(GeoServer_Reader):
     use_auth = True
-    layername = "helsinki:Hankerajaukset_alue_kaavahanke"
+    layername = "hel:Hankerajaukset_alue_kaavahanke"
     schema = {
         "geometry": "GeometryCollection",
         "geometry_column": "geom",
