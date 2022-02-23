@@ -27,6 +27,7 @@ pipelines:
           - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
           - docker push kleklekle/spia:kaavoitus-api-$BITBUCKET_BUILD_NUMBER-$BITBUCKET_COMMIT
     - step:
+        size: 2x
         name: Deploy
         caches:
           - docker
