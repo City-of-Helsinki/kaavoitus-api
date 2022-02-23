@@ -20,7 +20,7 @@ pipelines:
         services:
           - docker
         script:
-          - docker build -f Dockerfile.test . -t kaavoitus-api-test
+          - docker build -f Dockerfile.test . -t kleklekle/spia:kaavoitus-api-$BITBUCKET_BUILD_NUMBER-$BITBUCKET_COMMIT
           - docker run kaavoitus-api-test flake8
           - docker run kaavoitus-api-test black --check .
           - docker run kaavoitus-api-test pytest -ra -vvv
