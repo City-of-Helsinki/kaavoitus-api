@@ -7,7 +7,7 @@ log = logging.getLogger(__name__)
 
 class Rakennusala(GeoServer_Reader):
     use_auth = True
-    layername = "helsinki:rakennusala"
+    layername = "hel:rakennusala"
     schema = {
         "geometry": "GeometryCollection",
         "geometry_column": "geom",

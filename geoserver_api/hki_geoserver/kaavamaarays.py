@@ -7,7 +7,7 @@ log = logging.getLogger(__name__)
 
 class Kaavamaarays(GeoServer_Reader):
     use_auth = True
-    layername = "helsinki:kaavamaarays"
+    layername = "hel:kaavamaarays"
     schema = {
         "geometry": "GeometryCollection",
         "geometry_column": "geom",
