@@ -30,6 +30,7 @@ setup(
         "numpy == 1.20.0",
         "geojson == 2.5.0",
         "GDAL >=3.0.0,<3.1",
+        "sentry-sdk == 1.5.6",
     ],
     extras_require={
         "dev": [

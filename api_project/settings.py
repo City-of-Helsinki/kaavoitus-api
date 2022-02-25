@@ -15,6 +15,9 @@ import environ
 from pathlib import Path
 import logging
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 logger = logging.getLogger(__name__)
 
 CONFIG_FILE_NAME = "config_dev.env"
@@ -33,7 +36,17 @@ env = environ.Env(
     FACTA_DB_MOCK_DATA_DIR=(str, None),
     USE_JSON_READER=(bool, True),
     KAAVAPINO_API_URL=(str, None),
+    SENTRY_DSN=(str, ''),
+    SENTRY_ENVIRONMENT=(str, 'development'),
 )
+
+
+if env('SENTRY_DSN'):
+    sentry_sdk.init(
+        dsn=env('SENTRY_DSN'),
+        environment=env('SENTRY_ENVIRONMENT'),
+        integrations=[DjangoIntegration()]
+    )
 
 
 # Django environ has a nasty habit of complaining at level
