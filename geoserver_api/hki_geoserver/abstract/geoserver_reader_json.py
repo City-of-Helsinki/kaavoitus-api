@@ -62,12 +62,18 @@ class GeoServer_Reader_json:
 
         self.geo_url = url_to_use
         version = "2.0.0"
-        wfs = WebFeatureService(
-            self.geo_url,
-            version=version,
-            username=self.username,
-            password=self.password,
-        )
+        if self.use_auth:
+            wfs = WebFeatureService(
+                self.geo_url,
+                version=version,
+                username=self.username,
+                password=self.password,
+            )
+        else:
+            wfs = WebFeatureService(
+                self.geo_url,
+                version=version,
+            )
 
         self.wfs = wfs
 
