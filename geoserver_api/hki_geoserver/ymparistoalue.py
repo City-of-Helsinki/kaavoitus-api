@@ -7,7 +7,7 @@ log = logging.getLogger(__name__)
 
 class Ymparistoalue(GeoServer_Reader):
     use_auth = False
-    layername = "avoindata:ymparistoalue"
+    layername = "hel:ymparistoalue"
     schema = {
         "geometry": "GeometryCollection",
         "geometry_column": "geom",

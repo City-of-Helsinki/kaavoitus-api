@@ -7,7 +7,7 @@ log = logging.getLogger(__name__)
 
 class Korttelialue(GeoServer_Reader):
     use_auth = False
-    layername = "avoindata:korttelialue"
+    layername = "hel:korttelialue"
     schema = {
         "geometry": "GeometryCollection",
         "geometry_column": "geom",
