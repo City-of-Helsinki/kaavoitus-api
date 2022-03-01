@@ -39,9 +39,9 @@ class API(KiinteistoAPI, RakennusAPI):
             f_ko = hel_facta.RakennuksenOmistajat(mock_data_dir=mock_dir)
         else:
             f_ko = hel_facta.RakennuksenOmistajat(
-                user=self.facta_creds.username,
-                password=self.facta_creds.credential,
-                host=self.facta_creds.host_spec,
+                user=facta_creds.username,
+                password=facta_creds.credential,
+                host=facta_creds.host_spec,
             )
         rows = f_ko.get_by_kiinteistotunnus(ktunnus_to_use)
         if not rows:

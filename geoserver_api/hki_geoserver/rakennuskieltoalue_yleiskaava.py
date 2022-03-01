@@ -4,7 +4,7 @@ from .abstract import GeoServer_Reader
 
 class Rakennuskieltoalue_yleiskaava(GeoServer_Reader):
     use_auth = False
-    layername = "avoindata:Rakennuskieltoalue_yleiskaavan_laatimiseksi"
+    layername = "hel:Rakennuskieltoalue_yleiskaavan_laatimiseksi"
     schema = {
         "geometry": "GeometryCollection",
         "geometry_column": "geom",

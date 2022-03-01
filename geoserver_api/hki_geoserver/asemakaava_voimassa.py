@@ -7,7 +7,7 @@ log = logging.getLogger(__name__)
 
 class Asemakaava_voimassa(GeoServer_Reader):
     use_auth = False
-    layername = "avoindata:Kaavahakemisto_alue_kaava_voimassa"
+    layername = "hel:Kaavahakemisto_alue_kaava_voimassa"
     schema = {
         "geometry": "GeometryCollection",
         "geometry_column": "geom",
