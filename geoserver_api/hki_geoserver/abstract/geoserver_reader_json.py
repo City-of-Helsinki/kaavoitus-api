@@ -16,7 +16,7 @@ import json
 
 log = logging.getLogger(__name__)
 
-HELSINKI_GEOSERVER_OPENDATA_URL = "http://apila.hel.fi/gis/hel/wfs"
+HELSINKI_GEOSERVER_OPENDATA_URL = "https://kartta.hel.fi/ws/geoserver/avoindata/wfs"
 HELSINKI_GEOSERVER_INTERNAL_URL = "http://apila.hel.fi/gis/hel/wfs"
 
 
@@ -28,7 +28,7 @@ class GeoServer_Reader_json:
     use_auth = None
     username = None
     password = None
-
+    use_opendata = False
     GML_ID = "gml_id"
     GML_GEOM = "geom"
 
@@ -52,6 +52,9 @@ class GeoServer_Reader_json:
         if self.use_auth:
             url_to_use = HELSINKI_GEOSERVER_INTERNAL_URL
         else:
+            url_to_use = HELSINKI_GEOSERVER_INTERNAL_URL
+
+        if self.use_opendata:
             url_to_use = HELSINKI_GEOSERVER_OPENDATA_URL
 
         if self.geo_url:
