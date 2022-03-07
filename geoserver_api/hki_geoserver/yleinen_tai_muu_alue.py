@@ -7,7 +7,7 @@ log = logging.getLogger(__name__)
 
 class YleinenTaiMuuAlue(GeoServer_Reader):
     use_auth = False
-    layername = "hel:yleinen_tai_muu_alue"
+    layername = "hel:Yleinen_tai_muu_alue"
     schema = {
         "geometry": "GeometryCollection",
         "geometry_column": "geom",
