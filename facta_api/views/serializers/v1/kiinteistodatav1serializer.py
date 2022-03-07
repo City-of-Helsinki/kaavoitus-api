@@ -12,6 +12,6 @@ class KiinteistonDataV1Serializer(serializers.Serializer):
     omistajat = KiinteistonOmistajaV1Serializer(many=True, required=False)
     haltijat = KiinteistonHaltijaV1Serializer(many=True, required=False)
     naapurit = serializers.ListField(
-        child=NaapuritV1Serializer(required=False), allow_empty=True
+        child=NaapuritV1Serializer(required=False), allow_empty=True, required=False
     )
     rakennuksen_omistajat = RakennuksenOmistajatV1Serializer(many=True, required=False)
