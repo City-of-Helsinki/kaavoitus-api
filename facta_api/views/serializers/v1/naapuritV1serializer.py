@@ -8,6 +8,6 @@ from .kiinteistonhaltijav1serializer import KiinteistonHaltijaV1Serializer
 
 class NaapuritV1Serializer(serializers.Serializer):
     kiinteistotunnus = serializers.CharField(max_length=17)
-    omistajat = KiinteistonOmistajaV1Serializer(many=True)
-    haltijat = KiinteistonHaltijaV1Serializer(many=True)
-    rakennuksen_omistajat = RakennuksenOmistajatV1Serializer(many=True)
+    omistajat = KiinteistonOmistajaV1Serializer(many=True, required=False)
+    haltijat = KiinteistonHaltijaV1Serializer(many=True, required=False)
+    rakennuksen_omistajat = RakennuksenOmistajatV1Serializer(many=True, required=False)
