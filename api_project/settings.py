@@ -274,9 +274,15 @@ SPECTACULAR_SETTINGS = {
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
+    'formatters': {
+        'timestamped_named': {
+            'format': '%(asctime)s %(name)s %(levelname)s: %(message)s',
+        },
+    },
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
+            'formatter': 'timestamped_named',
         },
     },
     "root": {
