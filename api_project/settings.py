@@ -38,7 +38,19 @@ env = environ.Env(
     KAAVAPINO_API_URL=(str, None),
     SENTRY_DSN=(str, ''),
     SENTRY_ENVIRONMENT=(str, 'development'),
+    ELASTIC_APM_SERVER_URL=(str, ""),
+    ELASTIC_APM_SERVICE_NAME=(str, ""),
+    ELASTIC_APM_SECRET_TOKEN=(str, ""),
 )
+
+
+if env.str("ELASTIC_APM_SERVER_URL"):
+    ELASTIC_APM = {
+        "DEBUG": True,
+        "SERVER_URL": env.str("ELASTIC_APM_SERVER_URL"),
+        "SERVICE_NAME": env.str("ELASTIC_APM_SERVICE_NAME"),
+        "SECRET_TOKEN": env.str("ELASTIC_APM_SECRET_TOKEN"),
+    }
 
 
 if env('SENTRY_DSN'):
@@ -101,6 +113,9 @@ INSTALLED_APPS = [
     "django_extensions",  # pip install django-extensions
     "drf_spectacular",  # pip install drf-spectacular
 ]
+
+if env.str("ELASTIC_APM_SERVER_URL"):
+    INSTALLED_APPS += ["elasticapm.contrib.django"]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
