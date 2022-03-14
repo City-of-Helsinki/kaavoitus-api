@@ -61,15 +61,19 @@ class API(APIView):
         suunnittelualueen_rajaus = ak.get_geometry(data)
 
         keskimaarainen_tonttitehokkuus = self.get_tehokkuusluku(data)
-        maanalaisten_tilojen_pinta_ala_yht = (
-            self.get_maanalaisten_tilojen_pinta_ala_yht(data)
-        )
-        aluevarausten_pinta_alat_yht = self.get_aluevarausten_pinta_alat_yht(data)
+        maanalaisten_tilojen_pinta_ala_yht = None
+        # maanalaisten_tilojen_pinta_ala_yht = (
+        #     self.get_maanalaisten_tilojen_pinta_ala_yht(data)
+        # )
+        aluevarausten_pinta_alat_yht = None
+        # aluevarausten_pinta_alat_yht = self.get_aluevarausten_pinta_alat_yht(data)
         pinta_alan_muutokset_yht = self.get_pinta_alan_muutokset_yht()
-        (
-            suojellut_rakennukset_maara_yht,
-            suojellut_rakennukset_ala_yht,
-        ) = self.get_suojellut_rakennukset(data)
+        # (
+        #     suojellut_rakennukset_maara_yht,
+        #     suojellut_rakennukset_ala_yht,
+        # ) = self.get_suojellut_rakennukset(data)
+        suojellut_rakennukset_maara_yht = None
+        suojellut_rakennukset_ala_yht = None
 
         ret_data = {
             "suunnittelualueen_rajaus": suunnittelualueen_rajaus,
