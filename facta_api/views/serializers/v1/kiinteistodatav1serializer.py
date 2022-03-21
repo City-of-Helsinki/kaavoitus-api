@@ -1,5 +1,5 @@
-from facta_api.views.serializers.v1.rakennuksenomistajatv1serializer import (
-    RakennuksenOmistajatV1Serializer,
+from facta_api.views.serializers.v1.rakennuksenomistajav1serializer import (
+    RakennuksenOmistajaV1Serializer,
 )
 from rest_framework import serializers
 from .kiinteistonomistajav1serializer import KiinteistonOmistajaV1Serializer
@@ -14,4 +14,4 @@ class KiinteistonDataV1Serializer(serializers.Serializer):
     naapurit = serializers.ListField(
         child=NaapuritV1Serializer(required=False), allow_empty=True, required=False
     )
-    rakennuksen_omistajat = RakennuksenOmistajatV1Serializer(many=True, required=False)
+    rakennuksen_omistajat = RakennuksenOmistajaV1Serializer(many=True, required=False)
