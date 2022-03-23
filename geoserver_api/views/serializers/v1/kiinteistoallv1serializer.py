@@ -133,8 +133,8 @@ class KiinteistoAllV1Serializer(serializers.Serializer):
     rekisterilaji = serializers.ChoiceField(
         choices=[(type, desc) for type, desc in REKISTERILAJI.items()], allow_blank=True
     )
-    asemakaavan_numero = serializers.CharField(max_length=20, required=False)
-    asemakaava_voimassa = serializers.DateField(format="YYYY-MM-DD", required=False)
+    asemakaavan_numero = serializers.CharField(max_length=20, required=False, allow_null=True)
+    asemakaava_voimassa = serializers.DateField(format="YYYY-MM-DD", required=False, allow_null=True)
     rakennuskiellot = serializers.ListField(
         child=RakennuskieltoV1Serializer(required=False), allow_empty=True
     )
