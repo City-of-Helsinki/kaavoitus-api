@@ -122,6 +122,7 @@ class API(APIView):
         # It needs to be verifiable by serializer rules. Those are published in Swagger.
         serializer = self.serializer_class(data=ret_data)
         if not serializer.is_valid():
+            log.error("Errors: %s" % str(serializer.errors))
             return HttpResponseServerError("Invalid output data!")
 
         return JsonResponse(serializer.validated_data)
