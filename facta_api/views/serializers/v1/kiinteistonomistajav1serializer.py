@@ -17,4 +17,4 @@ class KiinteistonOmistajaV1Serializer(serializers.Serializer):
     property_owner_type = serializers.ChoiceField(
         choices=[(type, desc) for type, desc in OWNER_TYPES.items()], allow_null=True
     )
-    y_tunnus = serializers.CharField(required=False, allow_null=True)
+    y_tunnus = serializers.CharField(required=False, allow_null=True, allow_blank=True)
