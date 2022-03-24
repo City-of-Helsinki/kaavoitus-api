@@ -262,8 +262,8 @@ SPECTACULAR_SETTINGS = {
     "CAMELIZE_NAMES": False,
     # General schema metadata. Refer to spec for valid inputs
     # https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#openapi-object
-    "TITLE": "Helsingin Kaupunki - Kaavapino - API",
-    "DESCRIPTION": "Kaavapino API for planning data",
+    "TITLE": "Helsingin Kaupunki - Kaavoitus-API",
+    "DESCRIPTION": "Kaavoitus-API for Facta and Geoserver data",
     "TOS": None,
     # Optional: MAY contain "name", "url", "email"
     "CONTACT": {},
