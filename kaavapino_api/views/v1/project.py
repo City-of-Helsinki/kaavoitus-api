@@ -40,16 +40,16 @@ class API(APIView):
             return HttpResponseNotFound()
 
         data = {
-            "muistutusten_lukumaara": attribute_data.get("muistutusten_lukumaara"),
-            "valitusten_lukumaara_HaO": attribute_data.get(
+            "muistutusten_lkm": attribute_data.get("muistutusten_lukumaara"),
+            "valitusten_lkm_HaO": attribute_data.get(
                 "valitusten_lukumaara_hallinto_oikeus"
             ),
-            "valitusten_lukumaara_KHO": attribute_data.get("valitusten_lukumaara_kho"),
+            "valitusten_lkm_KHO": attribute_data.get("valitusten_lukumaara_kho"),
             "pinonumero": project_data.get("pino_number"),
             "diaarinumero": attribute_data.get("diaarinumero"),
             "hankenumero": attribute_data.get("hankenumero"),
             "kaavanlaatija": attribute_data.get("vastuuhenkilo_nimi"),
-            "kaavan_piirtaja": attribute_data.get("suunnitteluavustaja_nimi"),
+            "kaavan_mallintaja": attribute_data.get("suunnitteluavustaja_nimi"),
             "hyvaksyja": attribute_data.get("kaavan_hyvaksyjataho"),
             "kaavatunnus": attribute_data.get("kaavanumero"),
             "kaavanimi1": attribute_data.get("projektin_nimi"),
@@ -63,13 +63,13 @@ class API(APIView):
             "tarkistettu_ehdotus_kirje_khs": attribute_data.get(
                 "toteutunut_kirje_kaupunginhallitukselle"
             ),
-            "kaavaehdotus_nahtavillealkupvm_iso": attribute_data.get(
+            "kaavaehdotus_nahtaville_alkupvm_iso": attribute_data.get(
                 "milloin_ehdotuksen_nahtavilla_alkaa_iso"
             ),
-            "kaavaehdotus_nahtavillealkupvm_pieni": attribute_data.get(
+            "kaavaehdotus_nahtaville_alkupvm_pieni": attribute_data.get(
                 "milloin_ehdotuksen_nahtavilla_alkaa_pieni"
             ),
-            "kaavaehdotus_nahtavillaviimpvm": attribute_data.get(
+            "kaavaehdotus_nahtavilla_viimpvm": attribute_data.get(
                 "milloin_ehdotuksen_nahtavilla_paattyy"
             ),
             "kaavaehdotus_paivatty": attribute_data.get(
@@ -95,31 +95,31 @@ class API(APIView):
             ),
             "HaO_paatospvm": attribute_data.get("valitusten_ratkaisu_hallinto_oikeus"),
             "KHO_paatospvm": attribute_data.get("valitusten_ratkaisu_kho"),
-            "kaavaehdotus_uudelleen_nahtavillealkupvm_iso2": attribute_data.get(
+            "kaavaehdotus_uudelleen_nahtaville_alkupvm_iso2": attribute_data.get(
                 "milloin_ehdotuksen_nahtavilla_alkaa_iso_2"
             ),
-            "kaavaehdotus_uudelleen_nahtavillealkupvm_pieni2": attribute_data.get(
+            "kaavaehdotus_uudelleen_nahtaville_alkupvm_pieni2": attribute_data.get(
                 "milloin_ehdotuksen_nahtavilla_alkaa_pieni_2"
             ),
-            "kaavaehdotus_uudelleen_nahtavillaviimpvm_2": attribute_data.get(
+            "kaavaehdotus_uudelleen_nahtavilla_viimpvm_2": attribute_data.get(
                 "milloin_ehdotuksen_nahtavilla_paattyy_2"
             ),
-            "kaavaehdotus_uudelleen_nahtavillealkupvm_iso3": attribute_data.get(
+            "kaavaehdotus_uudelleen_nahtaville_alkupvm_iso3": attribute_data.get(
                 "milloin_ehdotuksen_nahtavilla_alkaa_iso_3"
             ),
-            "kaavaehdotus_uudelleen_nahtavillealkupvm_pieni3": attribute_data.get(
+            "kaavaehdotus_uudelleen_nahtaville_alkupvm_pieni3": attribute_data.get(
                 "milloin_ehdotuksen_nahtavilla_alkaa_pieni_3"
             ),
-            "kaavaehdotus_uudelleen_nahtavillaviimpvm_3": attribute_data.get(
+            "kaavaehdotus_uudelleen_nahtavilla_viimpvm_3": attribute_data.get(
                 "milloin_ehdotuksen_nahtavilla_paattyy_3"
             ),
-            "kaavaehdotus_uudelleen_nahtavillealkupvm_iso4": attribute_data.get(
+            "kaavaehdotus_uudelleen_nahtaville_alkupvm_iso4": attribute_data.get(
                 "milloin_ehdotuksen_nahtavilla_alkaa_iso_4"
             ),
-            "kaavaehdotus_uudelleen_nahtavillealkupvm_pieni4": attribute_data.get(
+            "kaavaehdotus_uudelleen_nahtaville_alkupvm_pieni4": attribute_data.get(
                 "milloin_ehdotuksen_nahtavilla_alkaa_pieni_4"
             ),
-            "kaavaehdotus_uudelleen_nahtavillaviimpvm_4": attribute_data.get(
+            "kaavaehdotus_uudelleen_nahtavilla_viimpvm_4": attribute_data.get(
                 "milloin_ehdotuksen_nahtavilla_paattyy_4"
             ),
         }
