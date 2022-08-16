@@ -95,7 +95,7 @@ class GeoServer_Reader_json:
         return layer_schema
 
     def query(
-        self, fields, filter={}, return_single_result=True, limit_results_to=1000
+        self, fields, filter={}, return_single_result=True, limit_results_to=2000
     ):
         self._init_wfs()
 
