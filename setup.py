@@ -32,6 +32,7 @@ setup(
         "GDAL >=3.0.0,<3.1",
         "sentry-sdk == 1.5.6",
         "elastic-apm == 6.8.1",
+        "django-redis == 5.2.0",
     ],
     extras_require={
         "dev": [

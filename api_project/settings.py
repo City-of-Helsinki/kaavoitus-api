@@ -28,6 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 root = environ.Path(__file__) - 1  # one level back in hierarchy
 env = environ.Env(
     DATABASE_URL=(str, "sqlite:///" + str(BASE_DIR / "db/db.sqlite3")),
+    KEYDB_URL=(str, "redis://localhost"),
     DEBUG=(bool, False),
     LANGUAGES=(list, ["fi", "sv", "en"]),
     SECRET_KEY=(str, None),
@@ -152,6 +153,18 @@ WSGI_APPLICATION = "api_project.wsgi.application"
 
 DATABASES = {
     "default": env.db()
+}
+
+FACTA_CACHE_TIMEOUT = 60 * 60 * 1  # 1 hour
+GEOSERVER_CACHE_TIMEOUT = 60 * 60 * 1  # 1 hour
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": env.str("KEYDB_URL"),
+        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+        "KEY_PREFIX": "kaavoitus_api",
+    }
 }
 
 # Password validation
