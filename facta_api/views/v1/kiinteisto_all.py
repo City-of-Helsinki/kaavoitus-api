@@ -29,8 +29,7 @@ class API(KiinteistoAPI, RakennusAPI):
             return HttpResponseBadRequest("Need valid kiinteistotunnus!")
         if not request.auth:
             return HttpResponse(status=401)
-        self.facta_creds = request.auth.access_facta
-        if not self.facta_creds:
+        if not self.request.auth.access_facta:
             return HttpResponseForbidden("No access!")
 
         owners, occupants = self.get_kiinteisto(ktunnus_to_use)
@@ -98,11 +97,7 @@ class API(KiinteistoAPI, RakennusAPI):
         if mock_dir:
             f_ko = hel_facta.KiinteistonOmistajat(mock_data_dir=mock_dir)
         else:
-            f_ko = hel_facta.KiinteistonOmistajat(
-                user=self.facta_creds.username,
-                password=self.facta_creds.credential,
-                host=self.facta_creds.host_spec,
-            )
+            f_ko = hel_facta.KiinteistonOmistajat()
         rows = f_ko.get_by_kiinteistotunnus(ktunnus)
         # if not rows:
         #    return HttpResponseNotFound()
@@ -135,11 +130,8 @@ class API(KiinteistoAPI, RakennusAPI):
         if mock_dir:
             f_kh = hel_facta.KiinteistonHaltijat(mock_data_dir=mock_dir)
         else:
-            f_kh = hel_facta.KiinteistonHaltijat(
-                user=self.facta_creds.username,
-                password=self.facta_creds.credential,
-                host=self.facta_creds.host_spec,
-            )
+            f_kh = hel_facta.KiinteistonHaltijat()
+
         rows = f_kh.get_by_kiinteistotunnus(ktunnus)
 
         # Process result:
@@ -160,11 +152,7 @@ class API(KiinteistoAPI, RakennusAPI):
         if mock_dir:
             f_ko = hel_facta.RakennuksenOmistajat(mock_data_dir=mock_dir)
         else:
-            f_ko = hel_facta.RakennuksenOmistajat(
-                user=self.facta_creds.username,
-                password=self.facta_creds.credential,
-                host=self.facta_creds.host_spec,
-            )
+            f_ko = hel_facta.RakennuksenOmistajat()
         rows = f_ko.get_by_kiinteistotunnus(ktunnus)
 
         owner_rows = []

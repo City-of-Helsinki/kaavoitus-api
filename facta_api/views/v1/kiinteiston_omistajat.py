@@ -29,8 +29,7 @@ class API(KiinteistoAPI):
             return HttpResponseBadRequest("Need valid kiinteistotunnus!")
         if not request.auth:
             return HttpResponse(status=401)
-        facta_creds = request.auth.access_facta
-        if not facta_creds:
+        if not request.auth.access_facta:
             return HttpResponseForbidden("No access!")
 
         # Confirmed access to Facta Oracle SQL.
@@ -40,11 +39,7 @@ class API(KiinteistoAPI):
         if mock_dir:
             f_ko = hel_facta.KiinteistonOmistajat(mock_data_dir=mock_dir)
         else:
-            f_ko = hel_facta.KiinteistonOmistajat(
-                user=facta_creds.username,
-                password=facta_creds.credential,
-                host=facta_creds.host_spec,
-            )
+            f_ko = hel_facta.KiinteistonOmistajat()
         rows = f_ko.get_by_kiinteistotunnus(ktunnus_to_use)
         if not rows:
             return HttpResponseNotFound()
