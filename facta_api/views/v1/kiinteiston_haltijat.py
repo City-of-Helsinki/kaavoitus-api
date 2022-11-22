@@ -27,8 +27,7 @@ class API(KiinteistoAPI):
             return HttpResponseBadRequest("Need valid kiinteistotunnus!")
         if not request.auth:
             return HttpResponse(status=401)
-        facta_creds = request.auth.access_facta
-        if not facta_creds:
+        if not request.auth.access_facta:
             return HttpResponseForbidden("No access!")
 
         cache_key = f'facta_api_kiinteiston_haltijat_get_{kiinteistotunnus}'
@@ -42,11 +41,7 @@ class API(KiinteistoAPI):
             if mock_dir:
                 f_kh = hel_facta.KiinteistonHaltijat(mock_data_dir=mock_dir)
             else:
-                f_kh = hel_facta.KiinteistonHaltijat(
-                    user=facta_creds.username,
-                    password=facta_creds.credential,
-                    host=facta_creds.host_spec,
-                )
+                f_kh = hel_facta.KiinteistonHaltijat()
             rows = f_kh.get_by_kiinteistotunnus(ktunnus_to_use)
             if not rows:
                 return HttpResponseNotFound()
