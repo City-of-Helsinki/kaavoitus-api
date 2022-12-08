@@ -33,6 +33,7 @@ setup(
         "sentry-sdk == 1.5.6",
         "elastic-apm == 6.8.1",
         "django-redis == 5.2.0",
+        "django-sentinel == 0.1.0",
     ],
     extras_require={
         "dev": [
