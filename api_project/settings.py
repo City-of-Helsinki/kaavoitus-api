@@ -28,6 +28,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 root = environ.Path(__file__) - 1  # one level back in hierarchy
 env = environ.Env(
     DATABASE_URL=(str, "sqlite:///" + str(BASE_DIR / "db/db.sqlite3")),
+    REDIS_URL=(str, "redis://localhost:6379/1"),
+    REDIS_PASSWORD=(str, None),
     DEBUG=(bool, False),
     LANGUAGES=(list, ["fi", "sv", "en"]),
     SECRET_KEY=(str, None),
@@ -152,6 +154,23 @@ WSGI_APPLICATION = "api_project.wsgi.application"
 
 DATABASES = {
     "default": env.db()
+}
+
+# Cache can be disabled by setting timeout to 0. Warning: Timeout of 'None' will cache data forever.
+# Key value pairs can be cleared from cache by using redis-cli: Select the correct database and run 'flushdb'
+FACTA_CACHE_TIMEOUT = 60 * 60 * 1  # 1 hour
+GEOSERVER_CACHE_TIMEOUT = 60 * 60 * 1  # 1 hour
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": env.str("REDIS_URL"),
+        "OPTIONS": {
+            "PASSWORD": env.str("REDIS_PASSWORD"),
+            "CLIENT_CLASS": "django_sentinel.SentinelClient"
+        },
+        "KEY_PREFIX": "kaavoitus_api",
+    }
 }
 
 # Password validation
@@ -305,3 +324,4 @@ FACTA_DB_MOCK_DATA_DIR = env("FACTA_DB_MOCK_DATA_DIR")
 USE_JSON_READER = env("USE_JSON_READER")
 
 KAAVAPINO_API_URL = env("KAAVAPINO_API_URL")
+
