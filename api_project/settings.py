@@ -161,13 +161,26 @@ DATABASES = {
 FACTA_CACHE_TIMEOUT = 60 * 60 * 1  # 1 hour
 GEOSERVER_CACHE_TIMEOUT = 60 * 60 * 1  # 1 hour
 
+DJANGO_REDIS_CONNECTION_FACTORY = 'django_redis.pool.SentinelConnectionFactory'
+
+SENTINELS = []
+
+if env.str("REDIS_SENTINELS"):
+    for sentinel in env.str("REDIS_SENTINELS").split(","):
+        host, port = sentinel.split(":")
+        SENTINELS.append((host, port))
+
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": env.str("REDIS_URL"),
         "OPTIONS": {
-            "PASSWORD": env.str("REDIS_PASSWORD"),
-            "CLIENT_CLASS": "django_sentinel.SentinelClient"
+            "CLIENT_CLASS": "django_redis.client.SentinelClient",
+            "SENTINELS": SENTINELS,
+            "SENTINEL_KWARGS": {
+                "PASSWORD": env.str("REDIS_PASSWORD")
+            },
+            "CONNECTION_POOL_CLASS": "redis.sentinel.SentinelConnectionPool",
         },
         "KEY_PREFIX": "kaavoitus_api",
     }
