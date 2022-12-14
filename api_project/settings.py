@@ -176,8 +176,10 @@ CACHES = {
         "LOCATION": env.str("REDIS_URL"),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.SentinelClient",
-            "SENTINELS": SENTINELS,
             "CONNECTION_POOL_CLASS": "redis.sentinel.SentinelConnectionPool",
+            "PASSWORD": env.str("REDIS_PASSWORD"),
+            "SENTINELS": SENTINELS,
+            "SENTINEL_KWARGS": {"password": env.str("REDIS_PASSWORD")},
         },
         "KEY_PREFIX": "kaavoitus_api",
     }
