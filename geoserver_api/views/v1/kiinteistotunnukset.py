@@ -44,11 +44,6 @@ class API(APIView):
         if not kt_data:
             return HttpResponseNotFound("No kiinteisto data found by geometry")
 
-        kiinteistot = []
-
-        for kiinteisto in kt_data:
-            kiinteistotunnus = format_kiinteistotunnus(kiinteisto["kiinteistotunnus"])
-            if kiinteistotunnus:
-                kiinteistot.append(kiinteistotunnus)
+        kiinteistot = [kt for kiinteisto in kt_data if (kt := format_kiinteistotunnus(kiinteisto["kiinteistotunnus"]))]
 
         return JsonResponse({"kiinteistotunnukset": kiinteistot})
