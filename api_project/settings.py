@@ -158,8 +158,8 @@ DATABASES = {
 
 # Cache can be disabled by setting timeout to 0. Warning: Timeout of 'None' will cache data forever.
 # Key value pairs can be cleared from cache by using redis-cli: Select the correct database and run 'flushdb'
-FACTA_CACHE_TIMEOUT = 60 * 60 * 1  # 1 hour
-GEOSERVER_CACHE_TIMEOUT = 60 * 60 * 1  # 1 hour
+FACTA_CACHE_TIMEOUT = 60 * 60 * 12  # 12 hours
+GEOSERVER_CACHE_TIMEOUT = 60 * 60 * 12  # 12 hours
 
 DJANGO_REDIS_CONNECTION_FACTORY = 'django_redis.pool.SentinelConnectionFactory'
 
