@@ -15,6 +15,7 @@ from facta_api import hel_facta
 from .kiinteisto import KiinteistoAPI
 from .rakennus import RakennusAPI
 from django.core.cache import cache
+from api_project.utils import format_kiinteistotunnus
 
 log = logging.getLogger(__name__)
 
@@ -25,7 +26,7 @@ class API(KiinteistoAPI, RakennusAPI):
     def get(self, request, kiinteistotunnus=None):
         if not kiinteistotunnus:
             return HttpResponseBadRequest("Need kiinteistotunnus!")
-        ktunnus_to_use = self._format_kiinteistotunnus(kiinteistotunnus)
+        ktunnus_to_use = format_kiinteistotunnus(kiinteistotunnus)
         if not ktunnus_to_use:
             return HttpResponseBadRequest("Need valid kiinteistotunnus!")
         if not request.auth:

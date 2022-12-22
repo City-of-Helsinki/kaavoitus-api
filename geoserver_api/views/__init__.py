@@ -16,3 +16,4 @@ from .suunnittelualue import API
 from .kiinteistot import API
 from .kaavahanke import API
 from .yleinen_alue import API
+from .kiinteistotunnukset import API

@@ -80,6 +80,11 @@ urlpatterns = [
         name="kiinteistot",
     ),
     re_path(
+        r"^v(?P<version>(1))/kiinteistotunnukset/(?P<hankenumero>[^/]*)",
+        views.kiinteistotunnukset.API.as_view(),
+        name="kiinteistotunnukset",
+    ),
+    re_path(
         r"^v(?P<version>(1))/kaavahanke/(?P<hankenumero>[^/]*)",
         views.kaavahanke.API.as_view(),
         name="kaavahanke",
