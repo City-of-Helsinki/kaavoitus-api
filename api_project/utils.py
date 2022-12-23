@@ -2,7 +2,7 @@ import logging
 
 log = logging.getLogger(__name__)
 
-@staticmethod
+
 def format_kiinteistotunnus(kiinteistotunnus):
     if len(kiinteistotunnus) == 17 and kiinteistotunnus.count("-") == 3:
         # Looking good
