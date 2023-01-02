@@ -14,9 +14,10 @@ try:
             facta_creds.username,
             facta_creds.credential,
             facta_creds.host_spec,
-            min=10,
-            max=10,
+            min=25,
+            max=25,
             increment=0,
+            threaded=True,
             getmode=cx_Oracle.SPOOL_ATTRVAL_WAIT,
         )
 except ObjectDoesNotExist:
