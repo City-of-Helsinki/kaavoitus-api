@@ -17,6 +17,7 @@ import logging
 
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.redis import RedisIntegration
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +60,7 @@ if env('SENTRY_DSN'):
     sentry_sdk.init(
         dsn=env('SENTRY_DSN'),
         environment=env('SENTRY_ENVIRONMENT'),
-        integrations=[DjangoIntegration()]
+        integrations=[DjangoIntegration(), RedisIntegration()]
     )
 
 
