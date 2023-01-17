@@ -75,7 +75,8 @@ class API(KiinteistoAPI):
                     "property_owner_type": owner_type,
                     "y_tunnus": row[16],  # C_LYTUNN
                 }
-                owner_rows.append(owner)
+                if owner not in owner_rows:
+                    owner_rows.append(owner)
             ko_data = {"kiinteistotunnus": ktunnus_to_use, "omistajat": owner_rows}
 
             # Go validate the returned data.

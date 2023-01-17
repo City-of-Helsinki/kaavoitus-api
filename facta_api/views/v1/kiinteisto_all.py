@@ -131,7 +131,8 @@ class API(KiinteistoAPI, RakennusAPI):
                         "property_owner_type": owner_type,
                         "y_tunnus": row[16],  # C_LYTUNN
                     }
-                    owner_rows.append(owner)
+                    if owner not in owner_rows:
+                        owner_rows.append(owner)
                 cache.set(cache_key, owner_rows, settings.FACTA_CACHE_TIMEOUT)
 
         cache_key = f'facta_api_kiinteisto_all_get_kiinteisto_occupant_rows_{ktunnus}'
@@ -154,7 +155,8 @@ class API(KiinteistoAPI, RakennusAPI):
                         "address": self._extract_haltija_address(row),
                         "y_tunnus": row[23],  # C_LYTUNN
                     }
-                    occupant_rows.append(occupant)
+                    if occupant not in occupant_rows:
+                        occupant_rows.append(occupant)
                 cache.set(cache_key, occupant_rows, settings.FACTA_CACHE_TIMEOUT)
 
         return owner_rows, occupant_rows
@@ -179,7 +181,8 @@ class API(KiinteistoAPI, RakennusAPI):
                         "address": self._extract_rakennuksen_omistaja_address(row),
                         "y_tunnus": row[14],  # C_LYTUNN
                     }
-                    owner_rows.append(owner)
+                    if owner not in owner_rows:
+                        owner_rows.append(owner)
                 cache.set(cache_key, owner_rows, settings.FACTA_CACHE_TIMEOUT)
 
         return owner_rows
