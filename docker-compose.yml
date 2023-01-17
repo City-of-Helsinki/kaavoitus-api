@@ -1,9 +1,9 @@
 version: "3.5"
 services:
   cache:
-    image: eqalpha/keydb
-    container_name: kaavapino-keydb
-    command: keydb-server /etc/keydb/keydb.conf --server-threads 2
+    image: redis
+    container_name: kaavoitus-redis
+    command: redis-server
     volumes:
       - cache_kaavoitus_api_data:/data
     ports:
@@ -21,6 +21,7 @@ services:
       - ./django-db/db.sqlite3:/kaavoitus-api/db/db.sqlite3
     environment:
       - DEBUG=1
+      - REDIS_URL=redis://cache
       - ALLOWED_HOSTS=localhost
       - FACTA_DB_MOCK_DATA_DIR=mock-data/
       - USE_JSON_READER=True
@@ -28,6 +29,8 @@ services:
     ports:
       - "8000:8000"
     container_name: kaavoitus-api
+    depends_on:
+      - cache
 
 volumes:
   cache_kaavoitus_api_data:
