@@ -36,12 +36,20 @@ COPY kaavapino_api kaavapino_api/
 COPY facta_api facta_api/
 COPY manage.py .
 COPY api_project/gunicorn_config.py .
-COPY setup.py .
 
 RUN gdal-config --version
-# Install dependencies.
-RUN pip install --upgrade pip ; pip install --no-cache-dir wheel
-RUN pip install --no-cache-dir -e .
+
+# Upgrade pip
+RUN pip install -U pip
+
+# Install Poetry
+RUN pip install poetry
+
+# Install python dependencies
+COPY poetry.lock pyproject.toml ./
+ADD deploy/requirements.txt ./deploy/requirements.txt
+RUN poetry export --without dev -f requirements.txt --output requirements.txt
+RUN pip install --no-cache-dir -r ./deploy/requirements.txt
 
 # Download and unpack Oracle libraries
 RUN cd /tmp ; \

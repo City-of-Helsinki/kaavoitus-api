@@ -23,16 +23,22 @@ make && \
 make install
 
 # Copy local code to the container image.
-COPY setup.py .
 COPY api_project api_project/
 COPY common_auth common_auth/
 COPY geoserver_api geoserver_api/
 COPY kaavapino_api kaavapino_api/
 COPY facta_api facta_api/
 
-# Install dependencies.
-RUN pip install --upgrade pip ; pip install wheel
-RUN pip install -e .[dev]
+# Upgrade pip
+RUN pip install -U pip
+
+# Install Poetry
+RUN pip install poetry
+
+# Install python dependencies
+COPY poetry.lock pyproject.toml /$APP_NAME/
+RUN poetry export -f requirements.txt --output requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Download and unpack Oracle libraries
 RUN cd /tmp ; wget https://download.oracle.com/otn_software/linux/instantclient/211000/instantclient-basiclite-linux.x64-21.1.0.0.0.zip ; mkdir /oracle ; cd /oracle ; unzip /tmp/instantclient-basiclite-linux.x64-21.1.0.0.0.zip
@@ -89,7 +95,6 @@ COPY geoserver_api geoserver_api/
 COPY kaavapino_api kaavapino_api/
 COPY facta_api facta_api/
 COPY manage.py .
-COPY setup.py .
 
 # Security: Non-root execution of gunicorn
 USER app-user
