@@ -47,9 +47,8 @@ RUN pip install poetry
 
 # Install python dependencies
 COPY poetry.lock pyproject.toml ./
-ADD deploy/requirements.txt ./deploy/requirements.txt
-RUN poetry export --without dev -f requirements.txt --output requirements.txt
-RUN pip install --no-cache-dir -r ./deploy/requirements.txt
+RUN poetry export -f requirements.txt --output requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Download and unpack Oracle libraries
 RUN cd /tmp ; \
