@@ -38,7 +38,6 @@ COPY manage.py .
 COPY api_project/gunicorn_config.py .
 
 RUN gdal-config --version
-
 # Upgrade pip
 RUN pip install -U pip
 
