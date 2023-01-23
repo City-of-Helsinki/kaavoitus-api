@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/python-38
+FROM registry.access.redhat.com/ubi9/python-39
 
 # Default user is: uid=1001(default) gid=0(root) groups=0(root)
 USER root
@@ -59,7 +59,7 @@ RUN cd /tmp ; \
 
 # WFS fix into Python owslib:
 COPY Deployment/owslib/owslib.patch /tmp/
-RUN patch -d /opt/app-root/lib64/python3.8/site-packages/ -p0 < /tmp/owslib.patch
+RUN patch -d /opt/app-root/lib64/python3.9/site-packages/ -p0 < /tmp/owslib.patch
 # Service must listen to $PORT environment variable.
 # This default value facilitates local development.
 ENV PORT 8000

@@ -1,6 +1,6 @@
 # use Red Hat recommended base
 # https://docs.openshift.com/enterprise/3.0/creating_images/guidelines.html
-FROM registry.access.redhat.com/ubi8/python-38 AS compile-image
+FROM registry.access.redhat.com/ubi9/python-39 AS compile-image
 
 # Default user is: uid=1001(default) gid=0(root) groups=0(root)
 USER root
@@ -45,11 +45,11 @@ RUN cd /tmp ; wget https://download.oracle.com/otn_software/linux/instantclient/
 
 # WFS fix into Python owslib:
 COPY Deployment/owslib/owslib.patch /tmp/
-RUN patch -d /opt/app-root/lib64/python3.8/site-packages/ -p0 < /tmp/owslib.patch
+RUN patch -d /opt/app-root/lib64/python3.9/site-packages/ -p0 < /tmp/owslib.patch
 
 
 
-FROM registry.access.redhat.com/ubi8/python-38 AS build-image
+FROM registry.access.redhat.com/ubi9/python-39 AS build-image
 
 # Default user is: uid=1001(default) gid=0(root) groups=0(root)
 USER root
@@ -72,7 +72,7 @@ RUN dnf install -y libaio
 ENV LD_LIBRARY_PATH=/oracle/instantclient_21_1
 
 # Copy pre-compiled stuff
-COPY --from=compile-image /opt/app-root/lib/python3.8/site-packages /opt/app-root/lib/python3.8/site-packages
+COPY --from=compile-image /opt/app-root/lib/python3.9/site-packages /opt/app-root/lib/python3.9/site-packages
 COPY --from=compile-image /oracle /oracle
 COPY --from=compile-image /opt/app-root/bin /opt/app-root/bin
 ENV PATH=/opt/app-root/bin:$PATH
