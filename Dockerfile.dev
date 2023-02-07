@@ -1,6 +1,6 @@
 # use Red Hat recommended base
 # https://docs.openshift.com/enterprise/3.0/creating_images/guidelines.html
-FROM registry.access.redhat.com/ubi9/python-39 AS compile-image
+FROM registry.access.redhat.com/ubi8/python-39 AS compile-image
 
 # Default user is: uid=1001(default) gid=0(root) groups=0(root)
 USER root
@@ -49,7 +49,7 @@ RUN patch -d /opt/app-root/lib64/python3.9/site-packages/ -p0 < /tmp/owslib.patc
 
 
 
-FROM registry.access.redhat.com/ubi9/python-39 AS build-image
+FROM registry.access.redhat.com/ubi8/python-39 AS build-image
 
 # Default user is: uid=1001(default) gid=0(root) groups=0(root)
 USER root

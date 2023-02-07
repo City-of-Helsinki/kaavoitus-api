@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/python-39
+FROM registry.access.redhat.com/ubi8/python-39
 
 # Default user is: uid=1001(default) gid=0(root) groups=0(root)
 USER root
