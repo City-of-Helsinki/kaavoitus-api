@@ -35,7 +35,8 @@ class API(APIView):
             username=self.geoserver_creds.username,
             password=self.geoserver_creds.credential,
         )
-        data = kh.get_by_hankenumero(hankenumero)
+        kh_data = kh.get_by_hankenumero(hankenumero)
+        data = kh_data
         if not data:
             log.error("Kaavahanke (%s) not found!" % hankenumero)
             # TODO: is this required?
@@ -77,7 +78,7 @@ class API(APIView):
 
         ret_data = {
             "suunnittelualueen_rajaus": suunnittelualueen_rajaus,
-            "suunnittelualueen_pinta_ala": ak_data.get("pintaala") if ak_data else 0.0,
+            "suunnittelualueen_pinta_ala": ak_data.get("pintaala") if ak_data else kh_data.get("pinta_ala") if kh_data else 0.0,
             "keskimaarainen_tonttitehokkuus": keskimaarainen_tonttitehokkuus,
             "maanalaisten_tilojen_pinta_ala_yht": maanalaisten_tilojen_pinta_ala_yht,
             "aluevarausten_pinta_alat_yht": aluevarausten_pinta_alat_yht,
