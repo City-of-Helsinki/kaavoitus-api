@@ -49,6 +49,7 @@ class Kaavahanke(GeoServer_Reader):
             "selostus": "string",
             "datanomistaja": "string",
             "paivitetty_tietopalveluun": "date",
+            "pinta_ala": "double",
         },
         "required": ["hankenumero"],
     }
