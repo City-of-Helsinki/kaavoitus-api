@@ -38,8 +38,8 @@ COPY manage.py .
 COPY api_project/gunicorn_config.py .
 
 RUN gdal-config --version
-# Upgrade pip
-RUN pip install -U pip
+# Install pip 23.0
+RUN pip install pip==23.0
 
 # Install Poetry
 RUN pip install poetry
