@@ -39,6 +39,7 @@ env = environ.Env(
     FACTA_DB_MOCK_DATA_DIR=(str, None),
     USE_JSON_READER=(bool, True),
     KAAVAPINO_API_URL=(str, None),
+    APILA_URL=(str, ""),
     SENTRY_DSN=(str, ''),
     SENTRY_ENVIRONMENT=(str, 'development'),
     ELASTIC_APM_SERVER_URL=(str, ""),
@@ -162,11 +163,10 @@ DATABASES = {
 FACTA_CACHE_TIMEOUT = 60 * 60 * 12  # 12 hours
 GEOSERVER_CACHE_TIMEOUT = 60 * 60 * 12  # 12 hours
 
-DJANGO_REDIS_CONNECTION_FACTORY = 'django_redis.pool.SentinelConnectionFactory'
-
 SENTINELS = []
 
 if env.str("REDIS_SENTINELS"):
+    DJANGO_REDIS_CONNECTION_FACTORY = 'django_redis.pool.SentinelConnectionFactory'
     for sentinel in env.str("REDIS_SENTINELS").split(","):
         host, port = sentinel.split(":")
         SENTINELS.append((host, port))
@@ -340,4 +340,4 @@ FACTA_DB_MOCK_DATA_DIR = env("FACTA_DB_MOCK_DATA_DIR")
 USE_JSON_READER = env("USE_JSON_READER")
 
 KAAVAPINO_API_URL = env("KAAVAPINO_API_URL")
-
+APILA_URL = env("APILA_URL")

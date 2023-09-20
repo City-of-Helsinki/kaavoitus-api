@@ -1,0 +1,3 @@
+from .paikkatietov1serializer import PaikkatietoV1Serializer
+from .asemakaavav1serializer import AsemakaavaV1Serializer
+from .rakennuskieltov1serializer import RakennuskieltoV1Serializer
