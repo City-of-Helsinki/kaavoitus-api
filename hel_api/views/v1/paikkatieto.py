@@ -114,7 +114,7 @@ class API(APIView):
                 if rkay_data:
                     data["voimassa_olevat_rakennuskiellot_fieldset"].append(
                         {
-                            "rakennuskiellon_numero": rkay_data["laatu_tunnus"],
+                            "rakennuskiellon_numero": rkay_data["rakennuskieltotunnus"],
                             "rakennuskiellon_peruste": rkay_data["laatu_selite"]
                         }
                     )
@@ -126,7 +126,7 @@ class API(APIView):
                 if rkaa_data:
                     data["voimassa_olevat_rakennuskiellot_fieldset"].append(
                         {
-                            "rakennuskiellon_numero": rkaa_data["laatu_tunnus"],
+                            "rakennuskiellon_numero": rkaa_data["rakennuskieltotunnus"],
                             "rakennuskiellon_peruste": rkaa_data["laatu_selite"]
                         }
                     )
