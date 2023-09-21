@@ -23,6 +23,7 @@ from drf_spectacular.views import (
 from geoserver_api import urls as geoserver_urls
 from kaavapino_api import urls as kaavapino_urls
 from facta_api import urls as facta_urls
+from hel_api import urls as hel_urls
 
 urlpatterns = [
     #    path('', DefaultSpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui-default'),
@@ -30,6 +31,7 @@ urlpatterns = [
     path("api/facta/", include((facta_urls.urlpatterns, "facta"))),
     path("api/geoserver/", include((geoserver_urls.urlpatterns, "geoserver"))),
     path("api/kaavapino/", include((kaavapino_urls.urlpatterns, "kaavapino"))),
+    path("api/hel/", include((hel_urls.urlpatterns, "hel"))),
     # OpenAPI 3 documentation with Swagger UI:
     re_path(
         r"^schema/v(?P<version>(\d+))/", SpectacularAPIView.as_view(), name="schema"
