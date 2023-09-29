@@ -70,6 +70,8 @@ class API(APIView):
             koskettavat = get_kiinteistotunnukset(build_url(kiinteistolaji, hankenumero, "touches"))
             kiinteistotunnukset.extend(sisallytaVainKaavaanKuuluvatKiinteistot(leikkaavat, koskettavat))
 
+        asemakaavat = {}
+        rakennuskiellot = {}
         # Data should reflect the field names defined in Kaavaprojektitiedot excel 'projektitieto tunniste' column
         data = {
             "voimassa_asemakaavat_fieldset": [],
@@ -99,12 +101,7 @@ class API(APIView):
                 )
                 akv_data = akv.get_by_geom(kt_data, single_result=True)
                 if akv_data:
-                    data["voimassa_asemakaavat_fieldset"].append(
-                        {
-                            "voimassa_asemakaava_numero": akv_data["kaavatunnus"],
-                            "milloin_asemakaava_tullut_voimaan": akv_data["vahvistamispvm"]
-                        }
-                    )
+                    asemakaavat[akv_data["kaavatunnus"]] = akv_data["vahvistamispvm"]
 
                 # Rakennuskiellot
                 rkay = hki_geoserver.Rakennuskieltoalue_yleiskaava(
@@ -112,24 +109,27 @@ class API(APIView):
                 )
                 rkay_data = rkay.get_by_geom(kt_data, single_result=True)
                 if rkay_data:
-                    data["voimassa_olevat_rakennuskiellot_fieldset"].append(
-                        {
-                            "rakennuskiellon_numero": rkay_data["rakennuskieltotunnus"],
-                            "rakennuskiellon_peruste": rkay_data["laatu_selite"]
-                        }
-                    )
+                    rakennuskiellot[rkay_data["rakennuskieltotunnus"]] = rkay_data["laatu_selite"]
 
                 rkaa = hki_geoserver.Rakennuskieltoalue_asemakaava(
                     username=geoserver_creds.username, password=geoserver_creds.credential
                 )
                 rkaa_data = rkaa.get_by_geom(kt_data, single_result=True)
                 if rkaa_data:
-                    data["voimassa_olevat_rakennuskiellot_fieldset"].append(
-                        {
-                            "rakennuskiellon_numero": rkaa_data["rakennuskieltotunnus"],
-                            "rakennuskiellon_peruste": rkaa_data["laatu_selite"]
-                        }
-                    )
+                    rakennuskiellot[rkaa_data["rakennuskieltotunnus"]] = rkaa_data["laatu_selite"]
+
+                data["voimassa_asemakaavat_fieldset"] = [
+                    {
+                        "voimassa_asemakaava_numero": ak_numero,
+                        "milloin_asemakaava_tullut_voimaan": ak_voimassa
+                    } for ak_numero, ak_voimassa in asemakaavat.items()
+                ]
+                data["voimassa_olevat_rakennuskiellot_fieldset"] = [
+                    {
+                        "rakennuskiellon_numero": rk_numero,
+                        "rakennuskiellon_peruste": rk_peruste
+                    } for rk_numero, rk_peruste in rakennuskiellot.items()
+                ]
 
                 # Kiinteistönomistajat
                 f_ko = hel_facta.KiinteistonOmistajat()
