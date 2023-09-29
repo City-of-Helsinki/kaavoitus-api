@@ -34,6 +34,7 @@ COPY common_auth common_auth/
 COPY geoserver_api geoserver_api/
 COPY kaavapino_api kaavapino_api/
 COPY facta_api facta_api/
+COPY hel_api hel_api/
 COPY manage.py .
 COPY api_project/gunicorn_config.py .
 
