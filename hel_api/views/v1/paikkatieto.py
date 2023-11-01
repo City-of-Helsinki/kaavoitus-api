@@ -104,7 +104,7 @@ class API(APIView):
             )
             akv_data = akv.get_by_geom(kt_data, single_result=True)
             if akv_data:
-                asemakaavat[akv_data["kaavatunnus"]] = akv_data["vahvistamispvm"]
+                asemakaavat[akv_data["kaavatunnus"]] = akv_data["lainvoimaisuuspvm"]
 
             # Rakennuskiellot
             rkay = hki_geoserver.Rakennuskieltoalue_yleiskaava(
