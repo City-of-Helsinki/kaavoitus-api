@@ -107,7 +107,7 @@ class API(APIView):
             if akv_data:
                 try:
                     lvpvm = datetime.strptime(akv_data["lainvoimaisuuspvm"], "%Y-%m-%d").strftime("%d.%m.%Y")
-                except ValueError:
+                except (ValueError, TypeError):
                     log.error(f'Failed to parse date from value {akv_data["lainvoimaisuuspvm"]}')
                     lvpvm = akv_data["lainvoimaisuuspvm"]  # Include asemakaava with wrong date format regardless
                 asemakaavat[int(akv_data["kaavatunnus"])] = lvpvm
