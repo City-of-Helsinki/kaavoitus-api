@@ -1,9 +1,6 @@
 from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
 
-from .rakennuskieltov1serializer import RakennuskieltoV1Serializer
-from .asemakaavav1serializer import AsemakaavaV1Serializer
-
 
 @extend_schema_serializer(
     examples=[
@@ -13,8 +10,8 @@ from .asemakaavav1serializer import AsemakaavaV1Serializer
             description="""
             Example:
             Fields:
-            * voimassa_asemakaavat_fieldset: Voimassaolevat asemakaavat
-            * voimassa_olevat_rakennuskiellot_fieldset: Voimassaolevat rakennuskiellot
+            * voimassa_asemakaavat: Voimassaolevat asemakaavat
+            * voimassa_olevat_rakennuskiellot: Voimassaolevat rakennuskiellot
             * maanomistus_kaupunki: Onko alueella kaupungin maanomistusta
             * maanomistus_valtio: Onko alueella valtion maanomistusta
             * maanomistus_yksityinen: Onko alueella yksityisen maanomistusta
@@ -28,8 +25,8 @@ from .asemakaavav1serializer import AsemakaavaV1Serializer
     ]
 )
 class PaikkatietoV1Serializer(serializers.Serializer):
-    voimassa_asemakaavat_fieldset = AsemakaavaV1Serializer(many=True)
-    voimassa_olevat_rakennuskiellot_fieldset = RakennuskieltoV1Serializer(many=True)
+    voimassa_asemakaavat = serializers.CharField(allow_blank=True)
+    voimassa_olevat_rakennuskiellot = serializers.CharField(allow_blank=True)
 
     maanomistus_kaupunki = serializers.CharField(max_length=6)
     maanomistus_valtio = serializers.CharField(max_length=6)
