@@ -64,6 +64,7 @@ class Command(BaseCommand):
                 ).delete()
             except ExtAuthCred.DoesNotExist:
                 pass
+            return None
         else:
             user = ExtAuthCred.objects.filter(
                 system=system, cred_owner=owner, username=username
@@ -71,14 +72,14 @@ class Command(BaseCommand):
             if user:
                 raise ValueError("user {} already exists".format(username))
 
-        token = ExtAuthCred.objects.get_or_create(
-            system=system,
-            cred_owner=owner,
-            username=username,
-            credential=credential,
-            host_spec=host_spec,
-        )
-        return token[0]
+            token = ExtAuthCred.objects.get_or_create(
+                system=system,
+                cred_owner=owner,
+                username=username,
+                credential=credential,
+                host_spec=host_spec,
+            )
+            return token[0]
 
     def handle(self, *args, **options):
         list_creds = options["list_creds"]

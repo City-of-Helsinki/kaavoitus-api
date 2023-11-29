@@ -20,6 +20,8 @@ try:
             threaded=True,
             getmode=cx_Oracle.SPOOL_ATTRVAL_WAIT,
         )
+except cx_Oracle.DatabaseError as exc:
+    logging.error("Failed to initialize cx_Oracle SessionPool -- %s" % exc)
 except ObjectDoesNotExist:
     logging.error("Failed to initialize cx_Oracle SessionPool -- No ExtAuthCred entry found for Facta")
 except MultipleObjectsReturned:
