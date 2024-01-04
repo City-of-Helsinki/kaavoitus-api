@@ -39,14 +39,15 @@ class Command(drf_create_token.Command):
 
         if reset_token:
             Token.objects.filter(user=user).delete()
-
-        token = Token.objects.get_or_create(
-            user=user,
-            access_facta=facta_creds,
-            access_geoserver=geoserver_creds,
-            access_kaavapino=kaavapino_creds,
-        )
-        return token[0]
+            return None
+        else:
+            token = Token.objects.get_or_create(
+                user=user,
+                access_facta=facta_creds,
+                access_geoserver=geoserver_creds,
+                access_kaavapino=kaavapino_creds,
+            )
+            return token[0]
 
     def add_arguments(self, parser):
         parser.add_argument("username", type=str)
@@ -96,8 +97,11 @@ class Command(drf_create_token.Command):
             token = self.create_api_user_token(
                 username, reset_token, access_facta, access_geoserver, access_kaavapino
             )
+            if token:
+                self.stdout.write("Generated token {} for user {}".format(token.key, username))
+            else:
+                self.stdout.write("Deleted token for user {}".format(username))
         except drf_create_token.UserModel.DoesNotExist:
             raise CommandError(
                 "Cannot create the Token: user {} does not exist".format(username)
             )
-        self.stdout.write("Generated token {} for user {}".format(token.key, username))
