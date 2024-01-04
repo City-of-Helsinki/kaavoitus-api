@@ -107,11 +107,13 @@ class Command(BaseCommand):
                 credential=credential,
                 host_spec=host_spec,
             )
+            if token:
+                self.stdout.write("Added credential {} for system {} / owner {} / user {}".format(
+                    token.credential, system, owner, username)
+                )
+            else:
+                self.stdout.write("Deleted credential for system {} / owner {} / user {}".format(
+                    system, owner, username)
+                )
         except Exception as err:
             raise CommandError("Cannot add credential: {} ".format(err))
-
-        self.stdout.write(
-            "Added credential {} for system {} / owner {} / user {}".format(
-                token.credential, system, owner, username
-            )
-        )
