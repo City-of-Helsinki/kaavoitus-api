@@ -8,7 +8,7 @@ from django.http import (
 )
 import logging
 import requests
-from requests.exceptions import HTTPError
+from requests.exceptions import HTTPError, Timeout
 from hel_api.views.serializers.v1.paikkatietov1serializer import PaikkatietoV1Serializer
 from rest_framework.views import APIView
 from django.conf import settings
@@ -33,7 +33,7 @@ def build_url(kiinteistolaji, hankenumero, cql_filter):
 
 def get_kiinteistotunnukset(url):
     try:
-        kiinteistot = requests.get(url).json()
+        kiinteistot = requests.get(url, timeout=5).json()
         kiinteistotunnukset = []
         for kiinteisto in kiinteistot["features"]:
             kunta = kiinteisto["properties"]["kunta"]
@@ -44,11 +44,15 @@ def get_kiinteistotunnukset(url):
             # Yhtenäinen kiinteistötunnus ilman väliviivaa löytyisi kohdasta ["properties"]["kiinteistotunnus"]
             kiinteistotunnukset.append(kunta + "-" + sijaintialue + "-" + ryhma + "-" + yksikko)
         return kiinteistotunnukset
+    except Timeout as timeout:
+        logging.error('Timeout occurred', timeout)
+        raise
     except HTTPError as http_err:
         logging.error('HTTP error occurred', http_err)
+        raise
     except Exception as err:
         logging.error('Other error occurred', err)
-    return []
+        raise
 
 
 def sisallytaVainKaavaanKuuluvatKiinteistot(leikkaavatKiinteistotunnukset, koskettavatKiinteistotunnukset):
@@ -71,10 +75,13 @@ class API(APIView):
             return HttpResponseForbidden("No Geoserver access!")
 
         kiinteistotunnukset = []
-        for kiinteistolaji in wfsKiinteistoLajit:
-            leikkaavat = get_kiinteistotunnukset(build_url(kiinteistolaji, hankenumero, "intersects"))
-            koskettavat = get_kiinteistotunnukset(build_url(kiinteistolaji, hankenumero, "touches"))
-            kiinteistotunnukset.extend(sisallytaVainKaavaanKuuluvatKiinteistot(leikkaavat, koskettavat))
+        try:
+            for kiinteistolaji in wfsKiinteistoLajit:
+                leikkaavat = get_kiinteistotunnukset(build_url(kiinteistolaji, hankenumero, "intersects"))
+                koskettavat = get_kiinteistotunnukset(build_url(kiinteistolaji, hankenumero, "touches"))
+                kiinteistotunnukset.extend(sisallytaVainKaavaanKuuluvatKiinteistot(leikkaavat, koskettavat))
+        except Exception:
+            return HttpResponseServerError('Error getting kiinteistotunnukset from Apila WFS API')
 
         asemakaavat = {}
         rakennuskiellot = {}
