@@ -21,6 +21,10 @@ class Facta:
         else:
             raise ValueError("Oracle DB connection or mocking needed!")
 
+    def __del__(self):
+        if self.conn:
+            session_pool.release(self.conn)
+
     def _mock_login(self, mock_data_dir):
         from .mock_oracle import MockOracleConnection
         import os
