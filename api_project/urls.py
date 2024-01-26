@@ -20,6 +20,8 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+
+from api_project.views import Ping, Status
 from geoserver_api import urls as geoserver_urls
 from kaavapino_api import urls as kaavapino_urls
 from facta_api import urls as facta_urls
@@ -32,6 +34,8 @@ urlpatterns = [
     path("api/geoserver/", include((geoserver_urls.urlpatterns, "geoserver"))),
     path("api/kaavapino/", include((kaavapino_urls.urlpatterns, "kaavapino"))),
     path("api/hel/", include((hel_urls.urlpatterns, "hel"))),
+    re_path(r"^v(?P<version>(1))/ping/", Ping.as_view(), name="ping"),
+    re_path(r"^v(?P<version>(1))/status/", Status.as_view(), name="status"),
     # OpenAPI 3 documentation with Swagger UI:
     re_path(
         r"^schema/v(?P<version>(\d+))/", SpectacularAPIView.as_view(), name="schema"
