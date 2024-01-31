@@ -6,7 +6,7 @@
 # https://github.com/geopython/OWSLib/blob/master/examples/wms-getfeatureinfo.py
 
 import copy
-from owslib.wfs import WebFeatureService
+from .geoserver_wfs_helper import get_or_init_wfs
 import logging
 import lxml.etree as etree
 from lxml.builder import ElementMaker
@@ -19,6 +19,7 @@ log = logging.getLogger(__name__)
 HELSINKI_GEOSERVER_OPENDATA_URL = "https://kartta.hel.fi/ws/geoserver/avoindata/wfs"
 HELSINKI_GEOSERVER_INTERNAL_URL = "http://apila.hel.fi/gis/hel/wfs"
 HELSINKI_GEOSERVER_OLD_URL = "https://kartta.hel.fi/ws/geoserver/helsinki/wfs"
+
 
 class GeoServer_Reader_json:
     wfs = None
@@ -70,19 +71,11 @@ class GeoServer_Reader_json:
             return
 
         self.geo_url = url_to_use
-        version = "2.0.0"
+
         if self.use_auth or self.use_old_url:
-            wfs = WebFeatureService(
-                self.geo_url,
-                version=version,
-                username=self.username,
-                password=self.password,
-            )
+            wfs = get_or_init_wfs(self.geo_url, self.username, self.password)
         else:
-            wfs = WebFeatureService(
-                self.geo_url,
-                version=version,
-            )
+            wfs = get_or_init_wfs(self.geo_url)
 
         self.wfs = wfs
 
