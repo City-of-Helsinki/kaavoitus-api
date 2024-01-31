@@ -6,7 +6,7 @@
 # https://github.com/geopython/OWSLib/blob/master/examples/wms-getfeatureinfo.py
 
 import copy
-from owslib.wfs import WebFeatureService
+from .geoserver_wfs_helper import get_or_init_wfs
 import logging
 import lxml.etree as etree
 from lxml.builder import ElementMaker
@@ -64,19 +64,11 @@ class GeoServer_Reader_xml:
             return
 
         self.geo_url = url_to_use
-        version = "2.0.0"
+
         if self.use_auth:
-            wfs = WebFeatureService(
-                self.geo_url,
-                version=version,
-                username=self.username,
-                password=self.password,
-            )
+            wfs = get_or_init_wfs(self.geo_url, username=self.username, password=self.password)
         else:
-            wfs = WebFeatureService(
-                self.geo_url,
-                version=version,
-            )
+            wfs = get_or_init_wfs(self.geo_url)
 
         self.wfs = wfs
 
