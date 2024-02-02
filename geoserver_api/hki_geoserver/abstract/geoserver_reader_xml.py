@@ -18,9 +18,9 @@ import json
 
 log = logging.getLogger(__name__)
 
-HELSINKI_GEOSERVER_OPENDATA_URL = "http://apila.hel.fi/gis/hel/wfs"
+HELSINKI_GEOSERVER_OPENDATA_URL = "https://kartta.hel.fi/ws/geoserver/avoindata/wfs"
 HELSINKI_GEOSERVER_INTERNAL_URL = "http://apila.hel.fi/gis/hel/wfs"
-
+HELSINKI_GEOSERVER_OLD_URL = "https://kartta.hel.fi/ws/geoserver/helsinki/wfs"
 
 class GeoServer_Reader_xml:
     wfs = None
@@ -30,6 +30,8 @@ class GeoServer_Reader_xml:
     use_auth = None
     username = None
     password = None
+    use_opendata = False
+    use_old_url = False
 
     ID = "id"
     GML_ID = "gml_id"
@@ -55,7 +57,13 @@ class GeoServer_Reader_xml:
         if self.use_auth:
             url_to_use = HELSINKI_GEOSERVER_INTERNAL_URL
         else:
+            url_to_use = HELSINKI_GEOSERVER_INTERNAL_URL
+
+        if self.use_opendata:
             url_to_use = HELSINKI_GEOSERVER_OPENDATA_URL
+
+        if self.use_old_url:
+            url_to_use = HELSINKI_GEOSERVER_OLD_URL
 
         if self.geo_url:
             if url_to_use != self.geo_url:
@@ -65,8 +73,8 @@ class GeoServer_Reader_xml:
 
         self.geo_url = url_to_use
 
-        if self.use_auth:
-            wfs = get_or_init_wfs(self.geo_url, username=self.username, password=self.password)
+        if self.use_auth or self.use_old_url:
+            wfs = get_or_init_wfs(self.geo_url, self.username, self.password)
         else:
             wfs = get_or_init_wfs(self.geo_url)
 
