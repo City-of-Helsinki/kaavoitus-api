@@ -1,6 +1,7 @@
+from unittest.mock import Mock
+
 import pytest
 
-from django.contrib.auth.models import User
 from django.urls import reverse
 from rest_framework.test import APIClient
 
@@ -8,21 +9,22 @@ from rest_framework.test import APIClient
 class TestPaikkatieto:
     client = APIClient()
 
-    @pytest.mark.parametrize(
-        "username, hankenumero",
-        [
-            ("kaavapino", "1234_56")
-        ],
-    )
-    def test_get_paikkatieto(self, username, hankenumero):
-        user = User.objects.get(username="kaavapino")
-        assert user is not None
+    def test_get_paikkatieto(self, f_token1):
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + f_token1.key)
 
-        self.client.credentials(HTTP_AUTHORIZATION="Token " + user.wasted_auth_token.key)
         url = reverse(
-            "hel:paikkatieto", kwargs={"version": 1, "hankenumero": "1234_00"}
+            "hel:paikkatieto", kwargs={"version": 1, "hankenumero": "1234_56"}
         )
+        response = self.client.get(url)
 
-        result = self.client.get(url)
+        assert response.status_code == 200
 
-        assert result.status_code == 200
+        assert response.json() == {
+            'voimassa_asemakaavat': '',
+            'voimassa_olevat_rakennuskiellot': '',
+            'maanomistus_kaupunki': 'Ei',
+            'maanomistus_valtio': 'Ei',
+            'maanomistus_yksityinen': 'Ei',
+            'maanomistaja_ulkopaikkakunta': 'Ei',
+            'haltija_ulkopaikkakunta': 'Ei'
+        }

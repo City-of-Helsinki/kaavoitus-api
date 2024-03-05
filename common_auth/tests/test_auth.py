@@ -4,9 +4,9 @@ from unittest.mock import Mock
 
 from common_auth.tests.mock import OracleConnMock
 from kaavapino_api.kaavapino.kaavapino_client import KaavapinoClient
-from facta_api.hel_facta.abstract.facta import Facta
 from geoserver_api.hki_geoserver.abstract.geoserver_reader import GeoServer_Reader
 
+import pytest
 
 class TestAuthentication:
     client = APIClient()
@@ -31,7 +31,10 @@ class TestAuthentication:
 
         assert response.status_code == 403
 
+    @pytest.mark.django_db
     def test_user__can_access_facta__kiinteisto_info(self, f_token1):
+        from facta_api.hel_facta.abstract.facta import Facta
+
         self.client.credentials(HTTP_AUTHORIZATION="Token " + f_token1.key)
         url = reverse(
             "facta:kiinteisto-info",

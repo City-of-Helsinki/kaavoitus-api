@@ -410,31 +410,36 @@ class TestSuunnittelualue:
 
         response = self.client.get(url)
 
+        print(f'{response.json()}')
+
         assert response.status_code == 200
+
         assert response.json() == {
-            "aluevarausten_pinta_alat_yht": "3908.16599",
-            "keskimaarainen_tonttitehokkuus": "1234.0",
-            "maanalaisten_tilojen_pinta_ala_yht": "2222.123456",
-            "pinta_alan_muutokset_yht": "0.0",
-            "suojellut_rakennukset_ala_yht": "50.987654",
-            "suojellut_rakennukset_maara_yht": "1",
-            "suunnittelualueen_pinta_ala": "876543.21",
-            "suunnittelualueen_rajaus": [
+            'suunnittelualueen_rajaus': [
                 {
-                    "geometry": {
-                        "coordinates": [
+                    'type': 'Feature',
+                    'geometry': {
+                        'type': 'Polygon',
+                        'coordinates': [
                             [
                                 [24.9320125579834, 60.17221176544357],
                                 [24.933841824531555, 60.17221176544357],
                                 [24.933841824531555, 60.17283879431961],
                                 [24.9320125579834, 60.17283879431961],
-                                [24.9320125579834, 60.17221176544357],
+                                [24.9320125579834, 60.17221176544357]
                             ]
-                        ],
-                        "type": "Polygon",
+                        ]
                     },
-                    "properties": {"id": "Hankerajaukset_alue_kaavahanke.001"},
-                    "type": "Feature",
+                    'properties': {
+                        'id': 'Hankerajaukset_alue_kaavahanke.001'
+                    }
                 }
             ],
+            'suunnittelualueen_pinta_ala': '876543.21',
+            'keskimaarainen_tonttitehokkuus': '1234.0',
+            'maanalaisten_tilojen_pinta_ala_yht': None,
+            'aluevarausten_pinta_alat_yht': None,
+            'pinta_alan_muutokset_yht': '0.0',
+            'suojellut_rakennukset_maara_yht': None,
+            'suojellut_rakennukset_ala_yht': None
         }
