@@ -14,7 +14,7 @@ else:
     port = 8000
 
 bind = "0.0.0.0:%d" % port
-workers = 4
-threads = 8
+workers = 2
+threads = 2
 timeout = 0
 accesslog = '-'

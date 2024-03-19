@@ -78,7 +78,7 @@ class API(APIView):
 
         ret_data = {
             "suunnittelualueen_rajaus": suunnittelualueen_rajaus,
-            "suunnittelualueen_pinta_ala": ak_data.get("pintaala") if ak_data else kh_data.get("pinta_ala") if kh_data else 0.0,
+            "suunnittelualueen_pinta_ala": kh_data.get("pinta_ala") if kh_data else ak_data.get("pintaala") if ak_data else 0.0,
             "keskimaarainen_tonttitehokkuus": keskimaarainen_tonttitehokkuus,
             "maanalaisten_tilojen_pinta_ala_yht": maanalaisten_tilojen_pinta_ala_yht,
             "aluevarausten_pinta_alat_yht": aluevarausten_pinta_alat_yht,
