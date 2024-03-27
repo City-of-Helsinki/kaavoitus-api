@@ -5,8 +5,8 @@ from drf_spectacular.openapi import AutoSchema
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from common_auth.authentication import TokenAuthentication
-from .v1.paikkatieto import API as APIv1
-from .serializers.v1 import PaikkatietoV1Serializer
+from .v1.kaavat import API as APIv1
+from .serializers.v1 import KaavatV1Serializer
 
 
 class API(APIView):
@@ -20,7 +20,7 @@ class API(APIView):
 
     @extend_schema(
         responses={
-            200: PaikkatietoV1Serializer,
+            200: KaavatV1Serializer,
             401: OpenApiTypes.STR,
             500: OpenApiTypes.STR,
         },

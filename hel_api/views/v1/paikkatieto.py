@@ -4,63 +4,21 @@ from django.http.response import (
 from django.http import (
     JsonResponse,
     HttpResponseBadRequest,
-    HttpResponseForbidden,
 )
 import logging
-import requests
-from requests.exceptions import HTTPError, Timeout
 from hel_api.views.serializers.v1.paikkatietov1serializer import PaikkatietoV1Serializer
 from rest_framework.views import APIView
 from django.conf import settings
 from django.core.cache import cache
-from datetime import datetime
 
-from geoserver_api import hki_geoserver
 from facta_api import hel_facta
 
+from hel_api.views.v1.kiintestotunnukset import API as KiinteistoAPI
+from hel_api.views.v1.kaavat import API as KaavaAPI
+from hel_api.views.v1.rakennuskiellot import API as RakennuskieltoAPI
+from hel_api.views.helpers import format_date
+
 log = logging.getLogger(__name__)
-wfsKiinteistoLajit = ["hel:Kiinteisto_alue_tontti", "hel:Kiinteisto_alue_maarekisterikiinteisto", "hel:Kiinteisto_alue_yleinen_alue"]
-
-
-def build_url(kiinteistolaji, hankenumero, cql_filter):
-    url = settings.APILA_URL \
-        + "?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=" + kiinteistolaji \
-        + ("&CQL_FILTER=" + cql_filter if cql_filter else "") \
-        + "(geom,querySingle('hel:Hankerajaukset_alue_kaavahanke','geom','hankenumero=''" + hankenumero + "'''))" \
-        + "&outputFormat=application/json"
-    return url
-
-
-def get_kiinteistotunnukset(url):
-    try:
-        kiinteistot = requests.get(url, timeout=5).json()
-        kiinteistotunnukset = []
-        for kiinteisto in kiinteistot["features"]:
-            kunta = kiinteisto["properties"]["kunta"]
-            sijaintialue = kiinteisto["properties"]["sijaintialue"]
-            ryhma = kiinteisto["properties"]["ryhma"]
-            yksikko = kiinteisto["properties"]["yksikko"]
-            # Yhdistetään kiinteistötunnus tekstiksi muotoon kunta-sijaintialue-ryhma-yksikko
-            # Yhtenäinen kiinteistötunnus ilman väliviivaa löytyisi kohdasta ["properties"]["kiinteistotunnus"]
-            kiinteistotunnukset.append(kunta + "-" + sijaintialue + "-" + ryhma + "-" + yksikko)
-        return kiinteistotunnukset
-    except Timeout as timeout:
-        logging.error('Timeout occurred', timeout)
-        raise
-    except HTTPError as http_err:
-        logging.error('HTTP error occurred', http_err)
-        raise
-    except Exception as err:
-        logging.error('Other error occurred', err)
-        raise
-
-
-def sisallytaVainKaavaanKuuluvatKiinteistot(leikkaavatKiinteistotunnukset, koskettavatKiinteistotunnukset):
-    kiinteistotunnukset = []
-    for kiinteistotunnus in leikkaavatKiinteistotunnukset:
-        if kiinteistotunnus not in koskettavatKiinteistotunnukset:
-            kiinteistotunnukset.append(kiinteistotunnus)
-    return kiinteistotunnukset
 
 
 class API(APIView):
@@ -70,21 +28,6 @@ class API(APIView):
         if not hankenumero:
             return HttpResponseBadRequest("Need hankenumero!")
 
-        geoserver_creds = request.auth.access_geoserver
-        if not geoserver_creds:
-            return HttpResponseForbidden("No Geoserver access!")
-
-        kiinteistotunnukset = []
-        try:
-            for kiinteistolaji in wfsKiinteistoLajit:
-                leikkaavat = get_kiinteistotunnukset(build_url(kiinteistolaji, hankenumero, "intersects"))
-                koskettavat = get_kiinteistotunnukset(build_url(kiinteistolaji, hankenumero, "touches"))
-                kiinteistotunnukset.extend(sisallytaVainKaavaanKuuluvatKiinteistot(leikkaavat, koskettavat))
-        except Exception:
-            return HttpResponseServerError('Error getting kiinteistotunnukset from Apila WFS API')
-
-        asemakaavat = {}
-        rakennuskiellot = {}
         # Data should reflect the field names defined in Kaavaprojektitiedot excel 'projektitieto tunniste' column
         data = {
             "voimassa_asemakaavat": "",
@@ -96,45 +39,9 @@ class API(APIView):
             "haltija_ulkopaikkakunta": "Ei"
         }
 
-        kt = hki_geoserver.Kiinteistotunnus(
-            username=geoserver_creds.username, password=geoserver_creds.credential
-        )
-        for kiinteistotunnus in kiinteistotunnukset:
-            formatted_kt = "".join(kiinteistotunnus.split("-"))
-            kt_data = kt.get(formatted_kt)
-            if not kt_data:
-                log.error(f'Failed to get kt_data for kiinteistotunnus {formatted_kt}')
-                continue
-
-            # Asemakaava
-            akv = hki_geoserver.Asemakaava_voimassa(
-                username=geoserver_creds.username, password=geoserver_creds.credential
-            )
-            akv_data = akv.get_by_geom(kt_data, single_result=True)
-            if akv_data:
-                try:
-                    lvpvm = datetime.strptime(akv_data["lainvoimaisuuspvm"], "%Y-%m-%d").strftime("%d.%m.%Y")
-                except (ValueError, TypeError):
-                    log.error(f'Failed to parse date from value {akv_data["lainvoimaisuuspvm"]}')
-                    lvpvm = akv_data["lainvoimaisuuspvm"]  # Include asemakaava with wrong date format regardless
-                asemakaavat[int(akv_data["kaavatunnus"])] = lvpvm
-
-            # Rakennuskiellot
-            rkay = hki_geoserver.Rakennuskieltoalue_yleiskaava(
-                username=geoserver_creds.username, password=geoserver_creds.credential
-            )
-            rkay_data = rkay.get_by_geom(kt_data, single_result=True)
-            if rkay_data:
-                rakennuskiellot[int(rkay_data["rakennuskieltotunnus"])] = rkay_data["laatu_selite"]
-
-            rkaa = hki_geoserver.Rakennuskieltoalue_asemakaava(
-                username=geoserver_creds.username, password=geoserver_creds.credential
-            )
-            rkaa_data = rkaa.get_by_geom(kt_data, single_result=True)
-            if rkaa_data:
-                rakennuskiellot[int(rkaa_data["rakennuskieltotunnus"])] = rkaa_data["laatu_selite"]
-
-            # Kiinteistönomistajat
+        kiinteisto_api = KiinteistoAPI()
+        kiinteistotunnukset = kiinteisto_api.get_data(hankenumero)
+        for kiinteistotunnus in kiinteistotunnukset["kiinteistotunnukset"]:
             f_ko = hel_facta.KiinteistonOmistajat()
 
             cache_key = f'paikkatieto_kiinteistonomistajat_{kiinteistotunnus}'
@@ -173,8 +80,13 @@ class API(APIView):
                         data["haltija_ulkopaikkakunta"] = "Kyllä"
                         break
 
+        kaava_api = KaavaAPI()
+        asemakaavat = {kaava["kaavatunnus"]: format_date(kaava["date"]) for kaava in kaava_api.get_data(hankenumero)["kaavat"]}
         asemakaavat_lst = [f"{ak_numero} ({ak_voimassa})" for ak_numero, ak_voimassa in sorted(asemakaavat.items(), reverse=True)]
         data["voimassa_asemakaavat"] = ", ".join(asemakaavat_lst) if asemakaavat_lst else ""
+
+        rakennuskielto_api = RakennuskieltoAPI()
+        rakennuskiellot = {rakennuskielto["rakennuskieltotunnus"]: rakennuskielto["selite"] for rakennuskielto in rakennuskielto_api.get_data(hankenumero)["rakennuskiellot"]}
         rakennuskiellot_lst = [f"{rk_numero} ({rk_peruste})" for rk_numero, rk_peruste in sorted(rakennuskiellot.items(), reverse=True)]
         data["voimassa_olevat_rakennuskiellot"] = ", ".join(rakennuskiellot_lst) if rakennuskiellot_lst else ""
 
