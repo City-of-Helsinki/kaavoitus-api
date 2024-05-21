@@ -2,3 +2,4 @@ from .paikkatietov1serializer import PaikkatietoV1Serializer
 from .rakennuskiellotv1serializer import RakennuskiellotV1Serializer
 from .kaavatv1serializer import KaavatV1Serializer
 from .kiinteistotunnusv1serializer import KiinteistotunnusV1Serializer
+from .maaraalatunnusv1serializer import MaaraalatunnusV1Serializer
