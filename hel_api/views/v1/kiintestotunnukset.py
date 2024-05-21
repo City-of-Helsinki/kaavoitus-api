@@ -9,7 +9,7 @@ from django.http import (
 from requests.exceptions import HTTPError, Timeout
 from rest_framework.views import APIView
 from hel_api.views.serializers.v1 import KiinteistotunnusV1Serializer
-from hel_api.views.helpers import build_apila_url
+from hel_api.views.helpers import build_apila_url, sisallyta_vain_kaavaan_kuuluvat
 
 log = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ class API(APIView):
         for kiinteistolaji in wfsKiinteistoLajit:
             leikkaavat = self.get_kiinteistotunnukset(build_apila_url(kiinteistolaji, hankenumero, "intersects"))
             koskettavat = self.get_kiinteistotunnukset(build_apila_url(kiinteistolaji, hankenumero, "touches"))
-            kiinteistotunnukset.extend(self.sisallytaVainKaavaanKuuluvatKiinteistot(leikkaavat, koskettavat))
+            kiinteistotunnukset.extend(sisallyta_vain_kaavaan_kuuluvat(leikkaavat, koskettavat))
 
         return {
             "hankenumero": hankenumero,
@@ -67,10 +67,3 @@ class API(APIView):
         except Exception as err:
             logging.error('Other error occurred', err)
             raise
-
-    def sisallytaVainKaavaanKuuluvatKiinteistot(self, leikkaavatKiinteistotunnukset, koskettavatKiinteistotunnukset):
-        kiinteistotunnukset = []
-        for kiinteistotunnus in leikkaavatKiinteistotunnukset:
-            if kiinteistotunnus not in koskettavatKiinteistotunnukset:
-                kiinteistotunnukset.append(kiinteistotunnus)
-        return kiinteistotunnukset

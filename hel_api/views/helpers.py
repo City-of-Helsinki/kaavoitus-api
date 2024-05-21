@@ -20,4 +20,12 @@ def format_date(date):
         return datetime.strptime(date, "%Y-%m-%d").strftime("%d.%m.%Y")
     except (ValueError, TypeError):
         log.error(f'Failed to parse date from value {date}')
-        return  # Return date with wrong format regardless
+        return date  # Return date with wrong format regardless
+
+
+def sisallyta_vain_kaavaan_kuuluvat(leikkaavat, koskettavat):
+    tunnukset = []
+    for tunnus in leikkaavat:
+        if tunnus not in koskettavat:
+            tunnukset.append(tunnus)
+    return tunnukset

@@ -14,6 +14,11 @@ urlpatterns = [
         name="kiinteistotunnukset",
     ),
     re_path(
+        r"^v(?P<version>(1))/maaraalatunnukset/(?P<hankenumero>[^/]*)$",
+        views.maaraalatunnukset.API.as_view(),
+        name="maaraalatunnukset",
+    ),
+    re_path(
         r"^v(?P<version>(1))/rakennuskiellot/(?P<hankenumero>[^/]*)$",
         views.rakennuskiellot.API.as_view(),
         name="rakennuskiellot",
