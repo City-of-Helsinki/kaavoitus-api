@@ -8,7 +8,7 @@ log = logging.getLogger(__name__)
 
 class Kaavahanke(GeoServer_Reader):
     use_auth = False
-    layername = "hel:Hankerajaukset_alue_kaavahanke"
+    layername = "hel:asemakaava"
     schema = {
         "geometry": "GeometryCollection",
         "geometry_column": "geom",
