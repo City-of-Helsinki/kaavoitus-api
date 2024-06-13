@@ -13,7 +13,7 @@ from django.core.cache import cache
 
 from facta_api import hel_facta
 
-from hel_api.views.v1.kiintestotunnukset import API as KiinteistoAPI
+from hel_api.views.v1.kiinteistotunnukset import API as KiinteistoAPI
 from hel_api.views.v1.maaraalatunnukset import API as MaaraalaAPI
 from hel_api.views.v1.kaavat import API as KaavaAPI
 from hel_api.views.v1.rakennuskiellot import API as RakennuskieltoAPI

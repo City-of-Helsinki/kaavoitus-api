@@ -68,11 +68,11 @@ class API(APIView):
             return kaavatunnukset
         except Timeout as timeout:
             logging.error('Timeout occurred', timeout)
-            raise
         except HTTPError as http_err:
-            print(f'HTTP error occurred: {http_err}')
+            logging.error(f'HTTP error occurred' ,http_err)
         except Exception as err:
-            print(f'Other error occurred: {err}')
+            logging.error(f'Other error occurred', err)
+        return []
 
     def sisallytaVainKaavaanKuuluvatKaavat(self, leikkaavatKaavatunnukset, koskettavatKaavatunnukset):
         kaavatunnukset = []

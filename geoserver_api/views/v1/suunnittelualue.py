@@ -38,7 +38,7 @@ class API(APIView):
         kh_data = kh.get_by_hankenumero(hankenumero)
         data = kh_data
         if not data:
-            log.error("Kaavahanke (%s) not found!" % hankenumero)
+            log.warning("Kaavahanke (%s) not found!" % hankenumero)
             # TODO: is this required?
             # Try with asemakaava
             ak = hki_geoserver.Asemakaava(
@@ -104,7 +104,7 @@ class API(APIView):
         tehokkuus_yht = 0.0
         t_data = t.get_by_geom(ak_data)
         if not t_data:
-            log.error("Tontti (%s) not found!" % ak_data.get("hankenumero"))
+            log.warning("Tontti (%s) not found!" % ak_data.get("hankenumero"))
             return tehokkuus_yht
 
         for tontti in t_data:
@@ -144,7 +144,7 @@ class API(APIView):
         pinta_ala = 0.0
         ka_data = ka.get_by_geom(ak_data)
         if not ka_data:
-            log.error("Korttelialue (%s) not found!" % ak_data.get("hankenumero"))
+            log.warning("Korttelialue (%s) not found!" % ak_data.get("hankenumero"))
             return pinta_ala
 
         for kad in ka_data:
@@ -158,7 +158,7 @@ class API(APIView):
 
         ya_data = ya.get_by_geom(ak_data)
         if not ya_data:
-            log.error("YleinenTaiMuuAlue (%s) not found!" % ak_data.get("hankenumero"))
+            log.warning("YleinenTaiMuuAlue (%s) not found!" % ak_data.get("hankenumero"))
             return pinta_ala
 
         for yad in ya_data:
