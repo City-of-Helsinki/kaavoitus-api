@@ -13,7 +13,8 @@ from django.core.cache import cache
 
 from facta_api import hel_facta
 
-from hel_api.views.v1.kiintestotunnukset import API as KiinteistoAPI
+from hel_api.views.v1.kiinteistotunnukset import API as KiinteistoAPI
+from hel_api.views.v1.maaraalatunnukset import API as MaaraalaAPI
 from hel_api.views.v1.kaavat import API as KaavaAPI
 from hel_api.views.v1.rakennuskiellot import API as RakennuskieltoAPI
 from hel_api.views.helpers import format_date
@@ -40,7 +41,9 @@ class API(APIView):
         }
 
         kiinteisto_api = KiinteistoAPI()
+        maaraala_api = MaaraalaAPI()
         kiinteistotunnukset = kiinteisto_api.get_data(hankenumero)
+        maaraalatunnukset = maaraala_api.get_data(hankenumero)
         for kiinteistotunnus in kiinteistotunnukset["kiinteistotunnukset"]:
             f_ko = hel_facta.KiinteistonOmistajat()
 
@@ -52,6 +55,10 @@ class API(APIView):
 
             if owner_rows:
                 for owner_row in owner_rows:
+                    maaraalatunnus = owner_row[3]
+                    if maaraalatunnus is not None and maaraalatunnus not in maaraalatunnukset["maaraalatunnukset"]:
+                        continue
+
                     if owner_row[14] == "10":  # C_LAJI
                         # Helsinki
                         data["maanomistus_kaupunki"] = "Kyllä"
