@@ -1,5 +1,6 @@
 import requests
 import logging
+from xml.etree import ElementTree
 
 from django.http import (
     JsonResponse,
@@ -54,14 +55,15 @@ class API(APIView):
 
     def get_rakennuskiellot(self, url):
         try:
-            rakennuskiellot = requests.get(url).json()
+            root = ElementTree.fromstring(requests.get(url).content)
             rakennuskieltotunnukset = []
-            for rakennuskielto in rakennuskiellot["features"]:
-                rakennuskieltotunnus = rakennuskielto["properties"]["rakennuskieltotunnus"]
-                pvm = rakennuskielto["properties"]["voimaantulopvm"]
-                pvmTarkoitus = "voimaantulopvm"
-                selite = rakennuskielto["properties"]["laatu_selite"]
-                rakennuskieltotunnukset.append([rakennuskieltotunnus, pvm, pvmTarkoitus, selite])
+            for member in root:
+                for rakennuskielto in member:
+                    rakennuskieltotunnus = rakennuskielto.find('{http://www.hel.fi/hel}rakennuskieltotunnus').text
+                    pvm = rakennuskielto.find('{http://www.hel.fi/hel}voimaantulopvm').text
+                    pvmTarkoitus = "voimaantulopvm"
+                    selite = rakennuskielto.find('{http://www.hel.fi/hel}laatu_selite').text
+                    rakennuskieltotunnukset.append([rakennuskieltotunnus, pvm, pvmTarkoitus, selite])
             return rakennuskieltotunnukset
         except Timeout as timeout:
             logging.error('Timeout occurred', timeout)

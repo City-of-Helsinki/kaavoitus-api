@@ -1,5 +1,6 @@
 import requests
 import logging
+from xml.etree import ElementTree
 
 from django.http import (
     JsonResponse,
@@ -54,17 +55,18 @@ class API(APIView):
 
     def get_kaavat(self, url):
         try:
-            kaavat = requests.get(url, timeout=5).json()
+            root = ElementTree.fromstring(requests.get(url, timeout=10).content)
             kaavatunnukset = []
-            for kaava in kaavat["features"]:
-                kaavatunnus = kaava["properties"]["kaavatunnus"]
-                if kaava["properties"]["lainvoimaisuuspvm"] is not None:
-                    pvm = kaava["properties"]["lainvoimaisuuspvm"]
-                    pvmTarkoitus = "lainvoimaisuuspvm"
-                else:
-                    pvm = kaava["properties"]["vahvistamispvm"]
-                    pvmTarkoitus = "vahvistamispvm"
-                kaavatunnukset.append([kaavatunnus, pvm, pvmTarkoitus])
+            for member in root:
+                for kaava in member:
+                    kaavatunnus = kaava.find('{http://www.hel.fi/hel}kaavatunnus').text
+                    if kaava.find('{http://www.hel.fi/hel}lainvoimaisuuspvm') is not None:
+                        pvm = kaava.find('{http://www.hel.fi/hel}lainvoimaisuuspvm').text
+                        pvmTarkoitus = "lainvoimaisuuspvm"
+                    else:
+                        pvm = kaava.find('{http://www.hel.fi/hel}vahvistamispvm').text
+                        pvmTarkoitus = "vahvistamispvm"
+                    kaavatunnukset.append([kaavatunnus, pvm, pvmTarkoitus])
             return kaavatunnukset
         except Timeout as timeout:
             logging.error('Timeout occurred', timeout)

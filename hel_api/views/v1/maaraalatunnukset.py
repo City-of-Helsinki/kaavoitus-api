@@ -1,5 +1,6 @@
 import requests
 import logging
+from xml.etree import ElementTree
 
 from django.http import (
     JsonResponse,
@@ -47,16 +48,17 @@ class API(APIView):
 
     def get_maaraalatunnukset(self, url):
         try:
-            maaraalat = requests.get(url).json()
+            root = ElementTree.fromstring(requests.get(url).content)
             maaraalatunnukset = []
-            for maaraala in maaraalat["features"]:
-                kunta = maaraala["properties"]["kunta"]
-                sijaintialue = maaraala["properties"]["sijaintialue"]
-                ryhma = maaraala["properties"]["ryhma"]
-                yksikko = maaraala["properties"]["yksikko"]
-                tunnus_kirjainosa = maaraala["properties"]["tunnus_kirjainosa"]
-                tunnus = maaraala["properties"]["tunnus"]
-                maaraalatunnukset.append(kunta + "-" + sijaintialue + "-" + ryhma + "-" + yksikko + "-" + tunnus_kirjainosa + "" + tunnus)
+            for member in root:
+                for maaraala in member:
+                    kunta = maaraala.find('{http://www.hel.fi/hel}kunta').text
+                    sijaintialue = maaraala.find('{http://www.hel.fi/hel}sijaintialue').text
+                    ryhma = maaraala.find('{http://www.hel.fi/hel}ryhma').text
+                    yksikko = maaraala.find('{http://www.hel.fi/hel}yksikko').text
+                    tunnus_kirjainosa = maaraala.find('{http://www.hel.fi/hel}tunnus_kirjainosa').text
+                    tunnus = maaraala.find('{http://www.hel.fi/hel}tunnus').text
+                    maaraalatunnukset.append(kunta + "-" + sijaintialue + "-" + ryhma + "-" + yksikko + "-" + tunnus_kirjainosa + "" + tunnus)
             return maaraalatunnukset
         except Timeout as timeout:
             logging.error('Timeout occurred', timeout)
