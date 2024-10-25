@@ -48,7 +48,7 @@ class API(APIView):
 
     def get_maaraalatunnukset(self, url):
         try:
-            root = ElementTree.fromstring(requests.get(url).content)
+            root = ElementTree.fromstring(requests.get(url, timeout=10).content)
             maaraalatunnukset = []
             for member in root:
                 for maaraala in member:

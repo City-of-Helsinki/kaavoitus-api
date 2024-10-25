@@ -48,7 +48,7 @@ class API(APIView):
 
     def get_kiinteistotunnukset(self, url):
         try:
-            root = ElementTree.fromstring(requests.get(url).content)
+            root = ElementTree.fromstring(requests.get(url, timeout=10).content)
             kiinteistotunnukset = []
             for member in root:
                 for kiinteisto in member:
