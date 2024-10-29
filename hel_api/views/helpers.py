@@ -10,8 +10,7 @@ def build_apila_url(typenames, hankenumero, cql_filter):
     url = settings.APILA_URL \
           + "?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=" + typenames \
           + ("&CQL_FILTER=" + cql_filter if cql_filter else "") \
-          + "(geom,querySingle('hel:Pinoalue','geom','hankenumero=''" + hankenumero + "'''))" \
-          + "&outputFormat=application/json"
+          + "(geom,querySingle('hel:Pinoalue','geom','hankenumero=''" + hankenumero + "'''))"
     return url
 
 

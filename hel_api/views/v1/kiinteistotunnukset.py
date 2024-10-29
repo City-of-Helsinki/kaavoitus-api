@@ -1,5 +1,6 @@
 import requests
 import logging
+from xml.etree import ElementTree
 
 from django.http import (
     JsonResponse,
@@ -47,16 +48,15 @@ class API(APIView):
 
     def get_kiinteistotunnukset(self, url):
         try:
-            kiinteistot = requests.get(url, timeout=5).json()
+            root = ElementTree.fromstring(requests.get(url, timeout=10).content)
             kiinteistotunnukset = []
-            for kiinteisto in kiinteistot["features"]:
-                kunta = kiinteisto["properties"]["kunta"]
-                sijaintialue = kiinteisto["properties"]["sijaintialue"]
-                ryhma = kiinteisto["properties"]["ryhma"]
-                yksikko = kiinteisto["properties"]["yksikko"]
-                # Yhdistetään kiinteistötunnus tekstiksi muotoon kunta-sijaintialue-ryhma-yksikko
-                # Yhtenäinen kiinteistötunnus ilman väliviivaa löytyisi kohdasta ["properties"]["kiinteistotunnus"]
-                kiinteistotunnukset.append(kunta + "-" + sijaintialue + "-" + ryhma + "-" + yksikko)
+            for member in root:
+                for kiinteisto in member:
+                    kunta = kiinteisto.find('{http://www.hel.fi/hel}kunta').text
+                    sijaintialue = kiinteisto.find('{http://www.hel.fi/hel}sijaintialue').text
+                    ryhma = kiinteisto.find('{http://www.hel.fi/hel}ryhma').text
+                    yksikko = kiinteisto.find('{http://www.hel.fi/hel}yksikko').text
+                    kiinteistotunnukset.append(kunta + "-" + sijaintialue + "-" + ryhma + "-" + yksikko)
             return kiinteistotunnukset
         except Timeout as timeout:
             logging.error('Timeout occurred', timeout)
