@@ -8,7 +8,7 @@ log = logging.getLogger(__name__)
 
 class Asemakaava(GeoServer_Reader):
     use_auth = False
-    layername = "helsinki:asemakaava"
+    layername = "hel:asemakaava"
     use_old_url = True
     schema = {
         "geometry": "GeometryCollection",
