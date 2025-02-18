@@ -43,7 +43,7 @@ RUN gdal-config --version
 RUN pip install pip==23.0
 
 # Install Poetry
-RUN pip install poetry
+RUN pip install poetry==1.8.5
 
 # Install python dependencies
 COPY poetry.lock pyproject.toml ./
