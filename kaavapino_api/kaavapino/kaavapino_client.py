@@ -6,6 +6,7 @@ log = logging.getLogger(__name__)
 
 PROJECT_PATH = "projects"
 PROJECT_DETAILS_PATH = "simple"
+PROJECT_FILTERED_PATH = "simple_filtered"
 PROJECT_CHANGES_PATH = "changes"
 
 
@@ -45,4 +46,9 @@ class KaavapinoClient:
     def get_projects_changes(self, timestamp):
         return self._get(
             "{:s}/{:s}/{:d}/".format(PROJECT_PATH, PROJECT_CHANGES_PATH, int(timestamp))
+        )
+
+    def get_projects_filtered(self, pinonro):
+        return self._get(
+            "{:s}/{:d}/{:s}/".format(PROJECT_PATH, int(pinonro), PROJECT_FILTERED_PATH)
         )
