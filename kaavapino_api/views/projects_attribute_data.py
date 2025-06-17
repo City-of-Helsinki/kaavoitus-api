@@ -5,7 +5,7 @@ from drf_spectacular.openapi import AutoSchema
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from common_auth.authentication import TokenAuthentication
-from .v1.project_data import API as APIv1
+from .v1.projects_attribute_data import API as APIv1
 
 
 class API(APIView):
@@ -25,14 +25,18 @@ class API(APIView):
         },
         parameters=[
             OpenApiParameter(
-                name="pinonro",
+                name="response_type",
                 type=str,
-                location=OpenApiParameter.PATH,
-                description="Pinonumero to get data for",
+                description="Response type (csv/xlsx/json)",
+            ),
+            OpenApiParameter(
+                name="pino_number",
+                type=str,
+                description="Pino numbers to get data for (empty, single, list)",
             ),
         ],
         # override default docstring extraction
-        description="Projektin datat",
+        description="Palauttaa Kaavapinon projektien attribute_data kentät jotka on määritelty näkyviksi",
         # provide Authentication class that deviates from the views default
         # auth=None,
         # change the auto-generated operation name

@@ -14,9 +14,9 @@ urlpatterns = [
         name="project",
     ),
     re_path(
-        r"^v(?P<version>(1))/project/(?P<pinonro>[^/]*)/data",
-        views.project.API.as_view(),
-        name="project_data",
+        r"^v(?P<version>(1))/projects/attribute_data",
+        views.projects_attribute_data.API.as_view(),
+        name="projects_attribute_data",
     ),
     re_path(
         r"^v(?P<version>(1))/project/(?P<pinonro>[^/]*)/trigger-change",
