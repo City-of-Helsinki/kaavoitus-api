@@ -53,8 +53,9 @@ class API(APIView):
             project_data = cache.get(cache_key)
             if project_data is None:
                 project_data = self.client.get_project_attribute_data_filtered(pino_number)
-                cache.set(cache_key, project_data, 60 * 60)  # 15 minutes
-            all_data[project_data["Projektin nimi"]] = project_data
+                cache.set(cache_key, project_data, 60 * 60)  # 1 hour
+            if project_data:
+                all_data[project_data["Projektin nimi"]] = project_data
 
         if response_type == "csv":
             response = HttpResponse(content_type='text/csv')
