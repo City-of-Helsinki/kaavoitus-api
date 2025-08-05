@@ -76,9 +76,10 @@ class API(APIView):
         suojellut_rakennukset_maara_yht = None
         suojellut_rakennukset_ala_yht = None
 
+        pinta_ala_data = kh_data.get("pintaala") if kh_data and "pintaala" in kh_data else ak_data.get("pintaala") if ak_data and "pintaala" in ak_data else 0.0
         ret_data = {
             "suunnittelualueen_rajaus": suunnittelualueen_rajaus,
-            "suunnittelualueen_pinta_ala": kh_data.get("pintaala") if kh_data else ak_data.get("pintaala") if ak_data else 0.0,
+            "suunnittelualueen_pinta_ala": pinta_ala_data,
             "keskimaarainen_tonttitehokkuus": keskimaarainen_tonttitehokkuus,
             "maanalaisten_tilojen_pinta_ala_yht": maanalaisten_tilojen_pinta_ala_yht,
             "aluevarausten_pinta_alat_yht": aluevarausten_pinta_alat_yht,
