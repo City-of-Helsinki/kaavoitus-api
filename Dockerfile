@@ -1,8 +1,5 @@
 FROM registry.access.redhat.com/ubi8/python-39
 
-# Set defaults for Django paths as appropriate for this container
-ENV STATIC_ROOT /srv/static
-
 # Default user is: uid=1001(default) gid=0(root) groups=0(root)
 USER root
 
@@ -48,9 +45,6 @@ RUN pip install pip==23.0
 # Install Poetry
 RUN pip install poetry==1.8.5
 
-RUN useradd --system -u 1002 -g 0 kaavapinouser && mkdir -p $STATIC_ROOT
-RUN chown -R kaavapinouser:0 $STATIC_ROOT && chmod -R g+rwX $STATIC_ROOT
-
 # Install python dependencies
 COPY poetry.lock pyproject.toml ./
 RUN poetry export -f requirements.txt --output requirements.txt
@@ -67,9 +61,6 @@ RUN cd /tmp ; \
 # WFS fix into Python owslib:
 COPY Deployment/owslib/owslib.patch /tmp/
 RUN patch -d /opt/app-root/lib64/python3.9/site-packages/ -p0 < /tmp/owslib.patch
-
-# Collect static files
-RUN python manage.py collectstatic --noinput
 
 # Service must listen to $PORT environment variable.
 # This default value facilitates local development.
