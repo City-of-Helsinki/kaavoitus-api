@@ -1,5 +1,8 @@
 FROM registry.access.redhat.com/ubi8/python-39
 
+# Set defaults for Django paths as appropriate for this container
+ENV STATIC_ROOT /srv/static
+
 # Default user is: uid=1001(default) gid=0(root) groups=0(root)
 USER root
 
@@ -44,6 +47,9 @@ RUN pip install pip==23.0
 
 # Install Poetry
 RUN pip install poetry==1.8.5
+
+RUN useradd --system -u 1002 -g 0 kaavapinouser && mkdir -p $STATIC_ROOT
+RUN chown -R kaavapinouser:0 $STATIC_ROOT && chmod -R g+rwX $STATIC_ROOT
 
 # Install python dependencies
 COPY poetry.lock pyproject.toml ./
