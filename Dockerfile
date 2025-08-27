@@ -61,6 +61,7 @@ RUN cd /tmp ; \
 # WFS fix into Python owslib:
 COPY Deployment/owslib/owslib.patch /tmp/
 RUN patch -d /opt/app-root/lib64/python3.9/site-packages/ -p0 < /tmp/owslib.patch
+
 # Service must listen to $PORT environment variable.
 # This default value facilitates local development.
 ENV PORT 8000

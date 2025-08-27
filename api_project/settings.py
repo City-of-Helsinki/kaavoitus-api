@@ -45,6 +45,7 @@ env = environ.Env(
     ELASTIC_APM_SERVER_URL=(str, ""),
     ELASTIC_APM_SERVICE_NAME=(str, ""),
     ELASTIC_APM_SECRET_TOKEN=(str, ""),
+    STATIC_ROOT=(environ.Path, BASE_DIR / "static"),
 )
 
 
@@ -75,6 +76,7 @@ if os.path.exists(env_file_path):
 
 DEBUG = env("DEBUG")
 ALLOWED_HOSTS = env("ALLOWED_HOSTS")
+STATIC_ROOT = env("STATIC_ROOT")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/

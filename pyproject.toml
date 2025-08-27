@@ -48,6 +48,7 @@ GDAL = "3.0.4"
 sentry-sdk = "1.5.6"
 elastic-apm = "6.8.1"
 django-redis = "5.2.0"
+openpyxl = "3.1.2"
 
 [tool.poetry.group.dev.dependencies]
 black = "22.12.0"
