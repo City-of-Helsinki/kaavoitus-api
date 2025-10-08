@@ -24,12 +24,13 @@ class API(APIView):
             attribute_data_keys = set()
             for project_name, data in all_data.items():
                 for key in data.keys():
-                    if key not in ["Projektin nimi", "Pinonumero (projektinumero)"]:
+                    if key not in ["Projektin nimi", "Pinonumero (projektinumero)", "Projektin osoite"]:
                         attribute_data_keys.add(key)
 
-            indexed_dict = {i: o for i, o in enumerate(attribute_data_keys, start=2)}
+            indexed_dict = {i: o for i, o in enumerate(attribute_data_keys, start=3)}
             indexed_dict[0] = "Pinonumero (projektinumero)"
             indexed_dict[1] = "Projektin nimi"
+            indexed_dict[2] = "Projektin osoite"
             return dict(sorted(indexed_dict.items()))
 
         if not request.auth:
