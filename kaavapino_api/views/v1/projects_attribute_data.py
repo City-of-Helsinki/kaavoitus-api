@@ -24,13 +24,13 @@ class API(APIView):
             attribute_data_keys = set()
             for project_name, data in all_data.items():
                 for key in data.keys():
-                    if key not in ["Projektin nimi", "Pinonumero (projektinumero)", "Projektin osoite"]:
+                    if key not in ["projektin_nimi", "pinonumero", "projektin_osoite"]:
                         attribute_data_keys.add(key)
 
             indexed_dict = {i: o for i, o in enumerate(attribute_data_keys, start=3)}
-            indexed_dict[0] = "Pinonumero (projektinumero)"
-            indexed_dict[1] = "Projektin nimi"
-            indexed_dict[2] = "Projektin osoite"
+            indexed_dict[0] = "pinonumero"
+            indexed_dict[1] = "projektin_nimi"
+            indexed_dict[2] = "projektin_osoite"
             return dict(sorted(indexed_dict.items()))
 
         if not request.auth:
@@ -56,7 +56,7 @@ class API(APIView):
                 project_data = self.client.get_project_attribute_data_filtered(pino_number)
                 cache.set(cache_key, project_data, 60 * 60)  # 1 hour
             if project_data:
-                all_data[project_data["Projektin nimi"]] = project_data
+                all_data[project_data["projektin_nimi"]] = project_data
 
         if response_type == "csv":
             response = HttpResponse(content_type='text/csv')
