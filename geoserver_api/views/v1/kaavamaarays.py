@@ -30,7 +30,7 @@ class API(APIView):
         )
         kt_data = kt.get(kiinteistotunnus)
         if not kt_data:
-            log.error("%s not found!" % kiinteistotunnus)
+            log.warning("%s not found!" % kiinteistotunnus)
             return HttpResponseNotFound()
 
         km = hki_geoserver.Kaavamaarays(

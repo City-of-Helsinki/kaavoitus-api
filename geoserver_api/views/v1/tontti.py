@@ -30,7 +30,7 @@ class API(APIView):
         )
         t_data = t.get(kiinteistotunnus)
         if not t_data:
-            log.error("%s not found!" % kiinteistotunnus)
+            log.warning("%s not found!" % kiinteistotunnus)
             return HttpResponseNotFound()
 
         t_data["geom"] = t.get_geometry(t_data)

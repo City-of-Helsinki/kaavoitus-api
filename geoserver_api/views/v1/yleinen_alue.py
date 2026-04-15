@@ -30,7 +30,7 @@ class API(APIView):
         )
         kaya_data = kaya.get(kiinteistotunnus)
         if not kaya_data:
-            log.error("%s not found!" % kiinteistotunnus)
+            log.warning("%s not found!" % kiinteistotunnus)
             return HttpResponseNotFound()
 
         kaya_data["geom"] = kaya.get_geometry(kaya_data)

@@ -30,7 +30,7 @@ class API(APIView):
         )
         kh_data = kh.get_by_hankenumero(hankenumero)
         if not kh_data:
-            log.error("Kaavahanke (%s) not found!" % hankenumero)
+            log.warning("Kaavahanke (%s) not found!" % hankenumero)
             return HttpResponseNotFound()
 
         log.debug("Hankenumero: %s" % (kh_data["hankenumero"]))
