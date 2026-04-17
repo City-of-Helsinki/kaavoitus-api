@@ -29,6 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 root = environ.Path(__file__) - 1  # one level back in hierarchy
 env = environ.Env(
     DATABASE_URL=(str, "sqlite:///" + str(BASE_DIR / "db/db.sqlite3")),
+    DATABASE_PASSWORD=(str, ""),
     REDIS_URL=(str, "redis://localhost:6379/1"),
     REDIS_PASSWORD=(str, None),
     DEBUG=(bool, False),
@@ -159,6 +160,9 @@ WSGI_APPLICATION = "api_project.wsgi.application"
 DATABASES = {
     "default": env.db()
 }
+
+if env("DATABASE_PASSWORD"):
+    DATABASES["default"]["PASSWORD"] = env("DATABASE_PASSWORD")
 
 # Cache can be disabled by setting timeout to 0. Warning: Timeout of 'None' will cache data forever.
 # Key value pairs can be cleared from cache by using redis-cli: Select the correct database and run 'flushdb'
