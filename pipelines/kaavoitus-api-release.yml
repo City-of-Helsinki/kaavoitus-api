@@ -2,9 +2,20 @@
 # an update to the specified branches or you push specified tags.
 trigger:
   batch: true
-  tags:
+  # tags:
+  #   include:
+  #     - kaavoitus-api-v*
+  branches:
     include:
-      - kaavoitus-api-v*
+      - master
+  paths:
+    exclude:
+    - '*release-please*'
+    - '*.md'
+    - '.github/'
+    - 'pipelines/kaavoitus-api-dev.yml'
+    - 'pipelines/kaavoitus-api-review.yml'
+    - '*compose*'
 
 # Pull request (PR) triggers cause a pipeline to run whenever a pull request is
 # opened with one of the specified target branches, or when updates are made to
