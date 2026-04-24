@@ -13,7 +13,7 @@ trigger:
     - '*release-please*'
     - '*.md'
     - '.github/'
-    - 'pipelines/kaavoitus-api-dev.yml'
+    - 'pipelines/kaavoitus-api-devtest.yml'
     - 'pipelines/kaavoitus-api-review.yml'
     - '*compose*'
 
