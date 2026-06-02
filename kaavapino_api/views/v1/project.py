@@ -40,6 +40,9 @@ class API(APIView):
         if not attribute_data:
             return HttpResponseNotFound()
 
+        if "lisatietoa_kerrosaloista" in attribute_data.keys():  # Format rich text value to plain string
+            attribute_data["lisatietoa_kerrosaloista"] = format_rich_text(attribute_data["lisatietoa_kerrosaloista"])
+
         data = attribute_data.copy()
         data["pinonumero"] = project_data.get("pino_number")
         data["suunnittelualueen_kuvaus"] = format_rich_text(data.get("suunnittelualueen_kuvaus"))
