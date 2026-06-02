@@ -48,6 +48,7 @@ class API(APIView):
         # It needs to be verifiable by serializer rules. Those are published in Swagger.
         serializer = self.serializer_class(data=data)
         if not serializer.is_valid():
+            log.info(f'Serializer received invalid data: {serializer.errors}')
             return HttpResponseServerError("Invalid data received from Kaavapino")
 
         return JsonResponse(serializer.validated_data)
