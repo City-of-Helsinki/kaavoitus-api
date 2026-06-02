@@ -118,7 +118,7 @@ class ProjectV1Serializer(serializers.Serializer):
     maaomaisuuden_nimi = serializers.CharField(required=False, allow_null=True)
     muu_asiantuntija_kaupungin_nimi = serializers.CharField(required=False, allow_null=True)
     paivitetyn_oasn_paivays = serializers.DateField(required=False, allow_null=True)
-    paivitetty_oas_fieldset = serializers.CharField(required=False, allow_null=True)
+    paivitetty_oas_fieldset = serializers.ListField(required=False, allow_null=True)
     periaatteet_palautettu = serializers.DateField(required=False, allow_null=True)
     kaavaluonnos_palautettu = serializers.DateField(required=False, allow_null=True)
     milloin_ehdotuksen_nahtavilla_alkaa_pieni_2 = serializers.DateField(required=False, allow_null=True)

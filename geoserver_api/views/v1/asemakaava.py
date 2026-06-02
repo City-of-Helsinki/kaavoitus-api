@@ -30,7 +30,7 @@ class API(APIView):
         )
         ak_data = ak.get(kaavatunnus)
         if not ak_data:
-            log.error("%s not found!" % kaavatunnus)
+            log.warning("%s not found!" % kaavatunnus)
             return HttpResponseNotFound()
 
         log.debug("Kaavatunnus: %s" % (ak_data["kaavatunnus"]))

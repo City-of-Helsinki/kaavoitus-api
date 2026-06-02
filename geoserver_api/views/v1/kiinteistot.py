@@ -39,7 +39,7 @@ class API(APIView):
         )
         ak_data = ak.get_by_hankenumero(hankenumero)
         if not ak_data:
-            log.error("%s not found!" % hankenumero)
+            log.warning("%s not found!" % hankenumero)
             return HttpResponseNotFound()
 
         log.debug("Hankenumero: %s" % (ak_data["hankenumero"]))
@@ -50,7 +50,7 @@ class API(APIView):
 
         kt_data = kt.get_by_geom(ak_data)
         if not kt_data:
-            log.error("%s not found!" % hankenumero)
+            log.warning("%s not found!" % hankenumero)
             return HttpResponseNotFound()
 
         kiinteistot = []

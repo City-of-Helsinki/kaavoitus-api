@@ -48,7 +48,7 @@ class API(APIView):
             data = ak.get_by_hankenumero(hankenumero)
             ak_data = data
             if not data:
-                log.error("Asemakaava (%s) not found!" % hankenumero)
+                log.warning("Asemakaava (%s) not found!" % hankenumero)
                 return HttpResponseNotFound()
         else:
             ak = hki_geoserver.Asemakaava(

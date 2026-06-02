@@ -30,7 +30,7 @@ class API(APIView):
         )
         ka_data = ka.get(korttelinnumero)
         if not ka_data:
-            log.error("%s not found!" % korttelinnumero)
+            log.warning("%s not found!" % korttelinnumero)
             return HttpResponseNotFound()
 
         log.debug("Korttelinnumero: %s" % (ka_data["korttelinnumero"]))
