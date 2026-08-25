@@ -37,7 +37,7 @@ COPY manage.py .
 COPY api_project/gunicorn_config.py .
 
 # Install pip 23.0
-RUN pip install pip==23.0
+RUN pip install pip==23.2
 
 # Install Poetry
 RUN pip install poetry==1.8.5
