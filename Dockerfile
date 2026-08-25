@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/python-39
+FROM registry.access.redhat.com/ubi8/python-312
 
 # Default user is: uid=1001(default) gid=0(root) groups=0(root)
 USER root
@@ -18,8 +18,6 @@ RUN rm /etc/rhsm-host && \
     dnf install -y \
         git \
         binutils \
-        gdal \
-        gdal-devel \
         geos \
         proj \
         # for Oracle
@@ -38,7 +36,6 @@ COPY hel_api hel_api/
 COPY manage.py .
 COPY api_project/gunicorn_config.py .
 
-RUN gdal-config --version
 # Install pip 23.0
 RUN pip install pip==23.0
 
@@ -50,17 +47,9 @@ COPY poetry.lock pyproject.toml ./
 RUN poetry export -f requirements.txt --output requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Download and unpack Oracle libraries
-RUN cd /tmp ; \
-    wget https://download.oracle.com/otn_software/linux/instantclient/211000/instantclient-basiclite-linux.x64-21.1.0.0.0.zip ; \
-    mkdir /oracle ; \
-    cd /oracle ; \
-    unzip /tmp/instantclient-basiclite-linux.x64-21.1.0.0.0.zip ; \
-    rm /tmp/instantclient-basiclite-linux.x64-21.1.0.0.0.zip
-
 # WFS fix into Python owslib:
 COPY Deployment/owslib/owslib.patch /tmp/
-RUN patch -d /opt/app-root/lib64/python3.9/site-packages/ -p0 < /tmp/owslib.patch
+RUN patch -d /opt/app-root/lib64/python3.12/site-packages/ -p0 < /tmp/owslib.patch
 
 # Service must listen to $PORT environment variable.
 # This default value facilitates local development.
