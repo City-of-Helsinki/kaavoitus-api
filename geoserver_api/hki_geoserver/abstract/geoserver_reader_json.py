@@ -13,6 +13,7 @@ from lxml.builder import ElementMaker
 from pydov.util import location
 from pyproj import Transformer
 from shapely.geometry import shape, mapping
+from shapely.ops import transform
 import json
 
 log = logging.getLogger(__name__)
@@ -21,6 +22,9 @@ HELSINKI_GEOSERVER_OPENDATA_URL = "https://kartta.hel.fi/ws/geoserver/avoindata/
 HELSINKI_GEOSERVER_INTERNAL_URL = "http://apila.hel.fi/gis/hel/wfs"
 HELSINKI_GEOSERVER_OLD_URL = "https://kartta.hel.fi/ws/geoserver/helsinki/wfs"
 
+# GML 3.2 namespace
+GML_NS = "http://www.opengis.net/gml/3.2"
+NSMAP = {"gml": GML_NS}
 
 class GeoServer_Reader_json:
     wfs = None
@@ -220,33 +224,141 @@ class GeoServer_Reader_json:
         return fields
 
     def _json_to_gml(self, data):
-        if not data["geom"][0]["geometry"]:
-            raise ValueError("Gometry missing!")
+        geometry_data = data["geom"][0].get("geometry")
 
-        # Parse geometry using Shapely
-        geom = shape(data["geom"][0]["geometry"])
+        if not geometry_data:
+            raise ValueError("Geometry missing!")
 
-        # Determine source CRS
-        if data["srs"]:
-            # Extract EPSG code from SRS string (e.g., "urn:ogc:def:crs:EPSG::3879" -> 3879)
-            if "EPSG" in data["srs"]:
-                epsg_code = data["srs"].split("EPSG")[-1].strip(":").strip()
-            else:
-                epsg_code = "3879"  # fallback
+        geom = shape(geometry_data)
+
+        srs_name = data["srs"]
+
+        # ---------------------------------------------------------
+        # Build MultiSurface
+        # ---------------------------------------------------------
+        root = etree.Element(
+            f"{{{GML_NS}}}MultiSurface",
+            nsmap={"gml": GML_NS},
+        )
+
+        root.set(
+            f"{{{GML_NS}}}id",
+            data["id"],
+        )
+
+        root.set(
+            "srsName",
+            srs_name,
+        )
+
+        def add_ring(parent, ring):
+            linear_ring = etree.SubElement(
+                parent,
+                f"{{{GML_NS}}}LinearRing",
+            )
+
+            pos_list = etree.SubElement(
+                linear_ring,
+                f"{{{GML_NS}}}posList",
+            )
+
+            pos_list.set("srsDimension", "2")
+
+            coords = []
+
+            for x, y in ring.coords:
+                coords.extend([str(x), str(y)])
+
+            pos_list.text = " ".join(coords)
+
+        def add_polygon(parent, polygon, polygon_id):
+
+            polygon_el = etree.SubElement(
+                parent,
+                f"{{{GML_NS}}}Polygon",
+            )
+
+            polygon_el.set(
+                f"{{{GML_NS}}}id",
+                polygon_id,
+            )
+
+            # Exterior
+            exterior = etree.SubElement(
+                polygon_el,
+                f"{{{GML_NS}}}exterior",
+            )
+
+            add_ring(
+                exterior,
+                polygon.exterior,
+            )
+
+            # Holes
+            for interior_ring in polygon.interiors:
+
+                interior = etree.SubElement(
+                    polygon_el,
+                    f"{{{GML_NS}}}interior",
+                )
+
+                add_ring(
+                    interior,
+                    interior_ring,
+                )
+
+        # ---------------------------------------------------------
+        # Polygon / MultiPolygon
+        # ---------------------------------------------------------
+
+        if geom.geom_type == "Polygon":
+
+            # Replace MultiSurface with Polygon for a single polygon
+            root = etree.Element(
+                f"{{{GML_NS}}}Polygon",
+                nsmap={"gml": GML_NS},
+            )
+
+            root.set(
+                f"{{{GML_NS}}}id",
+                data["id"],
+            )
+
+            root.set(
+                "srsName",
+                srs_name,
+            )
+
+            add_polygon(
+                root,
+                geom,
+                data["id"],
+            )
+
+        elif geom.geom_type == "MultiPolygon":
+
+            for i, polygon in enumerate(geom.geoms):
+
+                member = etree.SubElement(
+                    root,
+                    f"{{{GML_NS}}}surfaceMember",
+                )
+
+                add_polygon(
+                    member,
+                    polygon,
+                    f"{data['id']}.{i + 1}",
+                )
+
         else:
-            epsg_code = "3879"  # Fallback to the crs that should be in use
+            raise ValueError(
+                f"Unsupported geometry type: {geom.geom_type}"
+            )
 
-        # Convert Shapely geometry to GML using simple GeoJSON as intermediate
-        # Note: This is a simplified GML output - if exact GML32 format is required,
-        # we may need to use a proper GML library or keep minimal GDAL dependency
-        geojson_str = json.dumps(mapping(geom))
-
-        # Create a basic GML representation
-        # For now, we'll store the GeoJSON and let location.GmlObject handle it
-        # This may need adjustment based on what pydov expects
-        gml = f'''<gml:Polygon gml:id="{data["id"]}" srsName="urn:ogc:def:crs:EPSG::{epsg_code}" xmlns:gml="http://www.opengis.net/gml/3.2">
-            <!-- GeoJSON: {geojson_str} -->
-        </gml:Polygon>'''
+        gml = etree.tostring(
+            root,
+            encoding="unicode",
+        )
 
         return location.GmlObject(gml)
 
@@ -277,9 +389,19 @@ class GeoServer_Reader_json:
             always_xy=True
         )
 
-        # Transform the geometry using Shapely's transform method
-        from shapely.ops import transform
         transformed_geom = transform(transformer.transform, geom)
 
-        new_geom[0]["geometry"] = mapping(transformed_geom)
+        # Convert GeoJSON coordinates from [lng, lat] to [lat, lng]
+        geojson = mapping(transformed_geom)
+
+        def swap_coordinates(coords):
+            if isinstance(coords[0], (float, int)):
+                lng, lat = coords
+                return [lat, lng]
+
+            return [swap_coordinates(coord) for coord in coords]
+
+        geojson["coordinates"] = swap_coordinates(geojson["coordinates"])
+        new_geom[0]["geometry"] = geojson
+
         return new_geom
