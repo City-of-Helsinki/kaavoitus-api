@@ -13,7 +13,9 @@ from lxml.builder import ElementMaker
 
 # from dateutil.parser import parse as xml_date_parse
 from pydov.util import location
-from osgeo import ogr, osr
+from pyproj import Transformer
+from shapely.geometry import shape, mapping
+from shapely import wkt
 import json
 
 log = logging.getLogger(__name__)
@@ -260,40 +262,43 @@ class GeoServer_Reader_xml:
         ).decode("ascii")
 
         # log.info(geom_str)
-        geom = ogr.CreateGeometryFromGML(geom_str)
+
+        # For GML parsing without GDAL, we'll use a helper function
+        try:
+            geom = self._parse_gml_to_shapely(geom_str)
+        except Exception as e:
+            log.warning(f"Failed to parse GML geometry: {e}")
+            return None
+
         if not geom:
             return None
 
-        # create coordinate transformation
-        inSpatialRef = osr.SpatialReference()
+        # Determine source CRS
         if data["srs"]:
-            inSpatialRef.SetFromUserInput(data["srs"])
+            # Extract EPSG code from SRS string
+            if "EPSG" in data["srs"]:
+                source_epsg = data["srs"].split("EPSG")[-1].strip(":").strip()
+            else:
+                source_epsg = "3879"  # fallback
         else:
             # Fallback to the crs that should be in use
-            inSpatialRef.ImportFromEPSG(3879)
+            source_epsg = "3879"
 
-        outSpatialRef = osr.SpatialReference()
-        outSpatialRef.ImportFromEPSG(4326)
-        # Currently our services require coordinates in the latitude first, longitude second
-        # outSpatialRef.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+        # Create coordinate transformer from source CRS to WGS84 (EPSG:4326)
+        transformer = Transformer.from_crs(
+            f"EPSG:{source_epsg}",
+            "EPSG:4326",
+            always_xy=True
+        )
 
-        coordTransform = osr.CoordinateTransformation(inSpatialRef, outSpatialRef)
-
-        # transform
-        geom.Transform(coordTransform)
-
-        # if geom.HasCurveGeometry:
-        #     g1l = geom.GetCurveGeometry()
-        # else:
-        #     g1l = geom.GetLinearGeometry()
-
-        # Use approximate
-        linear_geom = geom.GetLinearGeometry()
+        # Transform the geometry
+        from shapely.ops import transform
+        transformed_geom = transform(transformer.transform, geom)
 
         new_geom = [
             {
                 "type": "Feature",
-                "geometry": json.loads(linear_geom.ExportToJson()),
+                "geometry": mapping(transformed_geom),
                 "properties": {
                     "id": data["id"],
                 },
@@ -301,8 +306,39 @@ class GeoServer_Reader_xml:
         ]
         return new_geom
 
-        # return geom.ExportToGML(options=['SRSDIMENSION_LOC=GEOMETRY', 'FORMAT=GML32', 'GML3_LONGSRS=YES', 'GMLID=%s' % data['id'], 'NAMESPACE_DECL=YES'])  # noqa: E501
+    def _parse_gml_to_shapely(self, gml_str):
+        """
+        Simple GML to Shapely parser for Polygon geometries.
+        This is a basic implementation - for complex GML, consider using pygeoif or fastkml.
+        """
+        # Extract coordinates from GML posList
+        import re
 
-        # return etree.tostring(data['geom'].element,
-        #                       encoding='ascii', method='xml',
-        #                       xml_declaration=False).decode('ascii')
+        # Try to find posList coordinates
+        poslist_match = re.search(r'<gml:posList[^>]*>(.*?)</gml:posList>', gml_str, re.DOTALL)
+        if poslist_match:
+            coords_str = poslist_match.group(1).strip()
+            coords = [float(x) for x in coords_str.split()]
+
+            # GML coordinates are in pairs (x y x y ...)
+            points = [(coords[i], coords[i+1]) for i in range(0, len(coords), 2)]
+
+            from shapely.geometry import Polygon
+            return Polygon(points)
+
+        # If posList not found, try pos tags (less common)
+        pos_matches = re.findall(r'<gml:pos[^>]*>(.*?)</gml:pos>', gml_str)
+        if pos_matches:
+            points = []
+            for pos_str in pos_matches:
+                coords = [float(x) for x in pos_str.strip().split()]
+                if len(coords) >= 2:
+                    points.append((coords[0], coords[1]))
+
+            if points:
+                from shapely.geometry import Polygon
+                return Polygon(points)
+
+        # If we can't parse, return None
+        log.warning("Could not parse GML geometry - unsupported format")
+        return None

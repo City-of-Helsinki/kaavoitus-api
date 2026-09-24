@@ -1,4 +1,4 @@
-from cx_Oracle import DatabaseError
+from oracledb import DatabaseError
 import logging
 from .abstract import Facta
 

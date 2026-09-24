@@ -11,7 +11,9 @@ import logging
 import lxml.etree as etree
 from lxml.builder import ElementMaker
 from pydov.util import location
-from osgeo import ogr, osr
+from pyproj import Transformer
+from shapely.geometry import shape, mapping
+from shapely.ops import transform
 import json
 
 log = logging.getLogger(__name__)
@@ -20,6 +22,9 @@ HELSINKI_GEOSERVER_OPENDATA_URL = "https://kartta.hel.fi/ws/geoserver/avoindata/
 HELSINKI_GEOSERVER_INTERNAL_URL = "http://apila.hel.fi/gis/hel/wfs"
 HELSINKI_GEOSERVER_OLD_URL = "https://kartta.hel.fi/ws/geoserver/helsinki/wfs"
 
+# GML 3.2 namespace
+GML_NS = "http://www.opengis.net/gml/3.2"
+NSMAP = {"gml": GML_NS}
 
 class GeoServer_Reader_json:
     wfs = None
@@ -219,30 +224,142 @@ class GeoServer_Reader_json:
         return fields
 
     def _json_to_gml(self, data):
-        if not data["geom"][0]["geometry"]:
-            raise ValueError("Gometry missing!")
+        geometry_data = data["geom"][0].get("geometry")
 
-        dump = json.dumps(data["geom"][0]["geometry"])
-        geom = ogr.CreateGeometryFromJson(dump)
-        spatialReference = osr.SpatialReference()
-        if data["srs"]:
-            spatialReference.SetFromUserInput(data["srs"])
-        else:
-            # Fallback to the crs that should be in use
-            spatialReference.ImportFromEPSG(3879)
+        if not geometry_data:
+            raise ValueError("Geometry missing!")
 
-        spatialReference.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-        geom.AssignSpatialReference(spatialReference)  # 'urn:ogc:def:crs:EPSG::3879'
-        gml = geom.ExportToGML(
-            options=[
-                "SRSDIMENSION_LOC=GEOMETRY",
-                "FORMAT=GML32",
-                "GML3_LONGSRS=YES",
-                "GMLID=%s" % data["id"],
-                "NAMESPACE_DECL=YES",
-            ]
+        geom = shape(geometry_data)
+
+        srs_name = data["srs"]
+
+        # ---------------------------------------------------------
+        # Build MultiSurface
+        # ---------------------------------------------------------
+        root = etree.Element(
+            f"{{{GML_NS}}}MultiSurface",
+            nsmap={"gml": GML_NS},
         )
-        # log.info(gml)
+
+        root.set(
+            f"{{{GML_NS}}}id",
+            data["id"],
+        )
+
+        root.set(
+            "srsName",
+            srs_name,
+        )
+
+        def add_ring(parent, ring):
+            linear_ring = etree.SubElement(
+                parent,
+                f"{{{GML_NS}}}LinearRing",
+            )
+
+            pos_list = etree.SubElement(
+                linear_ring,
+                f"{{{GML_NS}}}posList",
+            )
+
+            pos_list.set("srsDimension", "2")
+
+            coords = []
+
+            for x, y in ring.coords:
+                coords.extend([str(x), str(y)])
+
+            pos_list.text = " ".join(coords)
+
+        def add_polygon(parent, polygon, polygon_id):
+
+            polygon_el = etree.SubElement(
+                parent,
+                f"{{{GML_NS}}}Polygon",
+            )
+
+            polygon_el.set(
+                f"{{{GML_NS}}}id",
+                polygon_id,
+            )
+
+            # Exterior
+            exterior = etree.SubElement(
+                polygon_el,
+                f"{{{GML_NS}}}exterior",
+            )
+
+            add_ring(
+                exterior,
+                polygon.exterior,
+            )
+
+            # Holes
+            for interior_ring in polygon.interiors:
+
+                interior = etree.SubElement(
+                    polygon_el,
+                    f"{{{GML_NS}}}interior",
+                )
+
+                add_ring(
+                    interior,
+                    interior_ring,
+                )
+
+        # ---------------------------------------------------------
+        # Polygon / MultiPolygon
+        # ---------------------------------------------------------
+
+        if geom.geom_type == "Polygon":
+
+            # Replace MultiSurface with Polygon for a single polygon
+            root = etree.Element(
+                f"{{{GML_NS}}}Polygon",
+                nsmap={"gml": GML_NS},
+            )
+
+            root.set(
+                f"{{{GML_NS}}}id",
+                data["id"],
+            )
+
+            root.set(
+                "srsName",
+                srs_name,
+            )
+
+            add_polygon(
+                root,
+                geom,
+                data["id"],
+            )
+
+        elif geom.geom_type == "MultiPolygon":
+
+            for i, polygon in enumerate(geom.geoms):
+
+                member = etree.SubElement(
+                    root,
+                    f"{{{GML_NS}}}surfaceMember",
+                )
+
+                add_polygon(
+                    member,
+                    polygon,
+                    f"{data['id']}.{i + 1}",
+                )
+
+        else:
+            raise ValueError(
+                f"Unsupported geometry type: {geom.geom_type}"
+            )
+
+        gml = etree.tostring(
+            root,
+            encoding="unicode",
+        )
+
         return location.GmlObject(gml)
 
     def convert_data(self, data):
@@ -251,28 +368,40 @@ class GeoServer_Reader_json:
     def get_geometry(self, data):
         # create a geometry from coordinates
         new_geom = copy.deepcopy(data["geom"])
-        dump = json.dumps(new_geom[0]["geometry"])
-        geom = ogr.CreateGeometryFromJson(dump)
+        geom = shape(new_geom[0]["geometry"])
 
-        # create coordinate transformation
-        inSpatialRef = osr.SpatialReference()
+        # Determine source CRS
         if data["srs"]:
-            inSpatialRef.SetFromUserInput(data["srs"])
+            # Extract EPSG code from SRS string
+            if "EPSG" in data["srs"]:
+                source_epsg = data["srs"].split("EPSG")[-1].strip(":").strip()
+            else:
+                source_epsg = "3879"  # fallback
         else:
             # Fallback to the crs that should be in use
-            inSpatialRef.ImportFromEPSG(3879)
+            source_epsg = "3879"
 
-        inSpatialRef.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+        # Create coordinate transformer from source CRS to WGS84 (EPSG:4326)
+        # PyProj uses "always_xy=True" to ensure (lon, lat) order regardless of CRS definition
+        transformer = Transformer.from_crs(
+            f"EPSG:{source_epsg}",
+            "EPSG:4326",
+            always_xy=True
+        )
 
-        outSpatialRef = osr.SpatialReference()
-        outSpatialRef.ImportFromEPSG(4326)
-        # Currently our services require coordinates in the latitude first, longitude second
-        # outSpatialRef.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+        transformed_geom = transform(transformer.transform, geom)
 
-        coordTransform = osr.CoordinateTransformation(inSpatialRef, outSpatialRef)
+        # Convert GeoJSON coordinates from [lng, lat] to [lat, lng]
+        geojson = mapping(transformed_geom)
 
-        # transform
-        geom.Transform(coordTransform)
+        def swap_coordinates(coords):
+            if isinstance(coords[0], (float, int)):
+                lng, lat = coords
+                return [lat, lng]
 
-        new_geom[0]["geometry"] = json.loads(geom.ExportToJson())
+            return [swap_coordinates(coord) for coord in coords]
+
+        geojson["coordinates"] = swap_coordinates(geojson["coordinates"])
+        new_geom[0]["geometry"] = geojson
+
         return new_geom
